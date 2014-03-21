@@ -31,7 +31,7 @@ public class LugusSingletonExisting<T> : MonoBehaviour where T : MonoBehaviour
 		if( _instance != null )
 			return true;
 		
-		T[] instances = (T[]) GameObject.FindObjectsOfType( typeof(T) );
+		T[] instances = (T[]) GameObject.FindObjectsOfType( typeof(T) ); 
 		if( instances.Length == 0 )
 		{
 			Debug.LogError ("LuGusSingletonExisting:CheckInstance : " + typeof (T).Name + " does not exist!");
