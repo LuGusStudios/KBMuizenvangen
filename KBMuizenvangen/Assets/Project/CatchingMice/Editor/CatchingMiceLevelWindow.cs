@@ -20,7 +20,13 @@ public class CatchingMiceLevelWindow : EditorWindow
         CatchingMiceLevelWindow window = (CatchingMiceLevelWindow)EditorWindow.GetWindow(typeof(CatchingMiceLevelWindow));
         window.Show();
     }
-
+    protected void Update()
+    {
+        if (levelParent == null)
+        {
+            levelParent = GameObject.Find("LevelParent").transform;
+        }
+    }
     void OnGUI()
     {
         if (GUILayout.Button("Create new Catching Mice level (root folder)"))
@@ -35,18 +41,32 @@ public class CatchingMiceLevelWindow : EditorWindow
         width = EditorGUILayout.IntField(width);
         height = EditorGUILayout.IntField(height);
 
-        if (GUILayout.Button("build Catching Mice level"))
+        if (GUILayout.Button("Build Catching Mice level"))
         {
             CatchingMiceLevelManager.use.BuildLevelDebug(width,height);
         }
-       
+        if (GUILayout.Button("Snap selection to grid"))
+        {
+            SnapToGrid(); 
+        }
     }
 
-    protected void Update()
+    //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid
+    protected void SnapToGrid()
     {
-        if (levelParent == null)
+        Transform[] transforms = Selection.GetTransforms(SelectionMode.TopLevel | SelectionMode.OnlyUserModifiable);
+
+        float gridx = 1.0f;
+        float gridy = 1.0f;
+        float gridz = 1.0f;
+
+        foreach (Transform transform in transforms)
         {
-            levelParent = GameObject.Find("LevelParent").transform;
+            Vector3 newPosition = transform.position;
+            newPosition.x = Mathf.Round(newPosition.x / gridx) * gridx;
+            newPosition.y = Mathf.Round(newPosition.y / gridy) * gridy;
+            newPosition.z = Mathf.Round(newPosition.z / gridz) * gridz;
+            transform.position = newPosition;
         }
     }
 }

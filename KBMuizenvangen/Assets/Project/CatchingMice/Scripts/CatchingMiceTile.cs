@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Tile
+public class CatchingMiceTile
 {
     public enum TileType
     {
@@ -16,7 +16,7 @@ public class Tile
     public Vector2 location;
     public Vector2 gridIndices;
 
-    public Tile()
+    public CatchingMiceTile()
 	{
 		tileType = TileType.Ground; 
 		location = Vector2.zero;
