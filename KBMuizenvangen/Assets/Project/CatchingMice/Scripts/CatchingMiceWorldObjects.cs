@@ -20,38 +20,33 @@ public class CatchingMiceWorldObjects : MonoBehaviour
 
     public virtual void SetupGlobal()
     {
+        
+    }
+
+    public void SetTileType()
+    {
         BoxColliders2D = GetComponentsInChildren<BoxCollider2D>();
-        Debug.Log(transform.position.x);
-        //count indices of box colliders
+        //gets the indices of box colliders
         foreach (BoxCollider2D col2D in BoxColliders2D)
         {
-            float xTiles = (int)col2D.size.x / CatchingMiceLevelManager.use.scale;
-            float yTiles = (int)col2D.size.y / CatchingMiceLevelManager.use.scale;
-            for (int y = (int)yTiles - 1; y >= 0; y--)
+            float xTiles = Mathf.Ceil(col2D.size.x / CatchingMiceLevelManager.use.scale);
+            float yTiles = Mathf.Ceil(col2D.size.y / CatchingMiceLevelManager.use.scale);
+            //TODO: needs to go over every other point not every point
+            for (int y = 1; y < (int)yTiles * 2; y++)
             {
-                for (int x = 0; x < (int)xTiles; x++)
+                for (int x = 1; x < (int)xTiles * 2; x++)
                 {
-                    //gets the anchor point of the parent, add it with the collider position
-                    float xTile = transform.position.x + col2D.transform.localPosition.x + xTiles * (x / xTiles);
-                    Debug.Log("xtile : " + xTile);
-                    float yTile = transform.position.y + (col2D.transform.localPosition.y - gridOffset) + yTiles * (y / yTiles);
-                    Debug.Log("yTile : " + yTile);
-                    CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTile((int)xTile,(int) yTile);
-                    Debug.Log(tile);
-                    CatchingMiceLevelManager.use.levelTiles[(int)xTile,(int)yTile].tileType = CatchingMiceTile.TileType.Furniture;
-                    
+                    //gets most left position of the collider and add the wanted tile distance
+                    float xTile = ((col2D.transform.position.x + col2D.center.x) - col2D.Bounds().extents.x) + xTiles / (xTiles * 2) * x;
+                    float yTile = ((col2D.transform.position.y + col2D.center.y) - col2D.Bounds().extents.y) - gridOffset + yTiles / (yTiles * 2) * y;
+                    //Debug.Log("yTile : " + yTile); 
+                    CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTile(Mathf.RoundToInt(xTile / CatchingMiceLevelManager.use.scale), Mathf.RoundToInt(yTile / CatchingMiceLevelManager.use.scale));
+                    Debug.Log(tile + " " + gameObject.name);
+                    CatchingMiceLevelManager.use.levelTiles[Mathf.RoundToInt(xTile / CatchingMiceLevelManager.use.scale), Mathf.RoundToInt(yTile / CatchingMiceLevelManager.use.scale)].tileType = CatchingMiceTile.TileType.Furniture;
+
                 }
             }
-            
-            //float x = col2D.center.x / col2D.size.x;
-            //Debug.Log(x);
-            //Debug.Log(col2D.transform.position.y);
-            //float y = col2D.transform.position.y / col2D.size.y - (gridOffset * CatchingMiceLevelManager.use.scale);
-            //Debug.Log(y);
-            //CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(x, y);
-            //Debug.Log(tile);
         }
-        CatchingMiceLevelManager.use.CreateGrid();
     }
 
     // Use this for initialization

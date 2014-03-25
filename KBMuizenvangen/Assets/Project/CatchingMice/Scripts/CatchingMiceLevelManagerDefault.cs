@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class CatchingMiceLevelManager : LugusSingletonExisting<CatchingMiceLevelManagerDefault>
 {
     
@@ -17,10 +18,11 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     public int height = 13;
 
     public CatchingMiceTile[,] levelTiles;
-    public int scale = 1;
+    public float scale = 1;
 
     public GameObject[] tileItems = null;
-
+    [HideInInspector]
+    public List<Waypoint> WaypointList = new List<Waypoint>(); 
     void Awake()
     {
         FindReferences();
@@ -50,7 +52,11 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         {
             DestroyImmediate(levelParent.GetChild(i).gameObject);
         }
-
+        for (int i = objectParent.childCount - 1; i >= 0; i--)
+        {
+            DestroyImmediate(objectParent.GetChild(i).gameObject);
+        }
+        WaypointList.Clear(); 
         //for (int i = characterParent.childCount - 1; i >= 0; i--)
         //{
         //    DestroyImmediate(characterParent.GetChild(i).gameObject);
@@ -77,6 +83,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 #endif
     }
 
+    
+
     // only used for testing and for quickly building a level
     public void BuildLevelDebug(int _width, int _height)
     {
@@ -89,7 +97,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
         ParseLevelTiles(_width, _height);
 
-        PlaceLevelTileItemsDebug();
+        //PlaceLevelTileItemsDebug();
 
         CreateGrid();
 
@@ -98,22 +106,33 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
     public void CreateGrid()
     {
-
         foreach (CatchingMiceTile levelTile in levelTiles)
         {
             GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            quad.transform.localScale = Vector3.one * 0.98f;
+            quad.gameObject.name = "Waypoint " + levelTile.gridIndices; 
+            quad.transform.localScale = Vector3.one * 0.98f * scale;
             quad.transform.position = levelTile.location;
             quad.transform.parent = levelParent;
+            Waypoint wp = quad.AddComponent<Waypoint>();
+
+            if (levelTile.tileType == CatchingMiceTile.TileType.Furniture)
+            {
+                wp.waypointType = Waypoint.WaypointType.Furniture;
+            }
+
+            WaypointList.Add(wp);
             levelTile.rendered = quad;
+
             if (levelTile.tileType != CatchingMiceTile.TileType.Ground)
             {
                 Material tempMaterial = new Material(quad.renderer.sharedMaterial);
                 tempMaterial.color = Color.red;
-                quad.transform.position = levelTile.location.v3().z(-0.5f);
+                //quad.transform.position = levelTile.location.v3().z(-0.5f);
+                quad.transform.localScale = Vector3.one * 1.1f * scale;
                 quad.renderer.sharedMaterial = tempMaterial;
             }
         }
+        AssignNeighbours();
     }
     public void BuildLevel(int levelIndex)
     {
@@ -125,17 +144,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
         CatchingMiceLevelDefinition level = levels[levelIndex];
 
-        //FindReferences();
+        FindReferences();
 
-        //ClearLevel();
+        ClearLevel();
 
         width = level.width;
         height = level.height;
 
         ParseLevelTiles(width, height);
 
-        PlaceLevelTileItems(level.tileItems);
-
+        PlaceLevelTileItemsDebug(level.tileItems);
+        Debug.Log(level.tileItems);
+        CreateGrid();
     }
     public void ParseLevelTiles( int _width, int _height)
     {
@@ -152,22 +172,53 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
                 // register this tile's grid indices and its true location, which is its index * scale
                 currentTile.gridIndices = new Vector2(x, y);
-                currentTile.location = currentTile.gridIndices * scale;
-
+                currentTile.location = currentTile.gridIndices.v3().z(y) * scale;
 
             }
         }
     }
 
-    protected void PlaceLevelTileItemsDebug()
+    protected void PlaceLevelTileItemsDebug(CatchingMiceTileItemDefinition[] tileItemDefinitions)
     {
-        GameObject tileItemPrefab = tileItems[0];
+        Debug.Log("placing :" + tileItemDefinitions.Length);
+        foreach (CatchingMiceTileItemDefinition definition in tileItemDefinitions)
+        {
+            GameObject tileItemPrefab = null;
+            foreach (GameObject go in tileItems)
+            {
+                if (go.name == definition.id)
+                {
+                    tileItemPrefab = go;
+                    break;
+                }
+            }
 
-        CatchingMiceTile targetTile = GetTile(Vector2.one*2, false);
+            if (tileItemPrefab == null)
+            {
+                Debug.LogError("Did not find tile item ID: " + definition.id);
+                return;
+            }
 
-        GameObject tileItem = (GameObject)Instantiate(tileItemPrefab);
-        tileItem.transform.parent = objectParent;
-        tileItem.transform.localPosition = targetTile.location.v3().z(-1);
+            CatchingMiceTile targetTile = GetTile(definition.tileCoordinates, false);
+            
+            if (targetTile == null)
+            {
+                Debug.LogError("Did not find tile with coordinates:" + definition.tileCoordinates + ". Skipping placing tile item: " + definition.id);
+                return;
+            }
+
+            GameObject tileItem = (GameObject)Instantiate(tileItemPrefab);
+            tileItem.transform.parent = objectParent;
+            tileItem.transform.localPosition = targetTile.location.z(targetTile.location.z);
+
+            CatchingMiceWorldObjects tileObjectScript = tileItem.GetComponent<CatchingMiceWorldObjects>();
+            if (tileObjectScript != null)
+            {
+                tileObjectScript.SetTileType();
+            }
+        }
+       
+       
 
 
     }
@@ -197,7 +248,29 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         }
     }
 
+    public void AssignNeighbours()
+    {
+        for (int i = 0; i < WaypointList.Count-1; i++)
+        {
+            //Debug.Log("Adding waypoint : " + (i + width) + " to " + i);
+            //Debug.Log("Adding waypoint : " + (i+1) + " to " + i);
+            //Debug.Log(WaypointList.Count);
+             
 
+            //Last column doesn't need to add his right neighbor
+            if (i < WaypointList.Count - height -1)
+            {
+                WaypointList[i].neighbours.Add(WaypointList[i + height]);
+                WaypointList[i + height].neighbours.Add(WaypointList[i]);
+            }
+            if ((i+1) % height != 0)
+            {
+                WaypointList[i].neighbours.Add(WaypointList[i + 1]);
+                WaypointList[i + 1].neighbours.Add(WaypointList[i]);
+            }
+            
+        }
+    }
     // Lookup methods--------------------------------------------------------------------
 
     // get tile by grid indices (contained in vector2)

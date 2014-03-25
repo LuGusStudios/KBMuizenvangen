@@ -13,13 +13,13 @@ public class CatchingMiceTile
 
     public GameObject rendered;
     public TileType tileType;
-    public Vector2 location;
+    public Vector3 location;
     public Vector2 gridIndices;
 
     public CatchingMiceTile()
 	{
-		tileType = TileType.Ground; 
-		location = Vector2.zero;
+		tileType = TileType.Ground;
+        location = Vector3.zero;
 		gridIndices = Vector2.zero;
 	}
     public override string ToString ()

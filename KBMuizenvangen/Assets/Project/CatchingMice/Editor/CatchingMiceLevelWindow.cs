@@ -31,7 +31,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     {
         if (GUILayout.Button("Create new Catching Mice level (root folder)"))
         {
-            CatchingMiceLevelWindow levelDef = ScriptableObject.CreateInstance<CatchingMiceLevelWindow>();
+            CatchingMiceLevelDefinition levelDef = ScriptableObject.CreateInstance<CatchingMiceLevelDefinition>();
             AssetDatabase.CreateAsset(levelDef, "Assets/NewCatchingMiceLevel.asset");
             AssetDatabase.SaveAssets();
             EditorUtility.FocusProjectWindow();
@@ -40,10 +40,16 @@ public class CatchingMiceLevelWindow : EditorWindow
 
         width = EditorGUILayout.IntField(width);
         height = EditorGUILayout.IntField(height);
+        levelIndex = EditorGUILayout.IntField("Level index", levelIndex);
 
+        if (GUILayout.Button("Build Level " + levelIndex))
+        {
+            CatchingMiceLevelManager.use.BuildLevel(levelIndex);
+        }
         if (GUILayout.Button("Build Catching Mice level"))
         {
             CatchingMiceLevelManager.use.BuildLevelDebug(width,height);
+
         }
         if (GUILayout.Button("Snap selection to grid"))
         {
