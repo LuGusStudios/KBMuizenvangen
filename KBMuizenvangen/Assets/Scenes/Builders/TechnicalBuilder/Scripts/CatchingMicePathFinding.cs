@@ -6,7 +6,7 @@ using System.Collections.Generic;
 public class CatchingMicePathFinding : MonoBehaviour 
 {
     public List<Waypoint> navigationGraph = null;
-	
+    public List<Waypoint> path = null;
     protected void OnAwake()
     {
         SetupLocal();
@@ -50,13 +50,13 @@ public class CatchingMicePathFinding : MonoBehaviour
         //Debug.Log ("START " + start.transform.Path());
 
         bool fullPath = false;
-        List<Waypoint> path = AStarCalculate(graph, start, target, out fullPath);
+        path = AStarCalculate(graph, start, target, out fullPath);
 
         
-        foreach( Waypoint wp in path )
-        {
-            Debug.Log ("PATH item " + wp.transform.position);
-        }
+        //foreach( Waypoint wp in path )
+        //{
+        //    Debug.Log ("PATH item " + wp.transform.position);
+        //}
         
 
         //int pathIndex = path.Count - 1;
@@ -205,7 +205,7 @@ public class CatchingMicePathFinding : MonoBehaviour
                 }
 
                 // if neighbour has not yet been examined : put it up for examination
-                if (!openList.Contains(neighbour) && !closedList.Contains(neighbour))
+                if (!openList.Contains(neighbour) && !closedList.Contains(neighbour) && neighbour.waypointType == Waypoint.WaypointType.Ground )
                 {
                     //Debug.Log ("ASTAR : adding " + neighbour.name + " to open with cost " + cost);
 
@@ -236,5 +236,13 @@ public class CatchingMicePathFinding : MonoBehaviour
 
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+    }
+    void OnDrawGizmos()
+    {
+        foreach (Waypoint wp in path)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawCube(wp.transform.position.zAdd(-0.5f), new Vector3(0.3f, 0.3f, 0.3f));
+        }
     }
 }

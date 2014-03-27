@@ -55,6 +55,20 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             SnapToGrid(); 
         }
+        if(GUILayout.Button("Test pathfinding"))
+        {
+            GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+            if(pathfindingGO != null)
+            {
+                CatchingMicePathFinding pathfindScript = pathfindingGO.GetComponent<CatchingMicePathFinding>();
+                if(pathfindScript != null)
+                {
+                    pathfindScript.SetupLocal();
+                    pathfindScript.MoveToRoutine(pathfindScript.navigationGraph[2]);
+                }
+            }
+
+        }
     }
 
     //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid

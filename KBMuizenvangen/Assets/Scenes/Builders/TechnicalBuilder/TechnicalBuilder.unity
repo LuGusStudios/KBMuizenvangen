@@ -190,8 +190,8 @@ MonoBehaviour:
   - {fileID: 2126230356}
   - {fileID: 1268497703}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.8994942
+  AStarParent: {fileID: 1268497703}
   reachedCount: 0
 --- !u!1 &31623634
 GameObject:
@@ -358,8 +358,8 @@ MonoBehaviour:
   - {fileID: 1931082501}
   - {fileID: 73699184}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.7279205
+  AStarParent: {fileID: 73699184}
   reachedCount: 0
 --- !u!1 &51538455
 GameObject:
@@ -595,8 +595,8 @@ MonoBehaviour:
   - {fileID: 836330927}
   - {fileID: 566138473}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.41421318
+  AStarParent: {fileID: 566138473}
   reachedCount: 0
 --- !u!21 &67165013
 Material:
@@ -747,8 +747,8 @@ MonoBehaviour:
   - {fileID: 1792970702}
   - {fileID: 773402364}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.7279205
+  AStarParent: {fileID: 773402364}
   reachedCount: 0
 --- !u!1 &81115286
 GameObject:
@@ -1254,8 +1254,8 @@ MonoBehaviour:
   - {fileID: 1256524136}
   - {fileID: 1947465295}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.07106781
+  AStarParent: {fileID: 1635938567}
   reachedCount: 0
 --- !u!1 &145450687
 GameObject:
@@ -1703,8 +1703,8 @@ MonoBehaviour:
   - {fileID: 412041876}
   - {fileID: 1951590758}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.7279205
+  AStarParent: {fileID: 750019335}
   reachedCount: 0
 --- !u!1 &190250886
 GameObject:
@@ -1752,8 +1752,8 @@ MonoBehaviour:
   - {fileID: 1675161783}
   - {fileID: 1218966740}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 13.8994932
+  AStarParent: {fileID: 728620664}
   reachedCount: 0
 --- !u!21 &193106500
 Material:
@@ -1834,8 +1834,8 @@ MonoBehaviour:
   - {fileID: 365187164}
   - {fileID: 498641832}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4
+  AStarParent: {fileID: 543189863}
   reachedCount: 0
 --- !u!21 &197028796
 Material:
@@ -2034,8 +2034,8 @@ MonoBehaviour:
   - {fileID: 2040040647}
   - {fileID: 972264802}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.65685368
+  AStarParent: {fileID: 2092471271}
   reachedCount: 0
 --- !u!1 &223804103
 GameObject:
@@ -2293,8 +2293,8 @@ MonoBehaviour:
   - {fileID: 1394698503}
   - {fileID: 1920363517}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 1.41421354
+  AStarParent: {fileID: 614785511}
   reachedCount: 0
 --- !u!1 &255031767
 GameObject:
@@ -2481,8 +2481,8 @@ MonoBehaviour:
   - {fileID: 1857780414}
   - {fileID: 378755884}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2.41421366
+  AStarParent: {fileID: 1857780414}
   reachedCount: 0
 --- !u!1 &280490210
 GameObject:
@@ -2529,8 +2529,8 @@ MonoBehaviour:
   - {fileID: 1698923116}
   - {fileID: 261255113}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.41421366
+  AStarParent: {fileID: 1698923116}
   reachedCount: 0
 --- !u!1 &291701193
 GameObject:
@@ -2578,8 +2578,8 @@ MonoBehaviour:
   - {fileID: 1635938567}
   - {fileID: 319507839}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.2426405
+  AStarParent: {fileID: 1233886685}
   reachedCount: 0
 --- !u!1 &293505929
 GameObject:
@@ -2627,8 +2627,8 @@ MonoBehaviour:
   - {fileID: 1349707070}
   - {fileID: 1691157264}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.82842731
+  AStarParent: {fileID: 823481001}
   reachedCount: 0
 --- !u!1 &298701884
 GameObject:
@@ -2884,8 +2884,8 @@ MonoBehaviour:
   - {fileID: 2087339696}
   - {fileID: 1599577003}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.5563469
+  AStarParent: {fileID: 617491875}
   reachedCount: 0
 --- !u!1 &304467302
 GameObject:
@@ -3181,8 +3181,8 @@ MonoBehaviour:
   - {fileID: 1275222358}
   - {fileID: 365187164}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.41421366
+  AStarParent: {fileID: 543189863}
   reachedCount: 0
 --- !u!1 &319507837
 GameObject:
@@ -3230,8 +3230,8 @@ MonoBehaviour:
   - {fileID: 1750616273}
   - {fileID: 2092471271}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.2426405
+  AStarParent: {fileID: 291701195}
   reachedCount: 0
 --- !u!1 &320224735
 GameObject:
@@ -3419,8 +3419,8 @@ MonoBehaviour:
   - {fileID: 1724463708}
   - {fileID: 314306023}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.41421366
+  AStarParent: {fileID: 530247565}
   reachedCount: 0
 --- !u!1 &325169266
 GameObject:
@@ -3538,8 +3538,8 @@ MonoBehaviour:
   - {fileID: 407064191}
   - {fileID: 823481001}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.41421366
+  AStarParent: {fileID: 498641832}
   reachedCount: 0
 --- !u!1 &328286596
 GameObject:
@@ -3586,8 +3586,8 @@ MonoBehaviour:
   - {fileID: 221326827}
   - {fileID: 1198600227}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.5563469
+  AStarParent: {fileID: 522613030}
   reachedCount: 0
 --- !u!1 &330552995
 GameObject:
@@ -4027,8 +4027,8 @@ MonoBehaviour:
   - {fileID: 437456108}
   - {fileID: 326237758}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.41421366
+  AStarParent: {fileID: 196724608}
   reachedCount: 0
 --- !u!1 &365776217
 GameObject:
@@ -4265,8 +4265,8 @@ MonoBehaviour:
   - {fileID: 614785511}
   - {fileID: 1066235747}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 1.41421354
+  AStarParent: {fileID: 614785511}
   reachedCount: 0
 --- !u!1 &393317197
 GameObject:
@@ -4557,8 +4557,8 @@ MonoBehaviour:
   - {fileID: 1614873490}
   - {fileID: 293505931}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.82842731
+  AStarParent: {fileID: 326237758}
   reachedCount: 0
 --- !u!1 &407474804
 GameObject:
@@ -4725,8 +4725,8 @@ MonoBehaviour:
   - {fileID: 1599577003}
   - {fileID: 1192980924}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.1421337
+  AStarParent: {fileID: 189150568}
   reachedCount: 0
 --- !u!1 &419446039
 GameObject:
@@ -4886,8 +4886,8 @@ MonoBehaviour:
   - {fileID: 766094207}
   - {fileID: 407064191}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.82842731
+  AStarParent: {fileID: 365187164}
   reachedCount: 0
 --- !u!1 &454028193
 GameObject:
@@ -5523,8 +5523,8 @@ MonoBehaviour:
   - {fileID: 326237758}
   - {fileID: 1438123701}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5
+  AStarParent: {fileID: 196724608}
   reachedCount: 0
 --- !u!1 &504483667
 GameObject:
@@ -5642,8 +5642,8 @@ MonoBehaviour:
   - {fileID: 773402364}
   - {fileID: 750019335}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.3137074
+  AStarParent: {fileID: 943041339}
   reachedCount: 0
 --- !u!1 &509030161
 GameObject:
@@ -5801,8 +5801,8 @@ MonoBehaviour:
   - {fileID: 527436340}
   - {fileID: 2140472055}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.8994923
+  AStarParent: {fileID: 918647720}
   reachedCount: 0
 --- !u!1 &516333559
 GameObject:
@@ -5849,8 +5849,8 @@ MonoBehaviour:
   - {fileID: 1950484965}
   - {fileID: 1997997516}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.65685368
+  AStarParent: {fileID: 796836966}
   reachedCount: 0
 --- !u!1 &518951088
 GameObject:
@@ -5898,8 +5898,8 @@ MonoBehaviour:
   - {fileID: 1709640629}
   - {fileID: 1729652881}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.8994942
+  AStarParent: {fileID: 724027693}
   reachedCount: 0
 --- !u!1 &522613028
 GameObject:
@@ -5947,8 +5947,8 @@ MonoBehaviour:
   - {fileID: 328286598}
   - {fileID: 2006863227}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.1421337
+  AStarParent: {fileID: 1083783754}
   reachedCount: 0
 --- !u!1 &527436338
 GameObject:
@@ -5996,8 +5996,8 @@ MonoBehaviour:
   - {fileID: 1845216158}
   - {fileID: 514794762}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.8994923
+  AStarParent: {fileID: 1698361955}
   reachedCount: 0
 --- !u!1 &530247563
 GameObject:
@@ -6045,8 +6045,8 @@ MonoBehaviour:
   - {fileID: 321626790}
   - {fileID: 543189863}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2
+  AStarParent: {fileID: 1204445718}
   reachedCount: 0
 --- !u!1 &530855620
 GameObject:
@@ -6303,8 +6303,8 @@ MonoBehaviour:
   - {fileID: 1577866735}
   - {fileID: 1698923116}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3
+  AStarParent: {fileID: 1698923116}
   reachedCount: 0
 --- !u!1 &538546549
 GameObject:
@@ -6541,8 +6541,8 @@ MonoBehaviour:
   - {fileID: 314306023}
   - {fileID: 196724608}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3
+  AStarParent: {fileID: 530247565}
   reachedCount: 0
 --- !u!1 &554744714
 GameObject:
@@ -6589,8 +6589,8 @@ MonoBehaviour:
   - {fileID: 879914371}
   - {fileID: 918647720}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.0710659
+  AStarParent: {fileID: 1142584060}
   reachedCount: 0
 --- !u!1 &566138471
 GameObject:
@@ -6637,8 +6637,8 @@ MonoBehaviour:
   - {fileID: 743658266}
   - {fileID: 1503915406}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8
+  AStarParent: {fileID: 743658266}
   reachedCount: 0
 --- !u!1 &581273822
 GameObject:
@@ -7125,8 +7125,8 @@ MonoBehaviour:
   - {fileID: 1691157264}
   - {fileID: 1441896438}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 10.8284264
+  AStarParent: {fileID: 1503915406}
   reachedCount: 0
 --- !u!1 &603555110
 GameObject:
@@ -7293,8 +7293,8 @@ MonoBehaviour:
   - {fileID: 299437568}
   - {fileID: 412041876}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.1421337
+  AStarParent: {fileID: 773402364}
   reachedCount: 0
 --- !u!1 &625744866
 GameObject:
@@ -7341,8 +7341,8 @@ MonoBehaviour:
   - {fileID: 1438123701}
   - {fileID: 836330927}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.41421366
+  AStarParent: {fileID: 1438123701}
   reachedCount: 0
 --- !u!21 &634541609
 Material:
@@ -7456,8 +7456,8 @@ MonoBehaviour:
   - {fileID: 1770380925}
   - {fileID: 1394698503}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.82842708
+  AStarParent: {fileID: 1394698503}
   reachedCount: 0
 --- !u!1 &655398288
 GameObject:
@@ -8184,8 +8184,8 @@ MonoBehaviour:
   - {fileID: 750019335}
   - {fileID: 518951090}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 13.8994942
+  AStarParent: {fileID: 943041339}
   reachedCount: 0
 --- !u!1 &724760983
 GameObject:
@@ -8302,8 +8302,8 @@ MonoBehaviour:
   - {fileID: 842418989}
   - {fileID: 190250888}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.8994932
+  AStarParent: {fileID: 1004768500}
   reachedCount: 0
 --- !u!1 &742642075
 GameObject:
@@ -8421,8 +8421,8 @@ MonoBehaviour:
   - {fileID: 1610993130}
   - {fileID: 566138473}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7
+  AStarParent: {fileID: 1438123701}
   reachedCount: 0
 --- !u!1 &744875959
 GameObject:
@@ -8637,8 +8637,8 @@ MonoBehaviour:
   - {fileID: 189150568}
   - {fileID: 1709640629}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.3137074
+  AStarParent: {fileID: 724027693}
   reachedCount: 0
 --- !u!1 &756436120
 GameObject:
@@ -8798,8 +8798,8 @@ MonoBehaviour:
   - {fileID: 972264802}
   - {fileID: 1614873490}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.2426405
+  AStarParent: {fileID: 437456108}
   reachedCount: 0
 --- !u!1 &769968049
 GameObject:
@@ -8959,8 +8959,8 @@ MonoBehaviour:
   - {fileID: 617491875}
   - {fileID: 189150568}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.7279205
+  AStarParent: {fileID: 508858847}
   reachedCount: 0
 --- !u!1 &779292194
 GameObject:
@@ -9008,8 +9008,8 @@ MonoBehaviour:
   - {fileID: 1780290470}
   - {fileID: 879914371}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 13.0710669
+  AStarParent: {fileID: 1786870444}
   reachedCount: 0
 --- !u!1 &787595627
 GameObject:
@@ -9127,8 +9127,8 @@ MonoBehaviour:
   - {fileID: 540523216}
   - {fileID: 479019270}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.7279205
+  AStarParent: {fileID: 814037403}
   reachedCount: 0
 --- !u!1 &789602122
 GameObject:
@@ -9224,8 +9224,8 @@ MonoBehaviour:
   - {fileID: 516333561}
   - {fileID: 1618963380}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.2426405
+  AStarParent: {fileID: 1618963380}
   reachedCount: 0
 --- !u!1 &807121396
 GameObject:
@@ -9483,8 +9483,8 @@ MonoBehaviour:
   - {fileID: 787891971}
   - {fileID: 1845216158}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.3137074
+  AStarParent: {fileID: 1729652881}
   reachedCount: 0
 --- !u!1 &819875653
 GameObject:
@@ -9602,8 +9602,8 @@ MonoBehaviour:
   - {fileID: 293505931}
   - {fileID: 1610993130}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.41421366
+  AStarParent: {fileID: 1438123701}
   reachedCount: 0
 --- !u!1 &834763063
 GameObject:
@@ -9688,8 +9688,8 @@ MonoBehaviour:
   - {fileID: 743658266}
   - {fileID: 65152548}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.41421318
+  AStarParent: {fileID: 743658266}
   reachedCount: 0
 --- !u!1 &842418987
 GameObject:
@@ -9736,8 +9736,8 @@ MonoBehaviour:
   - {fileID: 1360158892}
   - {fileID: 1675161783}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.3137064
+  AStarParent: {fileID: 728620664}
   reachedCount: 0
 --- !u!21 &848860152
 Material:
@@ -9851,8 +9851,8 @@ MonoBehaviour:
   - {fileID: 1083783754}
   - {fileID: 2126230356}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.3137074
+  AStarParent: {fileID: 1218966740}
   reachedCount: 0
 --- !u!1 &871439677
 GameObject:
@@ -9900,8 +9900,8 @@ MonoBehaviour:
   - {fileID: 661459963}
   - {fileID: 1786870444}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 10.6568537
+  AStarParent: {fileID: 1614873490}
   reachedCount: 0
 --- !u!1 &874247104
 GameObject:
@@ -10019,8 +10019,8 @@ MonoBehaviour:
   - {fileID: 1770722639}
   - {fileID: 1441896438}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.2426395
+  AStarParent: {fileID: 1691157264}
   reachedCount: 0
 --- !u!1 &879914369
 GameObject:
@@ -10068,8 +10068,8 @@ MonoBehaviour:
   - {fileID: 1698361955}
   - {fileID: 554744716}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.0710659
+  AStarParent: {fileID: 1770722639}
   reachedCount: 0
 --- !u!1 &881645077
 GameObject:
@@ -10304,8 +10304,8 @@ MonoBehaviour:
   - {fileID: 1618963380}
   - {fileID: 650103760}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.82842731
+  AStarParent: {fileID: 1267097448}
   reachedCount: 0
 --- !u!1 &906486264
 GameObject:
@@ -10492,8 +10492,8 @@ MonoBehaviour:
   - {fileID: 1698361955}
   - {fileID: 514794762}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.4852791
+  AStarParent: {fileID: 554744716}
   reachedCount: 0
 --- !u!1 &939915822
 GameObject:
@@ -10540,8 +10540,8 @@ MonoBehaviour:
   - {fileID: 196724608}
   - {fileID: 1837518693}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.41421366
+  AStarParent: {fileID: 196724608}
   reachedCount: 0
 --- !u!1 &942939726
 GameObject:
@@ -10659,8 +10659,8 @@ MonoBehaviour:
   - {fileID: 508858847}
   - {fileID: 724027693}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.8994942
+  AStarParent: {fileID: 1205830859}
   reachedCount: 0
 --- !u!1 &963219805
 GameObject:
@@ -10848,8 +10848,8 @@ MonoBehaviour:
   - {fileID: 367655584}
   - {fileID: 871439679}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.65685368
+  AStarParent: {fileID: 766094207}
   reachedCount: 0
 --- !u!1 &973560601
 GameObject:
@@ -11274,8 +11274,8 @@ MonoBehaviour:
   - {fileID: 728620664}
   - {fileID: 454028195}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.48528
+  AStarParent: {fileID: 1950484965}
   reachedCount: 0
 --- !u!1 &1006299174
 GameObject:
@@ -11392,8 +11392,8 @@ MonoBehaviour:
   - {fileID: 530247565}
   - {fileID: 2092705819}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.41421366
+  AStarParent: {fileID: 530247565}
   reachedCount: 0
 --- !u!1 &1030428913
 GameObject:
@@ -11790,8 +11790,8 @@ MonoBehaviour:
   - {fileID: 1204445718}
   - {fileID: 1019161888}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2.41421366
+  AStarParent: {fileID: 1204445718}
   reachedCount: 0
 --- !u!1 &1083783752
 GameObject:
@@ -11839,8 +11839,8 @@ MonoBehaviour:
   - {fileID: 522613030}
   - {fileID: 163627086}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.7279205
+  AStarParent: {fileID: 867429985}
   reachedCount: 0
 --- !u!1 &1090042169
 GameObject:
@@ -12035,8 +12035,8 @@ MonoBehaviour:
   - {fileID: 1770722639}
   - {fileID: 554744716}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 13.6568527
+  AStarParent: {fileID: 1441896438}
   reachedCount: 0
 --- !u!1 &1153966010
 GameObject:
@@ -12414,8 +12414,8 @@ MonoBehaviour:
   - {fileID: 1894957743}
   - {fileID: 540523216}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 19.1421337
+  AStarParent: {fileID: 1951590758}
   reachedCount: 0
 --- !u!1 &1197533511
 GameObject:
@@ -12561,8 +12561,8 @@ MonoBehaviour:
   - {fileID: 1920363517}
   - {fileID: 530247565}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 1
+  AStarParent: {fileID: 614785511}
   reachedCount: 0
 --- !u!1 &1205830857
 GameObject:
@@ -12610,8 +12610,8 @@ MonoBehaviour:
   - {fileID: 412040947}
   - {fileID: 943041339}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.8994942
+  AStarParent: {fileID: 1268497703}
   reachedCount: 0
 --- !u!1 &1212641117
 GameObject:
@@ -12659,8 +12659,8 @@ MonoBehaviour:
   - {fileID: 454028195}
   - {fileID: 1910359211}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.0710669
+  AStarParent: {fileID: 1950484965}
   reachedCount: 0
 --- !u!1 &1218966738
 GameObject:
@@ -12708,8 +12708,8 @@ MonoBehaviour:
   - {fileID: 867429985}
   - {fileID: 25384760}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.8994942
+  AStarParent: {fileID: 25384760}
   reachedCount: 0
 --- !u!1 &1222958387
 GameObject:
@@ -12757,8 +12757,8 @@ MonoBehaviour:
   - {fileID: 1218966740}
   - {fileID: 789602124}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 13.48528
+  AStarParent: {fileID: 1910359211}
   reachedCount: 0
 --- !u!1 &1226896638
 GameObject:
@@ -12876,8 +12876,8 @@ MonoBehaviour:
   - {fileID: 291701195}
   - {fileID: 1724463708}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.82842708
+  AStarParent: {fileID: 1394698503}
   reachedCount: 0
 --- !u!1 &1238008995
 GameObject:
@@ -13113,8 +13113,8 @@ MonoBehaviour:
   - {fileID: 1268497703}
   - {fileID: 1090042171}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.48528099
+  AStarParent: {fileID: 135709450}
   reachedCount: 0
 --- !u!1 &1258993471
 GameObject:
@@ -13232,8 +13232,8 @@ MonoBehaviour:
   - {fileID: 899445489}
   - {fileID: 1366177084}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 3.41421366
+  AStarParent: {fileID: 1698923116}
   reachedCount: 0
 --- !u!1 &1267699599
 GameObject:
@@ -13351,8 +13351,8 @@ MonoBehaviour:
   - {fileID: 2092162247}
   - {fileID: 1205830859}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 10.8994942
+  AStarParent: {fileID: 1256524136}
   reachedCount: 0
 --- !u!1 &1272149045
 GameObject:
@@ -13470,8 +13470,8 @@ MonoBehaviour:
   - {fileID: 2092471271}
   - {fileID: 437456108}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.82842731
+  AStarParent: {fileID: 314306023}
   reachedCount: 0
 --- !u!1 &1284319606
 GameObject:
@@ -13911,8 +13911,8 @@ MonoBehaviour:
   - {fileID: 31623636}
   - {fileID: 291701195}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.2426405
+  AStarParent: {fileID: 1394698503}
   reachedCount: 0
 --- !u!1 &1313076923
 GameObject:
@@ -14240,8 +14240,8 @@ MonoBehaviour:
   - {fileID: 1786870444}
   - {fileID: 876877857}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 10.2426405
+  AStarParent: {fileID: 293505931}
   reachedCount: 0
 --- !u!1 &1355553115
 GameObject:
@@ -14359,8 +14359,8 @@ MonoBehaviour:
   - {fileID: 1457212935}
   - {fileID: 1083783754}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.7279205
+  AStarParent: {fileID: 1675161783}
   reachedCount: 0
 --- !u!1 &1360158890
 GameObject:
@@ -14407,8 +14407,8 @@ MonoBehaviour:
   - {fileID: 1462229955}
   - {fileID: 1358613506}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.7279196
+  AStarParent: {fileID: 842418989}
   reachedCount: 0
 --- !u!1 &1366177082
 GameObject:
@@ -14456,8 +14456,8 @@ MonoBehaviour:
   - {fileID: 650103760}
   - {fileID: 250344391}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2.41421366
+  AStarParent: {fileID: 1857780414}
   reachedCount: 0
 --- !u!1 &1369714280
 GameObject:
@@ -14715,8 +14715,8 @@ MonoBehaviour:
   - {fileID: 1311165081}
   - {fileID: 1233886685}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2.82842708
+  AStarParent: {fileID: 250344391}
   reachedCount: 0
 --- !u!1 &1418625975
 GameObject:
@@ -14834,8 +14834,8 @@ MonoBehaviour:
   - {fileID: 823481001}
   - {fileID: 743658266}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6
+  AStarParent: {fileID: 498641832}
   reachedCount: 0
 --- !u!1 &1441896436
 GameObject:
@@ -14882,8 +14882,8 @@ MonoBehaviour:
   - {fileID: 876877857}
   - {fileID: 1142584060}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.2426395
+  AStarParent: {fileID: 603277484}
   reachedCount: 0
 --- !u!1 &1452843463
 GameObject:
@@ -14969,8 +14969,8 @@ MonoBehaviour:
   - {fileID: 221326827}
   - {fileID: 522613030}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.1421337
+  AStarParent: {fileID: 1358613506}
   reachedCount: 0
 --- !u!1 &1462229953
 GameObject:
@@ -15017,8 +15017,8 @@ MonoBehaviour:
   - {fileID: 886598677}
   - {fileID: 1457212935}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.1421337
+  AStarParent: {fileID: 1360158892}
   reachedCount: 0
 --- !u!1 &1467273582
 GameObject:
@@ -15065,8 +15065,8 @@ MonoBehaviour:
   - {fileID: 796836966}
   - {fileID: 899445489}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.82842731
+  AStarParent: {fileID: 1577866735}
   reachedCount: 0
 --- !u!1 &1469659966
 GameObject:
@@ -15371,8 +15371,8 @@ MonoBehaviour:
   - {fileID: 1610993130}
   - {fileID: 603277484}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.41421318
+  AStarParent: {fileID: 566138473}
   reachedCount: 0
 --- !u!1 &1516393140
 GameObject:
@@ -15966,8 +15966,8 @@ MonoBehaviour:
   - {fileID: 1467273584}
   - {fileID: 1267097448}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.41421366
+  AStarParent: {fileID: 536783873}
   reachedCount: 0
 --- !u!1 &1592138388
 GameObject:
@@ -16203,8 +16203,8 @@ MonoBehaviour:
   - {fileID: 1691157264}
   - {fileID: 1503915406}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 8.41421318
+  AStarParent: {fileID: 743658266}
   reachedCount: 0
 --- !u!1 &1614873488
 GameObject:
@@ -16252,8 +16252,8 @@ MonoBehaviour:
   - {fileID: 871439679}
   - {fileID: 1349707070}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.2426405
+  AStarParent: {fileID: 407064191}
   reachedCount: 0
 --- !u!1 &1618963378
 GameObject:
@@ -16301,8 +16301,8 @@ MonoBehaviour:
   - {fileID: 1997997516}
   - {fileID: 1770380925}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.2426405
+  AStarParent: {fileID: 1770380925}
   reachedCount: 0
 --- !u!1 &1632225309
 GameObject:
@@ -16393,8 +16393,8 @@ MonoBehaviour:
   - {fileID: 135709450}
   - {fileID: 1750616273}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.65685415
+  AStarParent: {fileID: 291701195}
   reachedCount: 0
 --- !u!1 &1642726084
 GameObject:
@@ -16550,8 +16550,8 @@ MonoBehaviour:
   - {fileID: 1358613506}
   - {fileID: 867429985}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.3137064
+  AStarParent: {fileID: 190250888}
   reachedCount: 0
 --- !u!1 &1690246779
 GameObject:
@@ -16669,8 +16669,8 @@ MonoBehaviour:
   - {fileID: 876877857}
   - {fileID: 603277484}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 9.82842636
+  AStarParent: {fileID: 1610993130}
   reachedCount: 0
 --- !u!1 &1693114569
 GameObject:
@@ -16830,8 +16830,8 @@ MonoBehaviour:
   - {fileID: 527436340}
   - {fileID: 918647720}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.4852791
+  AStarParent: {fileID: 879914371}
   reachedCount: 0
 --- !u!1 &1698923114
 GameObject:
@@ -16879,8 +16879,8 @@ MonoBehaviour:
   - {fileID: 1267097448}
   - {fileID: 1857780414}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2
+  AStarParent: {fileID: 1857780414}
   reachedCount: 0
 --- !u!1 &1706404195
 GameObject:
@@ -16998,8 +16998,8 @@ MonoBehaviour:
   - {fileID: 1951590758}
   - {fileID: 814037403}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 16.3137074
+  AStarParent: {fileID: 518951090}
   reachedCount: 0
 --- !u!1 &1714917948
 GameObject:
@@ -17028,7 +17028,179 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53567c65fa32f4640a026df14c9a894a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  navigationGraph: []
+  navigationGraph:
+  - {fileID: 25384760}
+  - {fileID: 31623636}
+  - {fileID: 33148911}
+  - {fileID: 65152548}
+  - {fileID: 73699184}
+  - {fileID: 135709450}
+  - {fileID: 163627086}
+  - {fileID: 189150568}
+  - {fileID: 190250888}
+  - {fileID: 196724608}
+  - {fileID: 221326827}
+  - {fileID: 222133513}
+  - {fileID: 250344391}
+  - {fileID: 261255113}
+  - {fileID: 280490212}
+  - {fileID: 291701195}
+  - {fileID: 293505931}
+  - {fileID: 299437568}
+  - {fileID: 314306023}
+  - {fileID: 319507839}
+  - {fileID: 321626790}
+  - {fileID: 326237758}
+  - {fileID: 328286598}
+  - {fileID: 365187164}
+  - {fileID: 367655584}
+  - {fileID: 378755884}
+  - {fileID: 407064191}
+  - {fileID: 412040947}
+  - {fileID: 412041876}
+  - {fileID: 437456108}
+  - {fileID: 454028195}
+  - {fileID: 479019270}
+  - {fileID: 498641832}
+  - {fileID: 508858847}
+  - {fileID: 514794762}
+  - {fileID: 516333561}
+  - {fileID: 518951090}
+  - {fileID: 522613030}
+  - {fileID: 527436340}
+  - {fileID: 530247565}
+  - {fileID: 536783873}
+  - {fileID: 540523216}
+  - {fileID: 543189863}
+  - {fileID: 554744716}
+  - {fileID: 566138473}
+  - {fileID: 597010043}
+  - {fileID: 603277484}
+  - {fileID: 614785511}
+  - {fileID: 617491875}
+  - {fileID: 625744868}
+  - {fileID: 650103760}
+  - {fileID: 661459963}
+  - {fileID: 724027693}
+  - {fileID: 728620664}
+  - {fileID: 743658266}
+  - {fileID: 750019335}
+  - {fileID: 766094207}
+  - {fileID: 773402364}
+  - {fileID: 779292196}
+  - {fileID: 787891971}
+  - {fileID: 789602124}
+  - {fileID: 796836966}
+  - {fileID: 814037403}
+  - {fileID: 823481001}
+  - {fileID: 836330927}
+  - {fileID: 842418989}
+  - {fileID: 867429985}
+  - {fileID: 871439679}
+  - {fileID: 876877857}
+  - {fileID: 879914371}
+  - {fileID: 886598677}
+  - {fileID: 899445489}
+  - {fileID: 918647720}
+  - {fileID: 939915824}
+  - {fileID: 943041339}
+  - {fileID: 972264802}
+  - {fileID: 995096342}
+  - {fileID: 1004768500}
+  - {fileID: 1019161888}
+  - {fileID: 1066235747}
+  - {fileID: 1083783754}
+  - {fileID: 1090042171}
+  - {fileID: 1142584060}
+  - {fileID: 1191941130}
+  - {fileID: 1192980924}
+  - {fileID: 1198600227}
+  - {fileID: 1204445718}
+  - {fileID: 1205830859}
+  - {fileID: 1212641119}
+  - {fileID: 1218966740}
+  - {fileID: 1222958389}
+  - {fileID: 1233886685}
+  - {fileID: 1244575341}
+  - {fileID: 1256524136}
+  - {fileID: 1267097448}
+  - {fileID: 1268497703}
+  - {fileID: 1275222358}
+  - {fileID: 1311165081}
+  - {fileID: 1349707070}
+  - {fileID: 1358613506}
+  - {fileID: 1360158892}
+  - {fileID: 1366177084}
+  - {fileID: 1394698503}
+  - {fileID: 1438123701}
+  - {fileID: 1441896438}
+  - {fileID: 1457212935}
+  - {fileID: 1462229955}
+  - {fileID: 1467273584}
+  - {fileID: 1469659968}
+  - {fileID: 1503915406}
+  - {fileID: 1518914292}
+  - {fileID: 1537045662}
+  - {fileID: 1577866735}
+  - {fileID: 1599577003}
+  - {fileID: 1610993130}
+  - {fileID: 1614873490}
+  - {fileID: 1618963380}
+  - {fileID: 1635938567}
+  - {fileID: 1675161783}
+  - {fileID: 1691157264}
+  - {fileID: 1698361955}
+  - {fileID: 1698923116}
+  - {fileID: 1709640629}
+  - {fileID: 1724463708}
+  - {fileID: 1729652881}
+  - {fileID: 1750616273}
+  - {fileID: 1770380925}
+  - {fileID: 1770722639}
+  - {fileID: 1780290470}
+  - {fileID: 1786870444}
+  - {fileID: 1792970702}
+  - {fileID: 1800602136}
+  - {fileID: 1811482987}
+  - {fileID: 1837518693}
+  - {fileID: 1845216158}
+  - {fileID: 1857780414}
+  - {fileID: 1894957743}
+  - {fileID: 1910359211}
+  - {fileID: 1920363517}
+  - {fileID: 1931082501}
+  - {fileID: 1947465295}
+  - {fileID: 1950484965}
+  - {fileID: 1951590758}
+  - {fileID: 1997997516}
+  - {fileID: 2006863227}
+  - {fileID: 2029454499}
+  - {fileID: 2040040647}
+  - {fileID: 2082739470}
+  - {fileID: 2087339696}
+  - {fileID: 2092162247}
+  - {fileID: 2092471271}
+  - {fileID: 2092705819}
+  - {fileID: 2106421290}
+  - {fileID: 2126230356}
+  - {fileID: 2131782366}
+  - {fileID: 2140472055}
+  path:
+  - {fileID: 33148911}
+  - {fileID: 73699184}
+  - {fileID: 773402364}
+  - {fileID: 508858847}
+  - {fileID: 943041339}
+  - {fileID: 1205830859}
+  - {fileID: 1268497703}
+  - {fileID: 1256524136}
+  - {fileID: 135709450}
+  - {fileID: 1635938567}
+  - {fileID: 291701195}
+  - {fileID: 1233886685}
+  - {fileID: 1394698503}
+  - {fileID: 250344391}
+  - {fileID: 614785511}
 --- !u!4 &1714917950
 Transform:
   m_ObjectHideFlags: 0
@@ -17036,7 +17208,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1714917948}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 12, z: 5.02379847}
+  m_LocalPosition: {x: 2.79979324, y: 10.8968401, z: 5.02379847}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -17086,8 +17258,8 @@ MonoBehaviour:
   - {fileID: 319507839}
   - {fileID: 1275222358}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.82842731
+  AStarParent: {fileID: 321626790}
   reachedCount: 0
 --- !u!1 &1729652879
 GameObject:
@@ -17135,8 +17307,8 @@ MonoBehaviour:
   - {fileID: 814037403}
   - {fileID: 527436340}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 15.8994932
+  AStarParent: {fileID: 1780290470}
   reachedCount: 0
 --- !u!1 &1730546398
 GameObject:
@@ -17444,8 +17616,8 @@ MonoBehaviour:
   - {fileID: 1947465295}
   - {fileID: 222133513}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.65685415
+  AStarParent: {fileID: 319507839}
   reachedCount: 0
 --- !u!1 &1755360797
 GameObject:
@@ -17563,8 +17735,8 @@ MonoBehaviour:
   - {fileID: 1811482987}
   - {fileID: 1311165081}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 5.2426405
+  AStarParent: {fileID: 650103760}
   reachedCount: 0
 --- !u!1 &1770722637
 GameObject:
@@ -17612,8 +17784,8 @@ MonoBehaviour:
   - {fileID: 879914371}
   - {fileID: 1142584060}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.6568527
+  AStarParent: {fileID: 876877857}
   reachedCount: 0
 --- !u!1 &1780290468
 GameObject:
@@ -17661,8 +17833,8 @@ MonoBehaviour:
   - {fileID: 1729652881}
   - {fileID: 1698361955}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 14.48528
+  AStarParent: {fileID: 779292196}
   reachedCount: 0
 --- !u!1 &1786870442
 GameObject:
@@ -17710,8 +17882,8 @@ MonoBehaviour:
   - {fileID: 779292196}
   - {fileID: 1770722639}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 11.6568537
+  AStarParent: {fileID: 1349707070}
   reachedCount: 0
 --- !u!1 &1790515752
 GameObject:
@@ -17809,8 +17981,8 @@ MonoBehaviour:
   - {fileID: 2087339696}
   - {fileID: 617491875}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.1421337
+  AStarParent: {fileID: 73699184}
   reachedCount: 0
 --- !u!1 &1800602134
 GameObject:
@@ -18198,8 +18370,8 @@ MonoBehaviour:
   - {fileID: 498641832}
   - {fileID: 625744868}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 6.41421366
+  AStarParent: {fileID: 498641832}
   reachedCount: 0
 --- !u!1 &1845216156
 GameObject:
@@ -18247,8 +18419,8 @@ MonoBehaviour:
   - {fileID: 479019270}
   - {fileID: 2140472055}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.3137054
+  AStarParent: {fileID: 527436340}
   reachedCount: 0
 --- !u!1 &1857780412
 GameObject:
@@ -18296,8 +18468,8 @@ MonoBehaviour:
   - {fileID: 1366177084}
   - {fileID: 614785511}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 1
+  AStarParent: {fileID: 614785511}
   reachedCount: 0
 --- !u!1 &1862484327
 GameObject:
@@ -18836,8 +19008,8 @@ MonoBehaviour:
   - {fileID: 1222958389}
   - {fileID: 1537045662}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 12.0710669
+  AStarParent: {fileID: 1212641119}
   reachedCount: 0
 --- !u!1 &1910954661
 GameObject:
@@ -18955,8 +19127,8 @@ MonoBehaviour:
   - {fileID: 1233886685}
   - {fileID: 321626790}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 2.41421366
+  AStarParent: {fileID: 1204445718}
   reachedCount: 0
 --- !u!1 &1930362609
 GameObject:
@@ -19241,8 +19413,8 @@ MonoBehaviour:
   - {fileID: 1004768500}
   - {fileID: 1212641119}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 10.0710669
+  AStarParent: {fileID: 516333561}
   reachedCount: 0
 --- !u!1 &1951590756
 GameObject:
@@ -19290,8 +19462,8 @@ MonoBehaviour:
   - {fileID: 1192980924}
   - {fileID: 787891971}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 17.7279205
+  AStarParent: {fileID: 1709640629}
   reachedCount: 0
 --- !u!1 &1955944630
 GameObject:
@@ -19772,8 +19944,8 @@ MonoBehaviour:
   - {fileID: 1198600227}
   - {fileID: 1931082501}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 18.1421337
+  AStarParent: {fileID: 522613030}
   reachedCount: 0
 --- !u!1 &2009819925
 GameObject:
@@ -20690,8 +20862,8 @@ MonoBehaviour:
   - {fileID: 222133513}
   - {fileID: 766094207}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 7.2426405
+  AStarParent: {fileID: 319507839}
   reachedCount: 0
 --- !u!1 &2092705817
 GameObject:
@@ -20738,8 +20910,8 @@ MonoBehaviour:
   - {fileID: 543189863}
   - {fileID: 939915824}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.41421366
+  AStarParent: {fileID: 543189863}
   reachedCount: 0
 --- !u!1 &2095252899
 GameObject:
@@ -20855,8 +21027,8 @@ MonoBehaviour:
   - {fileID: 536783873}
   - {fileID: 280490212}
   waypointType: 1
-  AStarCost: 0
-  AStarParent: {fileID: 0}
+  AStarCost: 4.41421366
+  AStarParent: {fileID: 536783873}
   reachedCount: 0
 --- !u!1 &2126230354
 GameObject:
