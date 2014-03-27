@@ -1,18 +1,23 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 
 public class CatchingMiceTile
 {
+    [Flags]
     public enum TileType
     {
-        None,
-        Ground,
-        Furniture,
-        Collide
+        Ground = 1,
+        Furniture = 2,
+        Collide = 3,
+        Trap = 4,
+
+        None = -1 // place at the bottom for nicer auto-complete in IDE
     }
 
-    public GameObject rendered;
-    public TileType tileType;
+    public CatchingMiceWorldObject worldObject = null;
+    public CatchingMiceWorldObject trapObject = null;
+    public TileType tileType = TileType.None;
     public Vector3 location;
     public Vector2 gridIndices;
 

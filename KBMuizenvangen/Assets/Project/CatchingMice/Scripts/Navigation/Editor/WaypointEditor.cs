@@ -40,80 +40,80 @@ public class WaypointEditor : Editor
 		*/
 		
 		
-		EditorGUILayout.LabelField("------------"); 
+        //EditorGUILayout.LabelField("------------"); 
 		
-		Waypoint newNeighbour = (Waypoint) EditorGUILayout.ObjectField( "Link to: ", null, typeof(Waypoint), true);
+        ////Waypoint newNeighbour = (Waypoint) EditorGUILayout.ObjectField( "Link to: ", null, typeof(Waypoint), true);
 
-		if( newNeighbour != null && newNeighbour != previousNeighbour )
-		{
-			bool alreadyLinked = false; 
-			foreach( Waypoint neighbour in subject.neighbours )
-			{
-				if( neighbour == newNeighbour )
-				{
-					alreadyLinked = true;
-					Debug.LogError("WaypointEditor: tried to add the same link twice : " + newNeighbour.name); 
-				}
-			}
+        //if( newNeighbour != null && newNeighbour != previousNeighbour )
+        //{
+        //    bool alreadyLinked = false; 
+        //    foreach( Waypoint neighbour in subject.neighbours )
+        //    {
+        //        if( neighbour == newNeighbour )
+        //        {
+        //            alreadyLinked = true;
+        //            Debug.LogError("WaypointEditor: tried to add the same link twice : " + newNeighbour.name); 
+        //        }
+        //    }
 			
-			if( newNeighbour == subject )
-			{
-				alreadyLinked = true;
-				Debug.LogError("WaypointEditor: tried to add a link to itself! : " + newNeighbour.name); 
-			}
+        //    if( newNeighbour == subject )
+        //    {
+        //        alreadyLinked = true;
+        //        Debug.LogError("WaypointEditor: tried to add a link to itself! : " + newNeighbour.name); 
+        //    }
 			
-			if( !alreadyLinked )
-			{
-				/*
-				Waypoint[] currentNeighbours = subject.neighbours;
-				subject.neighbours = new Waypoint[ currentNeighbours.Length + 1 ];
-				if( currentNeighbours.Length != 0 )
-					currentNeighbours.CopyTo( subject.neighbours, 0 );
-				subject.neighbours[ subject.neighbours.Length - 1 ] = newNeighbour;
-				*/
+        //    if( !alreadyLinked )
+        //    {
+        //        /*
+        //        Waypoint[] currentNeighbours = subject.neighbours;
+        //        subject.neighbours = new Waypoint[ currentNeighbours.Length + 1 ];
+        //        if( currentNeighbours.Length != 0 )
+        //            currentNeighbours.CopyTo( subject.neighbours, 0 );
+        //        subject.neighbours[ subject.neighbours.Length - 1 ] = newNeighbour;
+        //        */
 				
-				subject.neighbours.Add( newNeighbour );
+        //        subject.neighbours.Add( newNeighbour );
 				 
-				// FIXME: do an extra check at the neighbour as well! and only continue if both are correct!
-				newNeighbour.neighbours.Add( subject );
-			}
+        //        // FIXME: do an extra check at the neighbour as well! and only continue if both are correct!
+        //        newNeighbour.neighbours.Add( subject );
+        //    }
 			
-			previousNeighbour = newNeighbour;  
-		}
+        //    previousNeighbour = newNeighbour;  
+        //}
 			
 		
-		EditorGUILayout.LabelField("------------");
+        //EditorGUILayout.LabelField("------------");
 		
 		showData = EditorGUILayout.Foldout(showData, "Show data");
 		if( showData )
 		{
 			// cannot remove element from List while enumerating!
-			Waypoint toBeRemoved = null;
+            //Waypoint toBeRemoved = null;
 			
 			foreach( Waypoint neighbour in subject.neighbours )
 			{
 				if( neighbour == null )
 				{
 					// neighbour has probably been destroyed...
-					toBeRemoved = neighbour;
+                    //toBeRemoved = neighbour;
 				}
 				else
 				{
 					EditorGUILayout.BeginHorizontal();
 					EditorGUILayout.LabelField( neighbour.name ); 
-					if( GUILayout.Button("Remove link") )
-					{
-						toBeRemoved = neighbour;
-					}
+                    //if( GUILayout.Button("Remove link") )
+                    //{
+                    //    toBeRemoved = neighbour;
+                    //}
 					EditorGUILayout.EndHorizontal();
 				}
 			}
 			
-			if( toBeRemoved != null )
-			{
-				subject.neighbours.Remove( toBeRemoved );
-				toBeRemoved.neighbours.Remove( subject );
-			}
+            //if( toBeRemoved != null )
+            //{
+            //    subject.neighbours.Remove( toBeRemoved );
+            //    toBeRemoved.neighbours.Remove( subject );
+            //}
 		}
 		
 		
@@ -135,7 +135,7 @@ public class WaypointEditor : Editor
 		style.normal.textColor = Color.red;
 		GUIStyle style2 = new GUIStyle();
 		style2.normal.textColor = Color.black;
-		style2.fontSize = 14;
+		style2.fontSize = 11;
 		
 		GUIStyle style3 = new GUIStyle();
 		style3.normal.textColor = Color.blue; 

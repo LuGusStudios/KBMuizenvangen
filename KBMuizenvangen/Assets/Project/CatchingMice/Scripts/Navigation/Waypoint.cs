@@ -1,15 +1,18 @@
+using System;
+using System.Net.Sockets;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class Waypoint : MonoBehaviour  
 {
+    [Flags]
     public enum WaypointType
     {
-        None,
-        Ground,
-        Furniture,
-        Collide
+        Ground = 1,
+        Furniture = 2,
+
+        None = -1 // place at the bottom for nicer auto-complete in IDE
     }
 	public bool debug = false;
 
@@ -162,12 +165,20 @@ public class Waypoint : MonoBehaviour
 
 	        float percentageZ = zRange.PercentageInInterval(transform.position.z /*layerOrder*/);
 
-	        Gizmos.color = colors[(int) colorIndexRange.ValueFromPercentage(percentageZ)].a(0.5f);
+	       
+	        if (waypointType == WaypointType.Ground)
+	        {
+                Gizmos.color = colors[(int)colorIndexRange.ValueFromPercentage(percentageZ)].a(0.5f);
+	        }
+	        else
+	        {
+	            Gizmos.color = colors[7].a(0.5f);
+	        }
 	            //new Color (layerOrder / 5.0f, 0, 0, 0.5f); 
 	    }
 	    else
 	    {
-			Gizmos.color = new Color(0,1,0,1.0f);
+            Gizmos.color = new Color(0, 1, 0, 1.0f);
 	    }
 		
 		Gizmos.DrawCube ( transform.position, new Vector3 (0.2f, 0.2f, 0.2f) );

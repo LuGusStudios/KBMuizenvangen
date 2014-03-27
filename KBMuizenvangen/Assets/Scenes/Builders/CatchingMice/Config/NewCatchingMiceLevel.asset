@@ -25,3 +25,7 @@ MonoBehaviour:
     tileCoordinates: {x: 3, y: 3}
   - id: CoffeeTable
     tileCoordinates: {x: 1, y: 5}
+  - id: CornerCloset
+    tileCoordinates: {x: 3, y: 5}
+  - id: TrapSpray
+    tileCoordinates: {x: 0, y: 0}
