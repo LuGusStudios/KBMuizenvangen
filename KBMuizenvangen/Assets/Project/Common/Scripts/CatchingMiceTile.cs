@@ -9,9 +9,11 @@ public class CatchingMiceTile
     {
         Ground = 1,
         Furniture = 2,
-        Collide = 3,
         Trap = 4,
+        Hole = 8,
+        Cheese = 16,
 
+        Collide = 3,
         None = -1 // place at the bottom for nicer auto-complete in IDE
     }
 

@@ -1,8 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceWorldObjectTrap : CatchingMiceWorldObject {
-    public override void SetTileType()
+public class CatchingMiceWorldObject : MonoBehaviour
+{
+
+    public float gridOffset = 0.5f;
+    public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
+    protected BoxCollider2D[] BoxColliders2D;
+    
+    protected void Awake()
+    {
+        SetupLocal();
+    }
+    
+    public virtual void SetupLocal()
+    {
+       
+    }
+
+    public virtual void SetupGlobal()
+    {
+        
+    }
+
+    public virtual void CalculateColliders()
     {
         BoxColliders2D = GetComponentsInChildren<BoxCollider2D>();
         //gets the indices of box colliders
@@ -22,23 +43,26 @@ public class CatchingMiceWorldObjectTrap : CatchingMiceWorldObject {
                     //Debug.Log("yTile : " + yTile); 
                     CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTile(Mathf.RoundToInt(xTile / CatchingMiceLevelManager.use.scale), Mathf.RoundToInt(yTile / CatchingMiceLevelManager.use.scale));
 
-                    //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-                    CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType =
-                        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType | CatchingMiceTile.TileType.Trap;
-                    Debug.Log(CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType);
-                    CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].trapObject = this;
-                    //when it's a ground tile then it does not have a worldObject variable, so check is needed
-                    if (tile.worldObject != null)
-                        gridOffset = tile.worldObject.gridOffset;
-                    transform.position = transform.position.yAdd(gridOffset).zAdd(-0.5f);
+                    SetTileType(tile); 
+                   
                 }
             }
         }
     }
 
+    public virtual void SetTileType(CatchingMiceTile tile)
+    {
+        //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
+        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType = tileType;
+
+        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].worldObject = this;
+        //the z axis will be the anchor point of the object. So the anchor point needs the be the lowest tile of the sprite
+        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].location.z = transform.position.z;
+    }
     // Use this for initialization
-	void Start () {
-	
+	void Start ()
+	{
+	    SetupGlobal();
 	}
 	
 	// Update is called once per frame

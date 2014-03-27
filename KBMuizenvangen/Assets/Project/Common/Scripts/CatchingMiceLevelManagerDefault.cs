@@ -24,7 +24,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     public GameObject[] tileItems = null;
 
     [HideInInspector]
-    public List<Waypoint> WaypointList = new List<Waypoint>(); 
+    public List<Waypoint> WaypointList = new List<Waypoint>();
+
+    public List<CatchingMiceWorldObject> CheeseTiles = new List<CatchingMiceWorldObject>();
     void Awake()
     {
         FindReferences();
@@ -71,6 +73,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 DestroyImmediate(navigationParent.GetChild(i).gameObject);
             }
             WaypointList.Clear();
+            CheeseTiles.Clear();
             //for (int i = characterParent.childCount - 1; i >= 0; i--)
             //{
             //    DestroyImmediate(characterParent.GetChild(i).gameObject);
@@ -277,7 +280,14 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             CatchingMiceWorldObject tileObjectScript = tileItem.GetComponent<CatchingMiceWorldObject>();
             if (tileObjectScript != null)
             {
-                tileObjectScript.SetTileType();
+                tileObjectScript.CalculateColliders();
+
+                //put the needed tiletypes in the right list
+                if(tileObjectScript.tileType == CatchingMiceTile.TileType.Cheese)
+                {
+                    CheeseTiles.Add(tileObjectScript);
+                }
+
             }
             else
             {
