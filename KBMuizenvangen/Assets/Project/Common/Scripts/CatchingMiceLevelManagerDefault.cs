@@ -26,7 +26,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     [HideInInspector]
     public List<Waypoint> WaypointList = new List<Waypoint>();
 
-    public List<CatchingMiceWorldObject> CheeseTiles = new List<CatchingMiceWorldObject>();
+    public List<CatchingMiceTile> CheeseTiles = new List<CatchingMiceTile>();
     void Awake()
     {
         FindReferences();
@@ -172,14 +172,14 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 quad.transform.position = levelTiles[x,y].location;
                 quad.transform.parent = levelParent;
 
-                if (levelTiles[x, y].tileType != CatchingMiceTile.TileType.Ground)
-                {
-                    Material tempMaterial = new Material(quad.renderer.sharedMaterial);
-                    tempMaterial.color = Color.red;
-                    //quad.transform.position = levelTile.location.v3().z(-0.5f);
-                    quad.transform.localScale = Vector3.one * 1.1f * scale;
-                    quad.renderer.sharedMaterial = tempMaterial;
-                }
+                ////if (levelTiles[x, y].tileType != CatchingMiceTile.TileType.Ground)
+                ////{
+                ////    Material tempMaterial = new Material(quad.renderer.sharedMaterial);
+                ////    tempMaterial.color = Color.red;
+                ////    //quad.transform.position = levelTile.location.v3().z(-0.5f);
+                ////    quad.transform.localScale = Vector3.one * 1.1f * scale;
+                ////    quad.renderer.sharedMaterial = tempMaterial;
+                ////}
             }
         }
        
@@ -195,6 +195,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 //make child object with waypoint script
                 GameObject wayPoint = new GameObject();
                 wayPoint.gameObject.name = "Waypoint " + levelTiles[x, y].gridIndices;
+
+
                 wayPoint.transform.parent = navigationParent.transform;
                 wayPoint.transform.position = levelTiles[x, y].location;
 
@@ -285,7 +287,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 //put the needed tiletypes in the right list
                 if(tileObjectScript.tileType == CatchingMiceTile.TileType.Cheese)
                 {
-                    CheeseTiles.Add(tileObjectScript);
+                    CheeseTiles.Add(targetTile);
                 }
 
             }

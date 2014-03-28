@@ -1,91 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-
-public class CatchingMicePathFinding : MonoBehaviour 
+public abstract class ICatchingMiceCharacter : MonoBehaviour
 {
-    public List<Waypoint> navigationGraph = null;
-    public List<Waypoint> path = null;
-    public Waypoint.WaypointType wayType = Waypoint.WaypointType.None;
-    protected void OnAwake()
+
+    public virtual void MoveToDestination()
     {
-        SetupLocal();
+
     }
-    
-    // Use this for initialization
-	void Start () 
+    public virtual void DoCurrentTileBehaviour()
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () 
-    {
-	
-	}
 
-    public void DetectPath(Waypoint target)
-    {
-        //Debug.Log ("MOVING TO target " + target.transform.Path());
-
-        List<Waypoint> graph = navigationGraph; //new List<Waypoint>( (Waypoint[]) GameObject.FindObjectsOfType(typeof(Waypoint)) );
-
-
-        Waypoint start = null;
-        // find closest waypoint to our current position
-        float smallestDistance = float.MaxValue;
-        foreach (Waypoint wp in graph)
-        {
-            float distance = Vector2.Distance(transform.position.v2(), wp.transform.position.v2());
-            //Debug.LogError("Distance to " + wp.transform.Path() + " is " + distance + " < " + smallestDistance);
-            if (distance < smallestDistance)
-            {
-                start = wp;
-                smallestDistance = distance;
-            }
-        }
-
-
-        //Debug.Log ("START " + start.transform.Path());
-
-        bool fullPath = false;
-        path = AStarCalculate(graph, start, target, out fullPath, wayType);
-
-        
-        //foreach( Waypoint wp in path )
-        //{
-        //    Debug.Log ("PATH item " + wp.transform.position);
-        //}
-
-
-        //int pathIndex = path.Count - 1;
-        //while (pathIndex > -1)
-        //{
-        //    gameObject.StopTweens();
-        //    gameObject.MoveTo(path[pathIndex].transform.position).Time(0.5f).Execute();
-
-        //    //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
-
-        //    float maxDistance = 0.4f; // units (in this setup = pixels)
-        //    bool reachedTarget = false;
-        //    while (!reachedTarget)
-        //    {
-        //        yield return null;
-
-        //        reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) < maxDistance);
-        //    }
-
-        //    //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
-        //    transform.position = transform.position.z( /*path[pathIndex].layerOrder*/ path[pathIndex].transform.position.z);
-
-        //    pathIndex--;
-        //}
-
-        //// we have reached the final target now (or should have...)
-        //gameObject.StopTweens();
-
-        ////moving = false;
     }
 
     // TODO: move this to Util?
@@ -232,24 +157,5 @@ public class CatchingMicePathFinding : MonoBehaviour
         }
 
         return path;
-    }
-
-    public void SetupLocal()
-    {
-        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
-        if (navigationGraph.Count == 0)
-            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
-    }
-    void OnDrawGizmos()
-    {
-        foreach (Waypoint wp in path)
-        {
-            if(wp!= null)
-            {
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawCube(wp.transform.position.zAdd(-0.5f), new Vector3(0.3f, 0.3f, 0.3f));
-            }
-        }
     }
 }

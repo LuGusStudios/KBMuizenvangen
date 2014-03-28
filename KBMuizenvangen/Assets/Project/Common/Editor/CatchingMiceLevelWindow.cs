@@ -10,6 +10,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     int height = 13;
     string level = "o";
     string previousLevel = "o";
+    bool useBothTypes = false;
     Transform cursor = null;
     Transform levelParent = null;
 
@@ -55,19 +56,10 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             SnapToGrid(); 
         }
+        useBothTypes = EditorGUILayout.Toggle("Use both WaypointTypes", useBothTypes);
         if(GUILayout.Button("Test pathfinding"))
         {
-            GameObject pathfindingGO = GameObject.Find("PathFindingObject");
-            if(pathfindingGO != null)
-            {
-                CatchingMicePathFinding pathfindScript = pathfindingGO.GetComponent<CatchingMicePathFinding>();
-                if(pathfindScript != null)
-                {
-                    pathfindScript.SetupLocal();
-                    pathfindScript.MoveToRoutine(pathfindScript.navigationGraph[2]);
-                }
-            }
-
+            FindClosestCheese();
         }
     }
 
@@ -88,5 +80,67 @@ public class CatchingMiceLevelWindow : EditorWindow
             newPosition.z = Mathf.Round(newPosition.z / gridz) * gridz;
             transform.position = newPosition;
         }
+    }
+
+    protected void FindClosestCheese()
+    {
+        GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+        if(pathfindingGO == null)
+        {
+            pathfindingGO = new GameObject();
+            pathfindingGO.name = "PathFindingObject";
+            GameObject activeObject = Selection.activeGameObject;
+            if(activeObject != null)
+                pathfindingGO.transform.position = activeObject.transform.position;
+            pathfindingGO.AddComponent<CatchingMicePathFinding>();
+        }
+        
+        CatchingMicePathFinding pathfindScript = pathfindingGO.GetComponent<CatchingMicePathFinding>();
+        if (pathfindScript != null)
+        {
+            pathfindScript.SetupLocal();
+            if (useBothTypes)
+                pathfindScript.wayType = Waypoint.WaypointType.Both;
+            else
+                pathfindScript.wayType = Waypoint.WaypointType.Ground;
+               
+            Waypoint target = null;
+
+            CatchingMiceTile targetTile = null;
+            float smallestDistance = float.MaxValue;
+            //Check which cheese tile is the closest
+            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.CheeseTiles)
+            {
+                float distance = Vector2.Distance(pathfindScript.transform.position.v2(), tile.location.v2());
+                if (distance < smallestDistance)
+                {
+                    targetTile = tile;
+                    smallestDistance = distance;
+                }
+            }
+                
+            //After we found the closest tile, get the waypoint of the tile
+            if(targetTile!= null)
+            {
+                foreach (Waypoint wp in CatchingMiceLevelManager.use.WaypointList)
+                {
+                    if(wp.transform.position == targetTile.location)
+                    {
+                        target = wp;
+                        break;
+                    }
+                }
+            }
+
+            if(target!=null)
+            {
+               pathfindScript.DetectPath(target);
+            }
+            else
+            {
+                Debug.LogError("No target found");
+            }
+        }
+        
     }
 }
