@@ -5,14 +5,16 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject
 {
     public override void SetTileType(CatchingMiceTile tile)
     {
+        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
         if(tile.worldObject != null)
         {
             //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-            CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType =
-                CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType | tileType;
-
-            if (CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].trapObject == null)
-                CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].trapObject = this;
+            levelTile.tileType = levelTile.tileType | tileType;
+            if(levelTile.trapObject == null)
+            {
+                levelTile.trapObject = this;
+            }
+            
             //when it's a ground tile then it does not have a worldObject variable, so check is needed
 
             gridOffset = tile.worldObject.gridOffset;

@@ -113,6 +113,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             Destroy(navigationParent.GetChild(i).gameObject);
         }
         WaypointList.Clear();
+        CheeseTiles.Clear();
     }
     
 
@@ -215,7 +216,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                         Debug.LogError("Tile " + levelTiles[x,y].gridIndices + " is of type furniture, but misses script CatchingMiceWorldObject");
                     }
                 }
-
+                wp.parentTile = levelTiles[x, y];
+                levelTiles[x, y].waypoint = wp;
                 WaypointList.Add(wp);
             }
         }
@@ -378,6 +380,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         }
 
         return levelTiles[x, y];
+    }
+
+    public Waypoint GetWaypointFromTile(int x, int y)
+    {
+        //CatchingMiceTile tile = levelTiles[x,y];
+
+        return levelTiles[x, y].waypoint;
     }
     // Use this for initialization
 	void Start () {

@@ -13,12 +13,13 @@ public class CatchingMiceTile
         Hole = 8,
         Cheese = 16,
 
-        Collide = 3,
+        Both = 3,
         None = -1 // place at the bottom for nicer auto-complete in IDE
     }
 
     public CatchingMiceWorldObject worldObject = null;
     public CatchingMiceWorldObject trapObject = null;
+    public Waypoint waypoint = null;
     public TileType tileType = TileType.None;
     public Vector3 location;
     public Vector2 gridIndices;

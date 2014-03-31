@@ -23,6 +23,8 @@ public class Waypoint : MonoBehaviour
 	public List<Waypoint> neighbours = new List<Waypoint>(); 
 	public WaypointType waypointType = WaypointType.Ground;
 
+    public CatchingMiceTile parentTile = null;
+
 	[HideInInspector]
 	public float AStarCost = 0.0f;
 	[HideInInspector]

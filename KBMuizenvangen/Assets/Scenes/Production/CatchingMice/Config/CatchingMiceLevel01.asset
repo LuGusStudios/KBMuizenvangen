@@ -32,6 +32,6 @@ MonoBehaviour:
   - id: TrapSpray_1x1_01
     tileCoordinates: {x: 0, y: 0}
   - id: Cheese_1x1_01
-    tileCoordinates: {x: 10, y: 0}
+    tileCoordinates: {x: 10, y: 10}
   - id: TrapMouseTrap_1x1_01
     tileCoordinates: {x: 1, y: 1}

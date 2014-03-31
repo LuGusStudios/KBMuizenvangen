@@ -3,16 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 public abstract class ICatchingMiceCharacter : MonoBehaviour
 {
+    protected List<Waypoint> navigationGraph = null;
+    public float timeToReachTile = 0.5f;
 
-    public virtual void MoveToDestination()
+    public CatchingMiceTile currentTile = null;
+    public Waypoint targetWaypoint = null;
+    public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
+
+    public virtual void GetTarget()
     {
+        //go to target
+        List<Waypoint> graph = navigationGraph;
 
+        Waypoint currentWaypoint = currentTile.waypoint;
+
+        bool fullPath = false;
+
+        if(targetWaypoint != null)
+        {
+            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
+
+            LugusCoroutines.use.StartRoutine(MoveToDestination(path)); 
+        }
     }
     public virtual void DoCurrentTileBehaviour()
     {
 
     }
-
+    protected void Awake()
+    {
+        SetupLocal();
+    }
+    protected void Start()
+    {
+        SetupGlobal();
+    }
+    public virtual void SetupLocal()
+    {
+        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
+        if (navigationGraph.Count == 0)
+            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+    }
+    public virtual void SetupGlobal()
+    {
+        
+    }
     // TODO: move this to Util?
     protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, Waypoint.WaypointType waypointType)
     {
@@ -107,6 +143,14 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             openList.Remove(current);
             closedList.Add(current);
 
+            //shifts the waypoint gridoffset back because the shift is only for the animationpath
+            float gridOffsetCurrent = 0.0f;
+            //worldobjects has gridoffsets, so only apply when there is an object
+            if (current.parentTile.worldObject != null)
+            {
+                gridOffsetCurrent = current.parentTile.worldObject.gridOffset;
+            }
+
             foreach (Waypoint neighbour in current.neighbours)
             {
                 // http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
@@ -114,8 +158,15 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
                 // NOTE: This is not actually the best implementation of AStar heuristics, as that uses the distance to the goal as well
                 // however, I find this one gives a bit more variation and more interesting paths in the current setup, so keep it for now
 
-                // use the distance to the neighbour as a heuristic here
-                float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.v2(), current.transform.position.v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
+                //shifts the waypoint gridoffset back because the shift is only for the animationpath
+                float gridOffset = 0.0f;
+                if (neighbour.parentTile.worldObject != null)
+                {
+                    gridOffset = neighbour.parentTile.worldObject.gridOffset;
+                    //Debug.Log(neighbour.transform.name + " " + neighbour.transform.position.yAdd(-gridOffset).v2());
+                }
+                // use the distance to the neighbour as a heuristic here 
+                float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.yAdd(-gridOffset).v2(), current.transform.position.yAdd(-gridOffsetCurrent).v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
 
                 // if the neighbour's cost is already higher than the cost for this node
                 // the neighbour is never going to be the best path, so delete it from our calculations 
@@ -157,5 +208,60 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         }
 
         return path;
+    }
+    public virtual IEnumerator MoveToDestination(List<Waypoint> path)
+    {
+        float depth = transform.position.z;
+        int pathIndex = path.Count - 1;
+        while (pathIndex > -1)
+        {
+            gameObject.StopTweens();
+
+            Vector3 movePosition = path[pathIndex].transform.position;
+
+            //check which zdepth the object must be
+            if (transform.position.z < path[pathIndex].transform.position.z)
+            {
+                movePosition.z = transform.position.z;
+            }
+
+            gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
+
+            //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
+
+            //float maxDistance = 0.4f; // units (in this setup = pixels)
+            bool reachedTarget = false;
+            while (!reachedTarget)
+            {
+                yield return null;
+
+                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= 0);// maxDistance);
+            }
+
+            //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
+
+            //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
+            if (pathIndex > 0)
+            {
+                if (path[pathIndex - 1].transform.position.z <= path[pathIndex].transform.position.z)
+                {
+                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z);
+                }
+                else
+                    transform.position = transform.position.z(path[pathIndex].transform.position.z);
+            }
+            else
+                transform.position = transform.position.z(path[pathIndex].transform.position.z);
+
+            currentTile = path[pathIndex].parentTile;
+            DoCurrentTileBehaviour();
+
+            pathIndex--;
+        }
+
+        // we have reached the final target now (or should have...)
+        gameObject.StopTweens();
+
+        //moving = false;
     }
 }

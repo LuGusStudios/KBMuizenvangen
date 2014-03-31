@@ -1,40 +1,49 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 {
     public float health = 100.0f;
-    public CatchingMiceTile currentTile = null;
-    public Waypoint targetWaypoint = null;
-    public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
-    public void SetupLocal()
+    
+    public override void SetupLocal()
     {
+        base.SetupLocal();
+
         currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
-        walkable = Waypoint.WaypointType.Ground;
+        //walkable = Waypoint.WaypointType.Ground;
+
+        
     }
-    protected void OnAwake()
+    public override void SetupGlobal()
+    {
+        
+    }
+
+    protected void Awake()
     {
         SetupLocal();
     }
+
 	// Use this for initialization
 	protected void Start () 
     {
-	
+        SetupGlobal();
 	}
 	
 	// Update is called once per frame
     protected void Update() 
     {
-        CatchingMiceTile newTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
-	    //do behaviours when new tile is hit
-        if(currentTile != newTile)
-        {
-            currentTile = newTile;
-            DoCurrentTileBehaviour();
-        }
+        //CatchingMiceTile newTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
+        ////do behaviours when new tile is hit
+        //if(currentTile != newTile && newTile != null)
+        //{
+        //    currentTile = newTile;
+        //    DoCurrentTileBehaviour();
+        //}
 	}
 
-    public void MoveToDestination()
+    public override void GetTarget()
     {
         CatchingMiceTile targetTile = null;
         float smallestDistance = float.MaxValue;
@@ -46,25 +55,14 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             {
                 targetTile = tile;
                 smallestDistance = distance;
-            }
-        }
 
-        //After we found the closest tile, get the waypoint of the tile
-        if (targetTile != null)
-        {
-            foreach (Waypoint wp in CatchingMiceLevelManager.use.WaypointList)
-            {
-                if (wp.transform.position == targetTile.location)
-                {
-                    targetWaypoint = wp;
-                    break;
-                }
+                targetWaypoint = tile.waypoint;
             }
         }
 
         if (targetWaypoint != null)
         {
-            //go to target
+            base.GetTarget();
         }
         else
         {
@@ -72,16 +70,20 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         }
     }
 
-    public void DoCurrentTileBehaviour()
+    public override void DoCurrentTileBehaviour()
     {
+        Debug.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
         if(currentTile.trapObject != null)
         {
             //get hit by trap object
+            //process hit
+            
         }
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile)
         if((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
         {
             //begin eating the cheese
+            Debug.Log("eating cheeese");
         }
     }
 }

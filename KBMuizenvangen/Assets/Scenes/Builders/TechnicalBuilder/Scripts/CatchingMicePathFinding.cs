@@ -37,7 +37,8 @@ public class CatchingMicePathFinding : MonoBehaviour
         float smallestDistance = float.MaxValue;
         foreach (Waypoint wp in graph)
         {
-            float distance = Vector2.Distance(transform.position.v2(), wp.transform.position.v2());
+            
+            float distance = Vector2.Distance(transform.position.v2(), (wp.transform.position.v2()));
             //Debug.LogError("Distance to " + wp.transform.Path() + " is " + distance + " < " + smallestDistance);
             if (distance < smallestDistance)
             {
@@ -59,33 +60,7 @@ public class CatchingMicePathFinding : MonoBehaviour
         //}
 
 
-        //int pathIndex = path.Count - 1;
-        //while (pathIndex > -1)
-        //{
-        //    gameObject.StopTweens();
-        //    gameObject.MoveTo(path[pathIndex].transform.position).Time(0.5f).Execute();
-
-        //    //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
-
-        //    float maxDistance = 0.4f; // units (in this setup = pixels)
-        //    bool reachedTarget = false;
-        //    while (!reachedTarget)
-        //    {
-        //        yield return null;
-
-        //        reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) < maxDistance);
-        //    }
-
-        //    //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
-        //    transform.position = transform.position.z( /*path[pathIndex].layerOrder*/ path[pathIndex].transform.position.z);
-
-        //    pathIndex--;
-        //}
-
-        //// we have reached the final target now (or should have...)
-        //gameObject.StopTweens();
-
-        ////moving = false;
+        
     }
 
     // TODO: move this to Util?
@@ -182,6 +157,14 @@ public class CatchingMicePathFinding : MonoBehaviour
             openList.Remove(current);
             closedList.Add(current);
 
+            //shifts the waypoint gridoffset back because the shift is only for the animationpath
+            float gridOffsetCurrent = 0.0f;
+            //worldobjects has gridoffsets, so only apply when there is an object
+            if (current.parentTile.worldObject != null)
+            {
+                gridOffsetCurrent = current.parentTile.worldObject.gridOffset;
+            }
+
             foreach (Waypoint neighbour in current.neighbours)
             {
                 // http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html
@@ -189,8 +172,15 @@ public class CatchingMicePathFinding : MonoBehaviour
                 // NOTE: This is not actually the best implementation of AStar heuristics, as that uses the distance to the goal as well
                 // however, I find this one gives a bit more variation and more interesting paths in the current setup, so keep it for now
 
-                // use the distance to the neighbour as a heuristic here
-                float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.v2(), current.transform.position.v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
+                //shifts the waypoint gridoffset back because the shift is only for the animationpath
+                float gridOffset = 0.0f;
+                //worldobjects has gridoffsets, so only apply when there is an object
+                if(neighbour.parentTile.worldObject != null)
+                {
+                    gridOffset = neighbour.parentTile.worldObject.gridOffset;
+                }
+                // use the distance to the neighbour as a heuristic here 
+                float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.yAdd(-gridOffset).v2(), current.transform.position.yAdd(-gridOffsetCurrent).v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
 
                 // if the neighbour's cost is already higher than the cost for this node
                 // the neighbour is never going to be the best path, so delete it from our calculations 
