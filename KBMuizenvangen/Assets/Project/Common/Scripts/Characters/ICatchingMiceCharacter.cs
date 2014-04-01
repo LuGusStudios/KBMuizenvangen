@@ -1,68 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-
-public class CatchingMicePathFinding : MonoBehaviour 
+public abstract class ICatchingMiceCharacter : MonoBehaviour
 {
-    public List<Waypoint> navigationGraph = null;
-    public List<Waypoint> path = null;
-    public Waypoint.WaypointType wayType = Waypoint.WaypointType.None;
-    protected void OnAwake()
+    protected List<Waypoint> navigationGraph = null;
+    public float timeToReachTile = 0.5f;
+
+    public CatchingMiceTile currentTile = null;
+    public Waypoint targetWaypoint = null;
+    public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
+
+    public virtual void GetTarget()
+    {
+        //go to target
+        List<Waypoint> graph = navigationGraph;
+
+        Waypoint currentWaypoint = currentTile.waypoint;
+
+        bool fullPath = false;
+
+        if(targetWaypoint != null)
+        {
+            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
+
+            LugusCoroutines.use.StartRoutine(MoveToDestination(path)); 
+        }
+    }
+    public virtual void DoCurrentTileBehaviour()
+    {
+
+    }
+    protected void Awake()
     {
         SetupLocal();
     }
-    
-    // Use this for initialization
-	void Start () 
+    protected void Start()
     {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () 
+        SetupGlobal();
+    }
+    public virtual void SetupLocal()
     {
-	
-	}
-
-    public void DetectPath(Waypoint target)
+        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
+        if (navigationGraph.Count == 0)
+            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+    }
+    public virtual void SetupGlobal()
     {
-        //Debug.Log ("MOVING TO target " + target.transform.Path());
-
-        List<Waypoint> graph = navigationGraph; //new List<Waypoint>( (Waypoint[]) GameObject.FindObjectsOfType(typeof(Waypoint)) );
-
-
-        Waypoint start = null;
-        // find closest waypoint to our current position
-        float smallestDistance = float.MaxValue;
-        foreach (Waypoint wp in graph)
-        {
-            
-            float distance = Vector2.Distance(transform.position.v2(), (wp.transform.position.v2()));
-            //Debug.LogError("Distance to " + wp.transform.Path() + " is " + distance + " < " + smallestDistance);
-            if (distance < smallestDistance)
-            {
-                start = wp;
-                smallestDistance = distance;
-            }
-        }
-
-
-        //Debug.Log ("START " + start.transform.Path());
-
-        bool fullPath = false;
-        path = AStarCalculate(graph, start, target, out fullPath, wayType);
-
-        
-        //foreach( Waypoint wp in path )
-        //{
-        //    Debug.Log ("PATH item " + wp.transform.position);
-        //}
-
-
         
     }
-
     // TODO: move this to Util?
     protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, Waypoint.WaypointType waypointType)
     {
@@ -174,10 +160,10 @@ public class CatchingMicePathFinding : MonoBehaviour
 
                 //shifts the waypoint gridoffset back because the shift is only for the animationpath
                 float gridOffset = 0.0f;
-                //worldobjects has gridoffsets, so only apply when there is an object
-                if(neighbour.parentTile.worldObject != null)
+                if (neighbour.parentTile.worldObject != null)
                 {
                     gridOffset = neighbour.parentTile.worldObject.gridOffset;
+                    //Debug.Log(neighbour.transform.name + " " + neighbour.transform.position.yAdd(-gridOffset).v2());
                 }
                 // use the distance to the neighbour as a heuristic here 
                 float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.yAdd(-gridOffset).v2(), current.transform.position.yAdd(-gridOffsetCurrent).v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
@@ -223,23 +209,59 @@ public class CatchingMicePathFinding : MonoBehaviour
 
         return path;
     }
-
-    public void SetupLocal()
+    public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
-        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
-        if (navigationGraph.Count == 0)
-            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
-    }
-    void OnDrawGizmos()
-    {
-        foreach (Waypoint wp in path)
+        float depth = transform.position.z;
+        int pathIndex = path.Count - 1;
+        while (pathIndex > -1)
         {
-            if(wp!= null)
+            gameObject.StopTweens();
+
+            Vector3 movePosition = path[pathIndex].transform.position;
+
+            //check which zdepth the object must be
+            if (transform.position.z < path[pathIndex].transform.position.z)
             {
-                Gizmos.color = Color.cyan;
-                Gizmos.DrawCube(wp.transform.position.zAdd(-0.5f), new Vector3(0.3f, 0.3f, 0.3f));
+                movePosition.z = transform.position.z;
             }
+
+            gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
+
+            //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
+
+            //float maxDistance = 0.4f; // units (in this setup = pixels)
+            bool reachedTarget = false;
+            while (!reachedTarget)
+            {
+                yield return null;
+
+                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= 0);// maxDistance);
+            }
+
+            //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
+
+            //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
+            if (pathIndex > 0)
+            {
+                if (path[pathIndex - 1].transform.position.z <= path[pathIndex].transform.position.z)
+                {
+                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z);
+                }
+                else
+                    transform.position = transform.position.z(path[pathIndex].transform.position.z);
+            }
+            else
+                transform.position = transform.position.z(path[pathIndex].transform.position.z);
+
+            currentTile = path[pathIndex].parentTile;
+            DoCurrentTileBehaviour();
+
+            pathIndex--;
         }
+
+        // we have reached the final target now (or should have...)
+        gameObject.StopTweens();
+
+        //moving = false;
     }
 }

@@ -10,8 +10,11 @@ public class CatchingMiceLevelWindow : EditorWindow
     int height = 13;
     string level = "o";
     string previousLevel = "o";
-    Transform cursor = null;
+    bool useBothTypes = false;
+    Transform cursor = null; 
     Transform levelParent = null;
+
+    
 
     [MenuItem("KikaAndBob/CathingMice/LevelWindow")]
 	// Use this for initialization
@@ -55,6 +58,15 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             SnapToGrid(); 
         }
+        useBothTypes = EditorGUILayout.Toggle("Use both WaypointTypes", useBothTypes);
+        if(GUILayout.Button("Test pathfinding"))
+        {
+            FindClosestCheese();
+        }
+        if (GUILayout.Button("Test movement behaviour"))
+        {
+            SpawnMouseDebug();
+        }
     }
 
     //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid
@@ -73,6 +85,89 @@ public class CatchingMiceLevelWindow : EditorWindow
             newPosition.y = Mathf.Round(newPosition.y / gridy) * gridy;
             newPosition.z = Mathf.Round(newPosition.z / gridz) * gridz;
             transform.position = newPosition;
+        }
+    }
+
+    protected void FindClosestCheese()
+    {
+        GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+        if(pathfindingGO == null)
+        {
+            pathfindingGO = new GameObject();
+            pathfindingGO.name = "PathFindingObject";
+            GameObject activeObject = Selection.activeGameObject;
+            if(activeObject != null)
+                pathfindingGO.transform.position = activeObject.transform.position;
+            pathfindingGO.AddComponent<CatchingMicePathFinding>();
+        }
+        
+        CatchingMicePathFinding pathfindScript = pathfindingGO.GetComponent<CatchingMicePathFinding>();
+        if (pathfindScript != null)
+        {
+            pathfindScript.SetupLocal();
+            if (useBothTypes)
+                pathfindScript.wayType = Waypoint.WaypointType.Both;
+            else
+                pathfindScript.wayType = Waypoint.WaypointType.Ground;
+               
+            Waypoint target = null;
+
+            CatchingMiceTile targetTile = null;
+            float smallestDistance = float.MaxValue;
+            //Check which cheese tile is the closest
+            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.CheeseTiles)
+            {
+                float distance = Vector2.Distance(pathfindScript.transform.position.v2(), tile.location.v2());
+                if (distance < smallestDistance)
+                {
+                    targetTile = tile;
+                    smallestDistance = distance;
+                    target = tile.waypoint;
+                }
+            }
+
+            if(target!=null)
+            {
+               pathfindScript.DetectPath(target);
+            }
+            else
+            {
+                Debug.LogError("No target found");
+            }
+        }
+    }
+    public void SpawnMouseDebug()
+    {
+        GameObject mousePrefab = null;
+        CatchingMiceCharacterMouse mouseController = null;
+
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+        {
+            mouseController = prefab.GetComponent<CatchingMiceCharacterMouse>();
+            if (mouseController != null)
+            {
+                mousePrefab = prefab;
+                
+            }
+        }
+        GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+        if (pathfindingGO == null)
+        {
+            pathfindingGO = new GameObject();
+            pathfindingGO.name = "PathFindingObject";
+            GameObject activeObject = Selection.activeGameObject;
+            if (activeObject != null)
+                pathfindingGO.transform.position = activeObject.transform.position;
+            pathfindingGO.AddComponent<CatchingMicePathFinding>();
+        }
+        if (mousePrefab != null)
+        {
+            GameObject movePrefab = Instantiate(mousePrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
+            if (useBothTypes)
+                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Both;
+            else
+                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Ground;
+            movePrefab.GetComponent<CatchingMiceCharacterMouse>().GetTarget();
         }
     }
 }

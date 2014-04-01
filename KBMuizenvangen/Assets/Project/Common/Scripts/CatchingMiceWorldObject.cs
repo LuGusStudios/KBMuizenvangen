@@ -48,16 +48,22 @@ public class CatchingMiceWorldObject : MonoBehaviour
                 }
             }
         }
+        //when there is no boxcollider, then it only takes up 1 tile
+        if(BoxColliders2D.Length <= 0)
+        {
+            Debug.Log("no collider has been found. will be using 1 tile");
+            SetTileType(CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x,transform.position.y));
+        }
     }
 
     public virtual void SetTileType(CatchingMiceTile tile)
     {
+        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
         //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].tileType = tileType;
-
-        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].worldObject = this;
+        levelTile.tileType = tileType;
+        levelTile.worldObject = this;
         //the z axis will be the anchor point of the object. So the anchor point needs the be the lowest tile of the sprite
-        CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y].location.z = transform.position.z;
+        levelTile.location.z = transform.position.z;
     }
     // Use this for initialization
 	void Start ()

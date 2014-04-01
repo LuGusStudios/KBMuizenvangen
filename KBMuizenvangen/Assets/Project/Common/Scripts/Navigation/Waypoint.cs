@@ -11,6 +11,7 @@ public class Waypoint : MonoBehaviour
     {
         Ground = 1,
         Furniture = 2,
+        Both = 3,
 
         None = -1 // place at the bottom for nicer auto-complete in IDE
     }
@@ -21,6 +22,8 @@ public class Waypoint : MonoBehaviour
 	[HideInInspector]
 	public List<Waypoint> neighbours = new List<Waypoint>(); 
 	public WaypointType waypointType = WaypointType.Ground;
+
+    public CatchingMiceTile parentTile = null;
 
 	[HideInInspector]
 	public float AStarCost = 0.0f;
