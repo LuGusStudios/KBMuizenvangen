@@ -15,19 +15,23 @@ MonoBehaviour:
   height: 13
   level: 0
   tileItems:
-  - id: Fridge
+  - id: FurnitureFridge_1x1_01
     tileCoordinates: {x: 0, y: 0}
-  - id: Fridge
+  - id: FurnitureFridge_1x1_01
     tileCoordinates: {x: 3, y: 2}
-  - id: Closet
+  - id: FurnitureCloset_4x2_01
     tileCoordinates: {x: 5, y: 5}
-  - id: Sofa
+  - id: FurnitureSofa_3x1_01
     tileCoordinates: {x: 3, y: 3}
-  - id: CoffeeTable
+  - id: FurnitureCoffeeTable_1x1_01
     tileCoordinates: {x: 1, y: 5}
-  - id: CornerCloset
+  - id: FurnitureCloset_3x1-1x2_01
     tileCoordinates: {x: 3, y: 5}
-  - id: Cheese
+  - id: Cheese_1x1_01
     tileCoordinates: {x: 1, y: 0}
-  - id: TrapSpray
+  - id: TrapSpray_1x1_01
     tileCoordinates: {x: 0, y: 0}
+  - id: Cheese_1x1_01
+    tileCoordinates: {x: 10, y: 10}
+  - id: TrapMouseTrap_1x1_01
+    tileCoordinates: {x: 1, y: 1}
