@@ -18,7 +18,7 @@ public class CatchingMiceTile
     }
 
     public CatchingMiceWorldObject worldObject = null;
-    public CatchingMiceWorldObject trapObject = null;
+    public ICatchingMiceWorldObjectTrap trapObject = null;
     public Waypoint waypoint = null;
     public TileType tileType = TileType.None;
     public Vector3 location;

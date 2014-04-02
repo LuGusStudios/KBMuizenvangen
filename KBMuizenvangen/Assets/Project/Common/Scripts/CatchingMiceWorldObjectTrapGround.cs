@@ -1,8 +1,64 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject 
+public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
+    protected float _stacks = 3;
+    protected float _cost = 1;
+    protected float _damage = 1;
+
+    public float Stacks
+    {
+        get
+        {
+            return _stacks;
+        }
+        set
+        {
+            _stacks = value;
+            if(_stacks <= 0 )
+            {
+                DestroySelf();
+            }
+        }
+    }
+
+    public float Cost
+    {
+        get
+        {
+            return _cost;
+        }
+        set
+        {
+            _cost = value;
+        }
+    }
+
+    public float Damage
+    {
+        get
+        {
+            return _damage;
+        }
+        set
+        {
+            _damage = value;
+        }
+    }
+
+    public void OnHit( ICatchingMiceCharacter character)
+    {
+        character.health -= _damage;
+        Stacks--;
+    }
+
+    public void DestroySelf()
+    {
+        //remove the cheese from the list and tiletype
+        CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y),tileType);
+    }
+
     public override void SetTileType(CatchingMiceTile tile)
     {
         CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
@@ -15,7 +71,9 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject
             transform.position = transform.position.yAdd(gridOffset).zAdd(-0.5f);
         }
         else
+        {
             Debug.LogError("Ground trap " + transform.name + " cannot be placed\non furniture tile " + tile.worldObject.name + " !");
-        
-    }
+        }
+                    
+    }    
 }

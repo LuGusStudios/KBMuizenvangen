@@ -9,10 +9,10 @@ public class CatchingMiceLevelManager : LugusSingletonExisting<CatchingMiceLevel
 
 public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
-    protected Transform levelRoot = null;
-    protected Transform levelParent = null;
-    protected Transform objectParent = null;
-    protected Transform navigationParent = null;
+    protected Transform _levelRoot = null;
+    protected Transform _levelParent = null;
+    protected Transform _objectParent = null;
+    protected Transform _navigationParent = null;
 
     public CatchingMiceLevelDefinition[] levels = null;
     public int width = 13;
@@ -24,9 +24,11 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     public GameObject[] tileItems = null;
 
     [HideInInspector]
-    public List<Waypoint> WaypointList = new List<Waypoint>();
+    public List<Waypoint> waypointList = new List<Waypoint>();
 
-    public List<CatchingMiceTile> CheeseTiles = new List<CatchingMiceTile>();
+    public List<CatchingMiceTile> cheeseTiles = new List<CatchingMiceTile>();
+    public delegate void CheeseRemovedEventHandler(CatchingMiceTile cheeseTile);
+    public event CheeseRemovedEventHandler CheeseRemoved;
     void Awake()
     {
         FindReferences();
@@ -34,18 +36,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     void FindReferences()
     {
         // only do this once
-        if (levelRoot != null)
+        if (_levelRoot != null)
             return;
 
-        if (levelRoot == null)
-            levelRoot = GameObject.Find("LevelRoot").transform;
+        if (_levelRoot == null)
+            _levelRoot = GameObject.Find("LevelRoot").transform;
 
-        if (levelRoot == null)
+        if (_levelRoot == null)
             Debug.Log("LevelManager: Could not find level root.");
 
-        levelParent = levelRoot.FindChild("LevelParent");
-        objectParent = levelRoot.FindChild("ObjectParent");
-        navigationParent = levelRoot.FindChild("NavigationParent");
+        _levelParent = _levelRoot.FindChild("LevelParent");
+        _objectParent = _levelRoot.FindChild("ObjectParent");
+        _navigationParent = _levelRoot.FindChild("NavigationParent");
         //characterParent = levelRoot.FindChild("CharacterParent");
     }
 
@@ -60,20 +62,20 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         {
 
             Debug.Log("Clearing level (playing in editor).");
-            for (int i = levelParent.childCount - 1; i >= 0; i--)
+            for (int i = _levelParent.childCount - 1; i >= 0; i--)
             {
-                DestroyImmediate(levelParent.GetChild(i).gameObject);
+                DestroyImmediate(_levelParent.GetChild(i).gameObject);
             }
-            for (int i = objectParent.childCount - 1; i >= 0; i--)
+            for (int i = _objectParent.childCount - 1; i >= 0; i--)
             {
-                DestroyImmediate(objectParent.GetChild(i).gameObject);
+                DestroyImmediate(_objectParent.GetChild(i).gameObject);
             }
-            for (int i = navigationParent.childCount - 1; i >= 0; i--)
+            for (int i = _navigationParent.childCount - 1; i >= 0; i--)
             {
-                DestroyImmediate(navigationParent.GetChild(i).gameObject);
+                DestroyImmediate(_navigationParent.GetChild(i).gameObject);
             }
-            WaypointList.Clear();
-            CheeseTiles.Clear();
+            waypointList.Clear();
+            cheeseTiles.Clear();
             //for (int i = characterParent.childCount - 1; i >= 0; i--)
             //{
             //    DestroyImmediate(characterParent.GetChild(i).gameObject);
@@ -100,20 +102,20 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     public void ClearLevelIsPlaying()
     {
         Debug.Log("Clearing level (build).");
-        for (int i = levelParent.childCount - 1; i >= 0; i--)
+        for (int i = _levelParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(levelParent.GetChild(i).gameObject);
+            Destroy(_levelParent.GetChild(i).gameObject);
         }
-        for (int i = objectParent.childCount - 1; i >= 0; i--)
+        for (int i = _objectParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(objectParent.GetChild(i).gameObject);
+            Destroy(_objectParent.GetChild(i).gameObject);
         }
-        for (int i = navigationParent.childCount - 1; i >= 0; i--)
+        for (int i = _navigationParent.childCount - 1; i >= 0; i--)
         {
-            Destroy(navigationParent.GetChild(i).gameObject);
+            Destroy(_navigationParent.GetChild(i).gameObject);
         }
-        WaypointList.Clear();
-        CheeseTiles.Clear();
+        waypointList.Clear();
+        cheeseTiles.Clear();
     }
     
 
@@ -159,6 +161,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         CreateGrid();
 
         PlaceWaypoints();
+
+
     }
     public void CreateGrid()
     {
@@ -171,7 +175,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 quad.gameObject.name = levelTiles[x, y].gridIndices.ToString();
                 quad.transform.localScale = Vector3.one * 0.98f * scale;
                 quad.transform.position = levelTiles[x,y].location;
-                quad.transform.parent = levelParent;
+                quad.transform.parent = _levelParent;
 
                 ////if (levelTiles[x, y].tileType != CatchingMiceTile.TileType.Ground)
                 ////{
@@ -198,7 +202,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 wayPoint.gameObject.name = "Waypoint " + levelTiles[x, y].gridIndices;
 
 
-                wayPoint.transform.parent = navigationParent.transform;
+                wayPoint.transform.parent = _navigationParent.transform;
                 wayPoint.transform.position = levelTiles[x, y].location;
 
                 Waypoint wp = wayPoint.AddComponent<Waypoint>();
@@ -218,7 +222,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 }
                 wp.parentTile = levelTiles[x, y];
                 levelTiles[x, y].waypoint = wp;
-                WaypointList.Add(wp);
+                waypointList.Add(wp);
             }
         }
 
@@ -276,7 +280,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             }
 
             GameObject tileItem = (GameObject)Instantiate(tileItemPrefab);
-            tileItem.transform.parent = objectParent;
+            tileItem.transform.parent = _objectParent;
             tileItem.transform.name += " " + targetTile.gridIndices;
             tileItem.transform.localPosition = targetTile.location.z(targetTile.location.z);
 
@@ -289,7 +293,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 //put the needed tiletypes in the right list
                 if(tileObjectScript.tileType == CatchingMiceTile.TileType.Cheese)
                 {
-                    CheeseTiles.Add(targetTile);
+                    cheeseTiles.Add(targetTile);
                 }
 
             }
@@ -302,24 +306,24 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
     public void AssignNeighbours()
     {
-        for (int i = 0; i < WaypointList.Count-1; i++)
+        for (int i = 0; i < waypointList.Count-1; i++)
         {
             //Debug.Log("Adding waypoint : " + (i + width) + " to " + i);
             //Debug.Log("Adding waypoint : " + (i+1) + " to " + i);
             //Debug.Log(WaypointList.Count);
              
             //last row does not need to (and can't) add their neighbor below
-            if (i < WaypointList.Count - width)
+            if (i < waypointList.Count - width)
             {
-                WaypointList[i].neighbours.Add(WaypointList[i + width]);
-                WaypointList[i + width].neighbours.Add(WaypointList[i]);
+                waypointList[i].neighbours.Add(waypointList[i + width]);
+                waypointList[i + width].neighbours.Add(waypointList[i]);
             }
             //Last column can't add his neighbor next to him
             //all waypoints are in one list, so every width length there will be a new row, is that waypoint is in the last column
             if ((i + 1) % width != 0)
             {
-                WaypointList[i].neighbours.Add(WaypointList[i + 1]);
-                WaypointList[i + 1].neighbours.Add(WaypointList[i]);
+                waypointList[i].neighbours.Add(waypointList[i + 1]);
+                waypointList[i + 1].neighbours.Add(waypointList[i]);
             }
             
         }
@@ -387,6 +391,40 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         //CatchingMiceTile tile = levelTiles[x,y];
 
         return levelTiles[x, y].waypoint;
+    }
+
+    public void RemoveTrapFromTile(int x, int y, CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.Trap)
+    {
+        CatchingMiceTile tile = levelTiles[x, y];
+        foreach (Transform go in _objectParent)
+        {
+            if(tile.location.v2() == go.position.v2())
+            {
+                go.gameObject.SetActive(false);
+
+                if ((tile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
+                {
+                    CatchingMiceLevelManager.use.cheeseTiles.Remove(tile);
+                    //announce this cheese tile has been removed
+                    if(CheeseRemoved != null)
+                    {
+                        CheeseRemoved(tile);
+                    }
+                }
+                else if ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap)
+                {
+                    //remove from trapTiles
+                }
+
+
+                tile.tileType = tile.tileType ^ tileType;
+                tile.trapObject = null;
+                
+                gameObject.SetActive(false);
+
+                break;
+            }
+        }
     }
     // Use this for initialization
 	void Start () {
