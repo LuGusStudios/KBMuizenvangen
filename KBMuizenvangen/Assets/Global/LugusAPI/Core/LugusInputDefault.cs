@@ -106,11 +106,11 @@ public class LugusInputDefault : MonoBehaviour
 #if Physics2D
 		else
 		{
-			//Debug.Log ("Checking 2D physics " + (camera.ScreenToWorldPoint(screenPoint)) );
+			Debug.Log ("Checking 2D physics " + (camera.ScreenToWorldPoint(screenPoint)) );
 			RaycastHit2D hit2 = Physics2D.Raycast( camera.ScreenToWorldPoint(screenPoint)/*new Vector2(screenPoint.x, screenPoint.y)*/ , Vector2.zero );
 			if( hit2.collider != null )
 			{
-				//Debug.Log ("FOUND! 2D physics " + hit2.collider.transform.name );
+				Debug.Log ("FOUND! 2D physics " + hit2.collider.transform.name );
 				return hit2.collider.transform; 
 			}
 		}

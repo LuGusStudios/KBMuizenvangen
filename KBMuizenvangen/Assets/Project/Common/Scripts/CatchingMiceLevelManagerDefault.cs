@@ -13,6 +13,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     protected Transform _levelParent = null;
     protected Transform _objectParent = null;
     protected Transform _navigationParent = null;
+    protected Transform _characterParent = null;
 
     public CatchingMiceLevelDefinition[] levels = null;
     public int width = 13;
@@ -48,7 +49,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         _levelParent = _levelRoot.FindChild("LevelParent");
         _objectParent = _levelRoot.FindChild("ObjectParent");
         _navigationParent = _levelRoot.FindChild("NavigationParent");
-        //characterParent = levelRoot.FindChild("CharacterParent");
+        _characterParent = _levelRoot.FindChild("CharacterParent");
     }
 
     public void ClearLevel()
@@ -74,12 +75,12 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             {
                 DestroyImmediate(_navigationParent.GetChild(i).gameObject);
             }
+            for (int i = _characterParent.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(_characterParent.GetChild(i).gameObject);
+            }
             waypointList.Clear();
             cheeseTiles.Clear();
-            //for (int i = characterParent.childCount - 1; i >= 0; i--)
-            //{
-            //    DestroyImmediate(characterParent.GetChild(i).gameObject);
-            //}
         }
 #else
 		ClearLevelIsPlaying();
@@ -113,6 +114,10 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         for (int i = _navigationParent.childCount - 1; i >= 0; i--)
         {
             Destroy(_navigationParent.GetChild(i).gameObject);
+        }
+        for (int i = _characterParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_characterParent.GetChild(i).gameObject);
         }
         waypointList.Clear();
         cheeseTiles.Clear();
@@ -158,7 +163,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
         PlaceLevelTileItems(level.tileItems);
 
-        CreateGrid();
+        //CreateGrid();
 
         PlaceWaypoints();
 
@@ -176,6 +181,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 quad.transform.localScale = Vector3.one * 0.98f * scale;
                 quad.transform.position = levelTiles[x,y].location;
                 quad.transform.parent = _levelParent;
+                quad.GetComponent<MeshCollider>().enabled = false;
+
 
                 ////if (levelTiles[x, y].tileType != CatchingMiceTile.TileType.Ground)
                 ////{
@@ -358,11 +365,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         int xIndex = Mathf.RoundToInt(x / scale);
         int yIndex = Mathf.RoundToInt(y / scale);
 
-        if (xIndex >= width || x < 0)
+        if (xIndex >= width || xIndex < 0)
             return null;
-        else if (yIndex >= height || y < 0)
+        else if (yIndex >= height || yIndex < 0)
+        {
+            Debug.Log("INDEX " + yIndex);
             return null;
-
+        }
         return GetTile(xIndex, yIndex, true);
     }
 
@@ -420,8 +429,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
                 tile.tileType = tile.tileType ^ tileType;
                 tile.trapObject = null;
                 
-                gameObject.SetActive(false);
-
                 break;
             }
         }

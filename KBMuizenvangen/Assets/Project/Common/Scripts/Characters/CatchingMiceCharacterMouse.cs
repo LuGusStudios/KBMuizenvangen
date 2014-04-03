@@ -4,12 +4,26 @@ using System.Collections.Generic;
 
 public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 {
-    
+    public override float Health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            _health = value;
+            if (_health <= 0)
+            {
+                DieRoutine();
+            }
+        }
+    }
     public override void SetupLocal()
     {
         base.SetupLocal();
 
-        
+        zOffset = 0.75f;
         //walkable = Waypoint.WaypointType.Ground;
 
         
@@ -19,16 +33,16 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         
     }
 
-    protected void Awake()
-    {
-        SetupLocal();
-    }
+    //protected void Awake()
+    //{
+    //    SetupLocal();
+    //}
 
-	// Use this for initialization
-	protected void Start () 
-    {
-        SetupGlobal();
-	}
+    //// Use this for initialization
+    //protected void Start () 
+    //{
+    //    SetupGlobal();
+    //}
 	
 	// Update is called once per frame
     protected void Update() 
@@ -41,7 +55,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     }
     protected void OnDisable()
     {
-        //
+        //CatchingMiceLevelManager.use.CheeseRemoved -= CheeseRemoved;
     }
     public override void GetTarget()
     {
@@ -76,7 +90,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         handle.StopRoutine();
         GetTarget();
     }
-    public override void DoCurrentTileBehaviour()
+    public override void DoCurrentTileBehaviour(int pathIndex)
     {
         //Debug.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
         if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && currentTile.trapObject != null)
@@ -84,38 +98,34 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             //get hit by trap object
             //process hit
             currentTile.trapObject.OnHit(this);
-            if(health<=0)
-            {
-                Die();
-            }
+            
         }
-        //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile)
-        if((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
+        //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
+        if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
         {
             //begin eating the cheese
             Debug.Log("eating cheeese");
-            handle.StartRoutine(Eat());
+            handle.StartRoutine(Attack());
         }
     }
-    public IEnumerator Eat()
+    public override IEnumerator Attack()
     {
         CatchingMiceTile cheeseTile = currentTile;
-        while(health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0)
+        while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0)
         {
             Debug.Log(currentTile.trapObject.Stacks);
             cheeseTile.trapObject.Stacks -= damage;
 
-            yield return new WaitForSeconds(0.5f);
+            yield return new WaitForSeconds(attackInterval);
         }
         if (CatchingMiceLevelManager.use.cheeseTiles.Count > 0)
         {
             Debug.Log("getting new target");
-            //CatchingMiceLevelManager.use.RemoveTrapFromTile((int)currentTile.gridIndices.x, (int)currentTile.gridIndices.y);
 
             GetTarget();
         }
     }
-    public void Die()
+    public void DieRoutine()
     {
         //Drop cookie
         //Play Death animation (cloud particle)

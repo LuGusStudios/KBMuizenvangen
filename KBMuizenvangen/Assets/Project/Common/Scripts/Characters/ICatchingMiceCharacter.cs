@@ -1,17 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class ICatchingMiceCharacter : MonoBehaviour
+public abstract class ICatchingMiceCharacter : MonoBehaviour
 {
     protected List<Waypoint> navigationGraph = null;
     public float timeToReachTile = 0.5f;
+
+    //Offset from 0-->1
+    protected float zOffset = 0.0f;
 
     public CatchingMiceTile currentTile = null;
     public Waypoint targetWaypoint = null;
     public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
 
-    public float health = 1.0f;
+    protected float _health = 1.0f;
+    public abstract float Health{ get; set;}
+
     public float damage = 1.0f;
+    public float attackInterval = 0.5f;
 
     public bool moving = false;
     public ILugusCoroutineHandle handle = null;
@@ -31,15 +37,16 @@ public class ICatchingMiceCharacter : MonoBehaviour
             handle.StartRoutine(MoveToDestination(path)); 
         }
     }
-    public virtual void DoCurrentTileBehaviour()
+    public virtual void DoCurrentTileBehaviour(int pathIndex)
     {
 
     }
-    protected void Awake()
+    public abstract IEnumerator Attack();
+    protected virtual void Awake()
     {
         SetupLocal();
     }
-    protected void Start()
+    protected virtual void Start()
     {
         SetupGlobal();
     }
@@ -218,9 +225,8 @@ public class ICatchingMiceCharacter : MonoBehaviour
     }
     public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
-        float depth = transform.position.z;
         int pathIndex = path.Count - 1;
-
+        Debug.Log("Move");
         moving = true;
 
         while (pathIndex > -1)
@@ -228,18 +234,16 @@ public class ICatchingMiceCharacter : MonoBehaviour
             gameObject.StopTweens();
 
             Vector3 movePosition = path[pathIndex].transform.position;
-
+            
             //check which zdepth the object must be
             if (transform.position.z < path[pathIndex].transform.position.z)
             {
                 movePosition.z = transform.position.z;
             }
-
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
             //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
 
-            //float maxDistance = 0.4f; // units (in this setup = pixels)
             bool reachedTarget = false;
             while (!reachedTarget)
             {
@@ -253,19 +257,24 @@ public class ICatchingMiceCharacter : MonoBehaviour
             //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
             if (pathIndex > 0)
             {
-                if (path[pathIndex - 1].transform.position.z <= path[pathIndex].transform.position.z)
+                if (path[pathIndex - 1].transform.position.z < path[pathIndex].transform.position.z)
                 {
-                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z);
+                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z).zAdd(-zOffset); 
                 }
                 else
-                    transform.position = transform.position.z(path[pathIndex].transform.position.z);
+                    transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
             }
             else
-                transform.position = transform.position.z(path[pathIndex].transform.position.z);
+            {
+                transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
+                //handle.StopRoutine();
+            }
 
             currentTile = path[pathIndex].parentTile;
             
-            DoCurrentTileBehaviour();
+            DoCurrentTileBehaviour(pathIndex);
+
+            path.Remove(path[pathIndex]);
 
             pathIndex--;
         }
@@ -274,5 +283,6 @@ public class ICatchingMiceCharacter : MonoBehaviour
         gameObject.StopTweens();
 
         moving = false;
+
     }
 }

@@ -116,7 +116,6 @@ public class CatchingMiceLevelWindow : EditorWindow
                
             Waypoint target = null;
 
-            CatchingMiceTile targetTile = null;
             float smallestDistance = float.MaxValue;
             //Check which cheese tile is the closest
             foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
@@ -124,7 +123,6 @@ public class CatchingMiceLevelWindow : EditorWindow
                 float distance = Vector2.Distance(pathfindScript.transform.position.v2(), tile.location.v2());
                 if (distance < smallestDistance)
                 {
-                    targetTile = tile;
                     smallestDistance = distance;
                     target = tile.waypoint;
                 }

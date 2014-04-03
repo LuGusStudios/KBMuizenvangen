@@ -45,7 +45,7 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
 
     public void OnHit(ICatchingMiceCharacter character)
     {
-        character.health -= _damage;
+        character.Health -= _damage;
         _stacks--;
     }
     public void DestroySelf()

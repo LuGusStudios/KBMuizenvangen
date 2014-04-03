@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 400000}
   - 212: {fileID: 21200000}
   m_Layer: 0
-  m_Name: TrapBearTrap_1x1_01
+  m_Name: Cat_Orange_Side
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -41,7 +41,7 @@ Transform:
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: .400000006, y: .400000006, z: 1}
+  m_LocalScale: {x: .100000001, y: .100000001, z: 1}
   m_Children: []
   m_Father: {fileID: 400002}
 --- !u!4 &400002
@@ -75,14 +75,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: def6950d2ff39804a8ec32c376779562, type: 3}
+  m_Script: {fileID: 11500000, guid: 6747c3d673cd55c4f9253fdef8f5bde7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeToReachTile: .5
   targetWaypoint: {fileID: 0}
   walkable: 3
-  health: 1
-  damage: 1
+  damage: 20
+  attackInterval: 1
   moving: 0
 --- !u!212 &21200000
 SpriteRenderer:
@@ -105,7 +105,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_SortingLayerID: 0
-  m_Sprite: {fileID: 21300000, guid: a047ac9a302518b4397369bf328d2706, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e41ebff0d72b91c4d8169a8ae7f88aa3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1001 &100100000
 Prefab:

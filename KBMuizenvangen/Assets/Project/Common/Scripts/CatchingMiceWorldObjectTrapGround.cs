@@ -49,7 +49,7 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
 
     public void OnHit( ICatchingMiceCharacter character)
     {
-        character.health -= _damage;
+        character.Health -= _damage;
         Stacks--;
     }
 
@@ -57,6 +57,7 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
     {
         //remove the cheese from the list and tiletype
         CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y),tileType);
+        gameObject.SetActive(false);
     }
 
     public override void SetTileType(CatchingMiceTile tile)
@@ -68,7 +69,7 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
             //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
             levelTile.tileType = levelTile.tileType | tileType;
             levelTile.trapObject = this;
-            transform.position = transform.position.yAdd(gridOffset).zAdd(-0.5f);
+            transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
         }
         else
         {
