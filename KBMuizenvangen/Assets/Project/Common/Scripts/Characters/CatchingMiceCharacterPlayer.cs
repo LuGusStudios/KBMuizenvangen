@@ -24,7 +24,7 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
     }
     public override void DoCurrentTileBehaviour(int pathIndex)
     {
-        base.DoCurrentTileBehaviour(pathIndex);
+
     }
     public override IEnumerator Attack()
     {

@@ -16,13 +16,13 @@ MonoBehaviour:
   level: 0
   characters:
   - id: CharacterTest
-    speed: 1
+    timeToReachTile: .5
     xLocation: 4
     yLocation: 5
   - id: CharacterTest
-    speed: 2
+    timeToReachTile: 1
     xLocation: 5
-    yLocation: 5
+    yLocation: 7
   tileItems:
   - id: FurnitureFridge_1x1_01
     tileCoordinates: {x: 0, y: 0}
@@ -34,8 +34,8 @@ MonoBehaviour:
     tileCoordinates: {x: 3, y: 3}
   - id: FurnitureCoffeeTable_1x1_01
     tileCoordinates: {x: 1, y: 5}
-  - id: FurnitureCloset_3x1-1x2_01
-    tileCoordinates: {x: 3, y: 5}
+  - id: FurnitureCloset_4x2_01
+    tileCoordinates: {x: 2, y: 8}
   - id: Cheese_1x1_01
     tileCoordinates: {x: 1, y: 0}
   - id: TrapSpray_1x1_01
@@ -44,3 +44,36 @@ MonoBehaviour:
     tileCoordinates: {x: 10, y: 10}
   - id: TrapMouseTrap_1x1_01
     tileCoordinates: {x: 1, y: 1}
+  enemies:
+  - id: Mouse
+    tileCoordinates: {x: 0, y: 11}
+    startDirection: 2
+    startWave: 0
+    startCount: 1
+    addedPerWave: 1
+    spawnTimeInterval: .5
+    spawnTimeOffset: 0
+  - id: Mouse
+    tileCoordinates: {x: 2, y: 12}
+    startDirection: 4
+    startWave: 0
+    startCount: 1
+    addedPerWave: 1
+    spawnTimeInterval: .5
+    spawnTimeOffset: 0
+  - id: Mouse
+    tileCoordinates: {x: 11, y: 10}
+    startDirection: 8
+    startWave: 0
+    startCount: 1
+    addedPerWave: 1
+    spawnTimeInterval: .5
+    spawnTimeOffset: 0
+  - id: Mouse
+    tileCoordinates: {x: 5, y: 0}
+    startDirection: 1
+    startWave: 0
+    startCount: 1
+    addedPerWave: 1
+    spawnTimeInterval: .5
+    spawnTimeOffset: 0

@@ -63,6 +63,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         //Check which cheese tile is the closest
         foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
         {
+            Debug.LogError(tile);
             float distance = Vector2.Distance(transform.position.v2(), tile.location.v2());
             if (distance < smallestDistance)
             {

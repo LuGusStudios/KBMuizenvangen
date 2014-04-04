@@ -11,11 +11,16 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     private int currentIndex = 0;
     protected float timer = 0;
     protected int pickupCount = 0;
+    protected int currentWave = 0;
     public void StartGame()
     {
 
     }
     public void StopGame()
+    {
+
+    }
+    public void StartNextWave()
     {
 
     }

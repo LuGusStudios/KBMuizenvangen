@@ -37,6 +37,7 @@ public class CatchingMiceLevelDefinition : ScriptableObject {
         //List<string> updaters = new List<string>();
         List<CatchingMiceCharacterDefinition> characters = new List<CatchingMiceCharacterDefinition>();
 		List<CatchingMiceTileItemDefinition> tileitems = new List<CatchingMiceTileItemDefinition>();
+        List<CatchingMiceEnemyDefinition> enemies = new List<CatchingMiceEnemyDefinition>();
 		while (parser.Read("Level"))
 		{
 			if (parser.tagType == TinyXmlReader.TagType.OPENING)
@@ -69,6 +70,9 @@ public class CatchingMiceLevelDefinition : ScriptableObject {
 					case "TileItem":
 						tileitems.Add(CatchingMiceTileItemDefinition.FromXML(parser));
 						break;
+                    case "Enemy":
+                        enemies.Add(CatchingMiceEnemyDefinition.FromXML(parser));
+                        break;
 				}
 			}
 		}
@@ -111,6 +115,12 @@ public class CatchingMiceLevelDefinition : ScriptableObject {
 			rawdata += CatchingMiceTileItemDefinition.ToXML(tileitem, 2);
 		}
 		rawdata += "\t</TileItems>\r\n";
+        rawdata += "\t<Enemies>\r\n";
+        foreach (CatchingMiceEnemyDefinition enemy in level.enemies)
+        {
+            rawdata += CatchingMiceEnemyDefinition.ToXML(enemy, 2);
+        }
+        rawdata += "\t</Enemies>\r\n";
 		rawdata += "</Level>\r\n";
 
 		return rawdata;
@@ -123,6 +133,7 @@ public class CatchingMiceLevelDefinition : ScriptableObject {
 	public string level;
     public CatchingMiceCharacterDefinition[] characters;
 	public CatchingMiceTileItemDefinition[] tileItems;
+    public CatchingMiceEnemyDefinition[] enemies;
 
 	// Arrays of serialized classes are not created with default values
 	// Instead, initialize values once in OnEnable (which runs AFTER deserialization), checking for null / zero value
@@ -155,8 +166,8 @@ public class CatchingMiceCharacterDefinition
                     case "ID":
                         character.id = parser.content;
                         break;
-                    case "Speed":
-                        character.speed = float.Parse(parser.content);
+                    case "TimeToReachTile":
+                        character.timeToReachTile = float.Parse(parser.content);
                         break;
                     case "XLocation":
                         character.xLocation = int.Parse(parser.content);
@@ -189,7 +200,7 @@ public class CatchingMiceCharacterDefinition
 
         rawdata += tabs + "<Character>\r\n";
         rawdata += tabs + "\t<ID>" + character.id + "</ID>\r\n";
-        rawdata += tabs + "\t<Speed>" + character.speed.ToString() + "</Speed>\r\n";
+        rawdata += tabs + "\t<Speed>" + character.timeToReachTile.ToString() + "</Speed>\r\n";
         rawdata += tabs + "\t<XLocation>" + character.xLocation.ToString() + "</XLocation>\r\n";
         rawdata += tabs + "\t<YLocation>" + character.yLocation.ToString() + "</YLocation>\r\n";
         //rawdata += tabs + "\t<SpawnDelay>" + character.spawnDelay.ToString() + "</SpawnDelay>\r\n";
@@ -199,7 +210,7 @@ public class CatchingMiceCharacterDefinition
     }
 
     public string id = "";
-    public float speed = 1;
+    public float timeToReachTile = 0.5f;
     public int xLocation = 0;
     public int yLocation = 0;
 }
@@ -282,5 +293,150 @@ public class CatchingMiceTileItemDefinition
 
     public string id;
     public Vector2 tileCoordinates;
+}
+[System.Serializable]
+public class CatchingMiceEnemyDefinition
+{
+
+    public static CatchingMiceEnemyDefinition FromXML(TinyXmlReader parser)
+    {
+        CatchingMiceEnemyDefinition enemy = new CatchingMiceEnemyDefinition();
+
+        if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
+            (parser.tagName != "Enemy"))
+        {
+            Debug.Log("CatchingMiceDefinition.FromXML(): unexpected tag type or tag name.");
+            return null;
+        }
+        while (parser.Read("Enemy"))
+        {
+            if (parser.tagType == TinyXmlReader.TagType.OPENING)
+            {
+                switch (parser.tagName)
+                {
+                    case "ID":
+                        enemy.id = parser.content;
+                        break;
+                    case "TileCoordinates":
+                        Vector2 coordinates = Vector2.zero;
+                        while (parser.Read("TileCoordinates"))
+                        {
+                            if (parser.tagType == TinyXmlReader.TagType.OPENING)
+                            {
+                                switch (parser.tagName)
+                                {
+                                    case "X":
+                                        coordinates.x = float.Parse(parser.content);
+                                        break;
+                                    case "Y":
+                                        coordinates.y = float.Parse(parser.content);
+                                        break;
+                                }
+                            }
+                        }
+                        enemy.tileCoordinates = coordinates;
+                        break;
+                    case "StartDirection":
+                        switch (parser.content)
+                        {
+                            case "down":
+                                enemy.startDirection = ICatchingMiceCharacter.CharacterDirections.Down;
+                                break;
+                            case "left":
+                                enemy.startDirection = ICatchingMiceCharacter.CharacterDirections.Left;
+                                break;
+                            case "up":
+                                enemy.startDirection = ICatchingMiceCharacter.CharacterDirections.Up;
+                                break;
+                            case "right":
+                                enemy.startDirection = ICatchingMiceCharacter.CharacterDirections.Right;
+                                break;
+                            case "undefined":
+                                enemy.startDirection = ICatchingMiceCharacter.CharacterDirections.Undefined;
+                                break;
+                        }
+                        break;
+                    case "StartWave":
+                        enemy.startWave = int.Parse(parser.content);
+                        break;
+                    case "StartCount":
+                        enemy.startCount = int.Parse(parser.content);
+                        break;
+                    case "AddedPerWave":
+                        enemy.addedPerWave = int.Parse(parser.content);
+                        break;
+                    case "SpawnTimeInterval":
+                        enemy.spawnTimeInterval = float.Parse(parser.content);
+                        break;
+                    case "SpawnTimeOffset":
+                        enemy.spawnTimeOffset = float.Parse(parser.content);
+                        break;
+                }
+            }
+        }
+        return enemy;
+    }
+
+    public static string ToXML(CatchingMiceEnemyDefinition character, int depth)
+    {
+        string rawdata = string.Empty;
+
+        if (character == null)
+        {
+            Debug.Log("PacmanCharacterDefinition.ToXML(): The character to be serialized is null.");
+            return rawdata;
+        }
+
+        string tabs = string.Empty;
+        for (int i = 0; i < depth; ++i)
+        {
+            tabs += "\t";
+        }
+
+        rawdata += tabs + "<Enemy>\r\n";
+        rawdata += tabs + "\t<ID>" + character.id + "</ID>\r\n";
+        rawdata += tabs + "\t<TileCoordinates>\r\n";
+        rawdata += tabs + "\t\t<X>" + character.tileCoordinates.x.ToString() + "</X>\r\n";
+        rawdata += tabs + "\t\t<Y>" + character.tileCoordinates.y.ToString() + "</Y>\r\n";
+        rawdata += tabs + "\t</TileCoordinates>\r\n";
+        rawdata += tabs + "\t<StartDirection>";
+        switch (character.startDirection)
+        {
+            case ICatchingMiceCharacter.CharacterDirections.Down:
+                rawdata += "down";
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Left:
+                rawdata += "left";
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Up:
+                rawdata += "up";
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Right:
+                rawdata += "right";
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Undefined:
+            default:
+                rawdata += "undefined";
+                break;
+        }
+        rawdata += "</StartDirection>\r\n";
+        rawdata += tabs + "\t<StartWave>" + character.startWave + "</StartWave>\r\n";
+        rawdata += tabs + "\t<StartCount>" + character.startCount + "</StartCount>\r\n";
+        rawdata += tabs + "\t<AddedPerWave>" + character.addedPerWave + "</AddedPerWave>\r\n";
+        rawdata += tabs + "\t<SpawnTimeInterval>" + character.spawnTimeInterval + "</SpawnTimeInterval>\r\n";
+        rawdata += tabs + "\t<SpawnTimeOffset>" + character.spawnTimeOffset + "</SpawnTimeOffset>\r\n";
+        rawdata += tabs + "</Enemy>\r\n";
+
+        return rawdata;
+    }
+
+    public string id = "";
+    public Vector2 tileCoordinates = Vector2.zero;
+    public ICatchingMiceCharacter.CharacterDirections startDirection = ICatchingMiceCharacter.CharacterDirections.Undefined;
+    public int startWave = 0;
+    public int startCount = 1;
+    public int addedPerWave = 0;
+    public float spawnTimeInterval = 0.5f;
+    public float spawnTimeOffset = 0.0f;
 }
 

@@ -7,11 +7,14 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public float timeToReachTile = 0.5f;
 
     //Offset from 0-->1
-    protected float zOffset = 0.0f;
+    public float zOffset = 0.0f;
 
     public CatchingMiceTile currentTile = null;
     public Waypoint targetWaypoint = null;
     public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
+
+    protected CharacterDirections _currentDirection;
+    protected CharacterDirections _startDirection;
 
     protected float _health = 1.0f;
     public abstract float Health{ get; set;}
@@ -21,6 +24,16 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
     public bool moving = false;
     public ILugusCoroutineHandle handle = null;
+
+    public enum CharacterDirections
+    {
+        Up = 1,			// 0001
+        Right = 2,		// 0010
+        Down = 4,		// 0100
+        Left = 8,		// 1000
+
+        Undefined = -1
+    }
     public virtual void GetTarget()
     {
         //go to target
@@ -37,10 +50,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             handle.StartRoutine(MoveToDestination(path)); 
         }
     }
-    public virtual void DoCurrentTileBehaviour(int pathIndex)
-    {
-
-    }
+    public abstract void DoCurrentTileBehaviour(int pathIndex);
     public abstract IEnumerator Attack();
     protected virtual void Awake()
     {
@@ -55,6 +65,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
         //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
         navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
+
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
         handle = LugusCoroutines.use.GetHandle();

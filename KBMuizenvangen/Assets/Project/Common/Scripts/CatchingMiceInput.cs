@@ -8,10 +8,20 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
     protected ICatchingMiceCharacter _character = null;
     protected CatchingMiceTile _previousTile = null;
     protected CatchingMiceTile _lastAddedWaypoint = null;
+
+    protected LineRenderer _lineRenderer = null;
 	// Use this for initialization
 	void Start () 
     {
-
+        Transform lineRenderer = GameObject.Find("LineRenderer").transform;
+        if (lineRenderer != null)
+        {
+            _lineRenderer = lineRenderer.GetComponent<LineRenderer>();
+            if(_lineRenderer == null)
+            {
+                Debug.LogError("Line Renderer not found");
+            }
+        }
 	}
 	
 	// Update is called once per frame
@@ -49,8 +59,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             {
                 if (currentTile == _previousTile)
                     return;
-                Debug.Log("Current Tile : " + currentTile);
-                //Debug.Log("Dragging"); 
+                //Debug.Log("Current Tile : " + currentTile);
                 _previousTile = currentTile;
                 //when the waypoints is already in the list, ignore it
                 if (pathToWalk.Contains(currentTile.waypoint))
@@ -59,6 +68,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
                     {
                         pathToWalk.Remove(pathToWalk[pathToWalk.Count - 1]);
                         _lastAddedWaypoint = currentTile;
+                        _lineRenderer.SetVertexCount(pathToWalk.Count);
                     }
                     return;
                 }
@@ -92,6 +102,17 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             _character = null;
             pathToWalk.Clear();
         }
+
+        if (pathToWalk.Count > 0)
+        {
+            _lineRenderer.SetVertexCount(pathToWalk.Count);
+            for (int i = 0; i < pathToWalk.Count; i++)
+            {
+                _lineRenderer.SetPosition(i, pathToWalk[i].transform.position.z(-1));
+            }
+        }
+        else
+            _lineRenderer.SetVertexCount(0);
 	}
     void OnDrawGizmos()
     {

@@ -7,13 +7,15 @@ public class CatchingMiceLevelManager : LugusSingletonExisting<CatchingMiceLevel
     
 }
 
-public class CatchingMiceLevelManagerDefault : MonoBehaviour {
+public class CatchingMiceLevelManagerDefault : MonoBehaviour 
+{
 
     protected Transform _levelRoot = null;
     protected Transform _levelParent = null;
     protected Transform _objectParent = null;
     protected Transform _navigationParent = null;
     protected Transform _characterParent = null;
+    protected Transform _prefabParent = null;
 
     public CatchingMiceLevelDefinition[] levels = null;
     public int width = 13;
@@ -22,10 +24,15 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
     public CatchingMiceTile[,] levelTiles;
     public float scale = 1;
 
+    public ICatchingMiceCharacter[] characterPrefabs = null;
     public GameObject[] tileItems = null;
 
     [HideInInspector]
     public List<Waypoint> waypointList = new List<Waypoint>();
+    [HideInInspector]
+    public List<CatchingMiceEnemyDefinition> enemiesList = new List<CatchingMiceEnemyDefinition>();
+
+    public List<CatchingMiceHole> holeTiles = new List<CatchingMiceHole>();
 
     public List<CatchingMiceTile> cheeseTiles = new List<CatchingMiceTile>();
     public delegate void CheeseRemovedEventHandler(CatchingMiceTile cheeseTile);
@@ -50,6 +57,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         _objectParent = _levelRoot.FindChild("ObjectParent");
         _navigationParent = _levelRoot.FindChild("NavigationParent");
         _characterParent = _levelRoot.FindChild("CharacterParent");
+        _prefabParent = _levelRoot.FindChild("PrefabParent");
     }
 
     public void ClearLevel()
@@ -81,6 +89,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             }
             waypointList.Clear();
             cheeseTiles.Clear();
+            holeTiles.Clear();
         }
 #else
 		ClearLevelIsPlaying();
@@ -121,6 +130,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         }
         waypointList.Clear();
         cheeseTiles.Clear();
+        holeTiles.Clear();
     }
     
 
@@ -161,13 +171,15 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
 
         ParseLevelTiles(width, height);
 
-        PlaceLevelTileItems(level.tileItems);
+        PlaceLevelTileItems(level.tileItems); 
 
-        //CreateGrid();
+        CreateGrid();
 
         PlaceWaypoints();
 
+        PlaceCharacters(level.characters);
 
+        PlaceEnemySpawnpoint(level.enemies);
     }
     public void CreateGrid()
     {
@@ -310,7 +322,165 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             }
         }
     }
+    protected void PlaceCharacters(CatchingMiceCharacterDefinition[] characterDefinitions)
+    {
+        if (characterDefinitions == null || characterDefinitions.Length < 1)
+        {
+            Debug.LogError("This level has no characters!");
+            return;
+        }
+        foreach (CatchingMiceCharacterDefinition characterDefinition in characterDefinitions)
+        {
+            if (string.IsNullOrEmpty(characterDefinition.id))
+            {
+                Debug.LogError("Character ID is null or empty!");
+                continue;
+            }
+            ICatchingMiceCharacter characterPrefabFound = null;
+            foreach (ICatchingMiceCharacter characterPrefab in characterPrefabs)
+            {
+                if (characterDefinition.id == characterPrefab.gameObject.name)
+                {
+                    characterPrefabFound = characterPrefab;
+                    break;
+                }
+            }
 
+            if (characterPrefabFound == null)
+            {
+                Debug.LogError("Character prefab could not be found: " + characterDefinition.id);
+                continue;
+            }
+
+            CatchingMiceTile startTile = GetTile(characterDefinition.xLocation, characterDefinition.yLocation);
+
+            if (startTile == null)
+            {
+                Debug.LogWarning("Character " + characterDefinition.id + " was placed on a non-existing tile. Not placing.");
+                return;
+            }
+
+            ICatchingMiceCharacter characterSpawned = (ICatchingMiceCharacter)Instantiate(characterPrefabFound);
+
+            characterSpawned.transform.parent = _characterParent;
+            characterSpawned.transform.localPosition = startTile.location.zAdd(-characterSpawned.zOffset);
+            characterSpawned.currentTile = startTile;
+            // set speed
+            if (characterDefinition.timeToReachTile < 0)
+            {
+                Debug.LogError("Speed is negative for character " + characterDefinition.id + ". Setting speed to 1.");
+                characterSpawned.timeToReachTile = 1;
+            }
+            else
+            {
+                characterSpawned.timeToReachTile = characterDefinition.timeToReachTile;
+            }
+        }
+    }
+    public void PlaceEnemySpawnpoint(CatchingMiceEnemyDefinition[] enemyDefinitions)
+    {
+        if (enemyDefinitions == null || enemyDefinitions.Length < 1)
+        {
+            Debug.LogError("This level has no characters!");
+            return;
+        }
+
+        GameObject holePrefab = GetPrefab("Hole_1x1_01");
+        if (holePrefab == null)
+        {
+            Debug.LogError("CatchingMice: Missing Hole tile!");
+        }
+
+        foreach (CatchingMiceEnemyDefinition enemyDefinition in enemyDefinitions)
+        {
+            if (string.IsNullOrEmpty(enemyDefinition.id))
+            {
+                Debug.LogError("Character ID is null or empty!");
+                continue;
+            }
+            CatchingMiceTile spawnTile = GetTile(enemyDefinition.tileCoordinates);
+
+            //when there is no spawnpoint
+            if((spawnTile.tileType & CatchingMiceTile.TileType.Hole) != CatchingMiceTile.TileType.Hole)
+            {
+                spawnTile.tileType = spawnTile.tileType | CatchingMiceTile.TileType.Hole;
+                CatchingMiceHole holeSpawnpoint = new CatchingMiceHole(enemyDefinition.startDirection, spawnTile);
+                holeTiles.Add(holeSpawnpoint);
+
+                PlaceSpawnpointPrefabs(holePrefab, holeSpawnpoint);
+
+                Debug.Log("hole added : " + holeSpawnpoint.spawnPoint + " with parent location " + holeSpawnpoint.parentTile.location + " and direction " + holeSpawnpoint.spawnDirection);
+            }
+            else
+            {
+                //when the tile is already a hole tile check if the spawn comes from another direction, if so add it to the list
+                foreach (CatchingMiceHole hole in holeTiles)
+                {
+                    if (spawnTile == hole.parentTile && enemyDefinition.startDirection != hole.spawnDirection)
+                    {
+                        CatchingMiceHole holeSpawnpoint = new CatchingMiceHole(enemyDefinition.startDirection, spawnTile);
+                        holeTiles.Add(holeSpawnpoint);
+
+                        PlaceSpawnpointPrefabs(holePrefab, holeSpawnpoint);
+                    }
+                }
+            }
+            
+        }
+    }
+    public void PlaceSpawnpointPrefabs(GameObject holePrefab , CatchingMiceHole holeScript)
+    {
+        //Places the prefab with the right orientation of the sprite
+        if(holePrefab == null)
+        {
+            Debug.LogError("Hole prefab has not been found");
+            return;
+        }
+        if (holeScript == null)
+        {
+            Debug.LogError("Hole script has not been found");
+            return;
+        }
+        GameObject spawnHoleTile = (GameObject)Instantiate(holePrefab);
+        spawnHoleTile.transform.parent = _levelParent;
+        spawnHoleTile.transform.position = holeScript.parentTile.location;
+
+        switch (holeScript.spawnDirection)
+        {
+            case ICatchingMiceCharacter.CharacterDirections.Down:
+                //this is the right rotation already
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Left:
+                spawnHoleTile.transform.Rotate(new Vector3(0, 0, -90));
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Right:
+                spawnHoleTile.transform.Rotate(new Vector3(0, 0, 90));
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Up:
+                spawnHoleTile.transform.localScale = spawnHoleTile.transform.localScale.y(-1);
+                break;
+            case ICatchingMiceCharacter.CharacterDirections.Undefined:
+                Debug.LogError("Undefined direcion passed. Spawnpoint could not be made.");
+                break;
+        }
+    }
+    public void InstantiateWave(int wave)
+    {
+
+    }
+    public IEnumerator SpawnWave(int wave)
+    {
+        foreach (CatchingMiceEnemyDefinition enemyDefinition in enemiesList)
+        {
+            if (string.IsNullOrEmpty(enemyDefinition.id))
+            {
+                Debug.LogError("Character ID is null or empty!");
+                continue;
+            }
+            CatchingMiceTile spawnTile = GetTile(enemyDefinition.tileCoordinates);
+        }
+        yield break;
+    }
     public void AssignNeighbours()
     {
         for (int i = 0; i < waypointList.Count-1; i++)
@@ -335,7 +505,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
             
         }
     }
+    public GameObject GetPrefab(string name)
+    {
+        Transform child = _prefabParent.FindChild(name);
 
+        if (child != null)
+            return child.gameObject;
+        else
+        {
+            Debug.LogError("Child " + name + " not found.");
+            return null;
+        }
+    }
     // Lookup methods--------------------------------------------------------------------
 
     // get tile by grid indices (contained in vector2)
@@ -365,12 +546,26 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour {
         int xIndex = Mathf.RoundToInt(x / scale);
         int yIndex = Mathf.RoundToInt(y / scale);
 
-        if (xIndex >= width || xIndex < 0)
-            return null;
-        else if (yIndex >= height || yIndex < 0)
+        //instead of returning null, return closest tile?
+        if (xIndex >= width)
         {
-            Debug.Log("INDEX " + yIndex);
-            return null;
+            xIndex = width - 1;
+            //return null;
+        }
+        else if (xIndex < 0)
+        {
+            xIndex = 0;
+            //return null;
+        }
+        if (yIndex >= height)
+        {
+            yIndex = height - 1;
+            //return null;
+        }
+        else if (yIndex < 0)
+        {
+            yIndex = 0;
+            //return null;
         }
         return GetTile(xIndex, yIndex, true);
     }
