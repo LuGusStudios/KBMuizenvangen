@@ -1,7 +1,4 @@
-﻿
-public var myLineRenderer : LineRenderer;
-
-private var speed : float;
+﻿private var speed : float;
 private var Count : float;
 private var C1 : float;
 private var V1 : float;
@@ -12,10 +9,6 @@ private var Pos : Vector3;
 public var MaxDist : float = 1.5;
 
 function Start(){
-
-	myLineRenderer = GetComponent(LineRenderer);
-	myLineRenderer.useWorldSpace = true;
-	myLineRenderer.SetPosition(0, transform.position);
 
 	speed = 1.0;
 	Count = 0.0;
@@ -46,15 +39,6 @@ function Update () {
 	}
 	
 	transform.position = Vector3.Lerp(transform.position, Pos, Time.deltaTime);
-	SetLineRenderer();
 	
-}
-
-function SetLineRenderer(){
-
-	
-
-	myLineRenderer.SetPosition(1, transform.position); 
-
 }
 
