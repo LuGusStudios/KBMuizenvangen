@@ -2273,6 +2273,8 @@ MonoBehaviour:
   scale: 1
   characterPrefabs:
   - {fileID: 11400000, guid: 4997510b666a46644aac791e23be5d28, type: 2}
+  enemyPrefabs:
+  - {fileID: 100000, guid: d00d3b75bca1a494da5099155d833d93, type: 2}
   tileItems:
   - {fileID: 100006, guid: 4b3d25819f1d14941b3eec03dc845eed, type: 2}
   - {fileID: 100002, guid: 441153ca8ce952844834af08e15fd83c, type: 2}
@@ -2281,7 +2283,6 @@ MonoBehaviour:
   - {fileID: 100006, guid: 52c487786efddec4ea61ad8626012b66, type: 2}
   - {fileID: 100004, guid: 85671cc754acc6c4a8e8c5f80bf061a7, type: 2}
   - {fileID: 100004, guid: 68b714737e35f8040bc4208e20ffba4d, type: 2}
-  - {fileID: 100000, guid: d00d3b75bca1a494da5099155d833d93, type: 2}
   cheeseItems:
   - {fileID: 100002, guid: f55b0d76be49f6e4d98cb3927b5af338, type: 2}
   holeItems:

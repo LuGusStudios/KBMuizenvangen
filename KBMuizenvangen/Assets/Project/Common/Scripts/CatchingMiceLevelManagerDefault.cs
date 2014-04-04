@@ -25,6 +25,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public float scale = 1;
 
     public ICatchingMiceCharacter[] characterPrefabs = null;
+    public GameObject[] enemyPrefabs = null;
     public GameObject[] tileItems = null;
     public GameObject[] cheeseItems = null;
     public GameObject[] holeItems = null;
@@ -184,6 +185,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         PlaceCharacters(level.characters);
 
         PlaceEnemySpawnpoint(level.holeItems);
+
+        wavesList = new List<CatchingMiceWaveDefinition>(level.waves);
     }
     public void CreateGrid()
     {
@@ -312,13 +315,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             if (tileObjectScript != null)
             {
                 tileObjectScript.CalculateColliders();
-
-                //put the needed tiletypes in the right list
-                if(tileObjectScript.tileType == CatchingMiceTile.TileType.Cheese)
-                {
-                    cheeseTiles.Add(targetTile);
-                }
-
             }
             else
             {
@@ -381,7 +377,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         if (characterDefinitions == null || characterDefinitions.Length < 1)
         {
             Debug.LogError("This level has no characters!");
-            return;
+            return; 
         }
         foreach (CatchingMiceCharacterDefinition characterDefinition in characterDefinitions)
         {
@@ -467,6 +463,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             //Placing tile
             spawnTile.tileType = spawnTile.tileType | CatchingMiceTile.TileType.Hole;
             CatchingMiceHole holeSpawnpoint = new CatchingMiceHole(holeDefinition.startDirection, spawnTile);
+            holeSpawnpoint.id = holeDefinition.holeId;
+            holeSpawnpoint.spawnDirection = holeDefinition.startDirection;
             holeTiles.Add(holeSpawnpoint);
 
             GameObject holeItem = (GameObject)Instantiate(holeItemPrefab);
@@ -494,26 +492,90 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             }
 
             Debug.Log("hole added : " + holeSpawnpoint.spawnPoint + " with parent location " + holeSpawnpoint.parentTile.location + " and direction " + holeSpawnpoint.spawnDirection);
-         
-            
+          
         }
     }
-    public void InstantiateWave(int wave)
+    public void InstantiateWave(int waveIndex)
     {
-        foreach (CatchingMiceWaveDefinition enemyDefinition in wavesList)
+        if (waveIndex < 0)
         {
-            if (enemyDefinition.enemies.Length <= 0)
+            Debug.LogError("wave can't be negative");
+            return;
+        }
+        if (waveIndex >= wavesList.Count)
+        {
+            Debug.LogError("wave exceeds the waves list. useing last wave count.");
+            waveIndex = wavesList.Count - 1;
+        }
+        CatchingMiceWaveDefinition wave = wavesList[waveIndex];
+        int amountToKill = 0;
+        foreach (CatchingMiceEnemyDefinition enemyDefinition in wave.enemies)
+        {
+            //get the prefab from string name
+            if (string.IsNullOrEmpty(enemyDefinition.prefabName))
             {
-                Debug.LogError("No waves!");
+                Debug.LogError("Character ID is null or empty!");
+                continue;
+            }
+            GameObject enemyPrefab = null;
+            foreach (GameObject go in enemyPrefabs)
+            {
+                if (go.name == enemyDefinition.prefabName)
+                {
+                    enemyPrefab = go;
+                    break;
+                }
+            }
+            if (enemyPrefab == null)
+            {
+                Debug.LogError("Did not find hole item ID: " + enemyDefinition.prefabName);
                 return;
             }
-            //CatchingMiceTile spawnTile = GetTile(enemyDefinition.tileCoordinates);
+            
+            //get spawnlocation from hole id
+            CatchingMiceHole spawnTile = null;
+            foreach (CatchingMiceHole hole in holeTiles)
+            {
+                if(hole.id == enemyDefinition.holeId)
+                {
+                    spawnTile = hole;
+                }
+            }
+            if (spawnTile == null)
+            {
+                Debug.LogError("hole id has not been found for " + enemyDefinition.prefabName);
+                return;
+            }
+            //everything has been found, start new coroutine with spawnwave
+            LugusCoroutines.use.StartRoutine(SpawnSubWave(enemyPrefab,spawnTile, enemyDefinition.amount, enemyDefinition.spawnTimeInterval, enemyDefinition.spawnDelay));
+            amountToKill += enemyDefinition.amount;
         }
+        CatchingMiceGameManager.use.SetAmountToKill(amountToKill);
     }
-    public IEnumerator SpawnWave(int wave)
+    protected IEnumerator SpawnSubWave(GameObject spawnGO,CatchingMiceHole spawnTile, int amount, float spawnInterval, float spawnDelay)
     {
-       
+        if(spawnDelay>0)
+            yield return new WaitForSeconds(spawnDelay);
+
+        float spawnIntervalLower = spawnInterval * 0.9f;
+        float spawnIntervalUpper = spawnInterval * 1.1f;
+
+        for (int i = 0; i < amount; i++)
+        {
+            //instantiate 
+            GameObject go = GetGameObjectFromPool(spawnGO,spawnTile);
+            CatchingMiceCharacterMouse mouseScript = go.GetComponent<CatchingMiceCharacterMouse>();
+            if(mouseScript!= null)
+            {
+                mouseScript.GetTarget();
+            }
+            yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(spawnIntervalLower,spawnIntervalUpper));
+        }
         yield break;
+    }
+    public GameObject GetGameObjectFromPool(GameObject gameObjectToGet, CatchingMiceHole spawnTile)
+    {
+        return (GameObject)Instantiate(gameObjectToGet,spawnTile.spawnPoint,Quaternion.identity);
     }
     public void AssignNeighbours()
     {

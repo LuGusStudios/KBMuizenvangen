@@ -12,6 +12,9 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     protected float timer = 0;
     protected int pickupCount = 0;
     protected int currentWave = 0;
+    protected int amountToKill = 0;
+     
+    protected float timeBetweenWave = 30.0f;
     public void StartGame()
     {
 
@@ -93,6 +96,11 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     public void ModifyPickUpCount(int modifyValue)
     {
         pickupCount += modifyValue;
+    }
+    public void SetAmountToKill(int amount)
+    {
+        amountToKill = amount;
+        Debug.LogWarning("amount to kill :" + amountToKill);
     }
 	// Update is called once per frame
     protected void Update()

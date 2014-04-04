@@ -140,37 +140,38 @@ public class CatchingMiceLevelWindow : EditorWindow
     }
     public void SpawnMouseDebug()
     {
-        GameObject mousePrefab = null;
-        CatchingMiceCharacterMouse mouseController = null;
+        CatchingMiceLevelManager.use.InstantiateWave(0);
+        //GameObject mousePrefab = null;
+        //CatchingMiceCharacterMouse mouseController = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
-        {
-            mouseController = prefab.GetComponent<CatchingMiceCharacterMouse>();
-            if (mouseController != null)
-            {
-                mousePrefab = prefab;
+        //foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+        //{
+        //    mouseController = prefab.GetComponent<CatchingMiceCharacterMouse>();
+        //    if (mouseController != null)
+        //    {
+        //        mousePrefab = prefab;
                 
-            }
-        }
-        GameObject pathfindingGO = GameObject.Find("PathFindingObject");
-        if (pathfindingGO == null)
-        {
-            pathfindingGO = new GameObject();
-            pathfindingGO.name = "PathFindingObject";
-            GameObject activeObject = Selection.activeGameObject;
-            if (activeObject != null)
-                pathfindingGO.transform.position = activeObject.transform.position;
-            pathfindingGO.AddComponent<CatchingMicePathFinding>();
-        }
-        if (mousePrefab != null)
-        {
-            GameObject movePrefab = Instantiate(mousePrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
-            if (useBothTypes)
-                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Both;
-            else
-                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Ground;
-            movePrefab.GetComponent<CatchingMiceCharacterMouse>().GetTarget();
-        }
+        //    }
+        //}
+        //GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+        //if (pathfindingGO == null)
+        //{
+        //    pathfindingGO = new GameObject();
+        //    pathfindingGO.name = "PathFindingObject";
+        //    GameObject activeObject = Selection.activeGameObject;
+        //    if (activeObject != null)
+        //        pathfindingGO.transform.position = activeObject.transform.position;
+        //    pathfindingGO.AddComponent<CatchingMicePathFinding>();
+        //}
+        //if (mousePrefab != null)
+        //{
+        //    GameObject movePrefab = Instantiate(mousePrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
+        //    if (useBothTypes)
+        //        movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Both;
+        //    else
+        //        movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Ground;
+        //    movePrefab.GetComponent<CatchingMiceCharacterMouse>().GetTarget();
+        //}
     }
     public void CharacterDebug()
     {

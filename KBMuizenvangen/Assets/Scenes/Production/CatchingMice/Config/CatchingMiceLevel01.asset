@@ -35,24 +35,51 @@ MonoBehaviour:
   cheeses:
   - prefabName: Cheese_1x1_01
     tileCoordinates: {x: 5, y: 5}
-    stacks: 5
+    stacks: 1000
   - prefabName: Cheese_1x1_01
     tileCoordinates: {x: 5, y: 6}
-    stacks: 10
+    stacks: 1000
   holeItems:
   - prefabName: Hole_1x1_01
     holeId: Hole01
     tileCoordinates: {x: 2, y: 0}
     startDirection: 1
+  - prefabName: Hole_1x1_01
+    holeId: Hole02
+    tileCoordinates: {x: 0, y: 4}
+    startDirection: 2
+  - prefabName: Hole_1x1_01
+    holeId: Hole03
+    tileCoordinates: {x: 11, y: 6}
+    startDirection: 8
+  - prefabName: Hole_1x1_01
+    holeId: Hole04
+    tileCoordinates: {x: 4, y: 12}
+    startDirection: 4
   waves:
   - enemies:
     - prefabName: Mouse
       holeId: Hole01
-      amount: 5
-      spawnTimeInterval: 2
+      amount: 2
+      spawnTimeInterval: .800000012
       spawnDelay: 0
     - prefabName: Mouse
       holeId: Hole01
       amount: 5
-      spawnTimeInterval: 2
-      spawnDelay: 5
+      spawnTimeInterval: 1
+      spawnDelay: 1
+    - prefabName: Mouse
+      holeId: Hole02
+      amount: 6
+      spawnTimeInterval: 1
+      spawnDelay: 3
+    - prefabName: Mouse
+      holeId: Hole03
+      amount: 3
+      spawnTimeInterval: 1
+      spawnDelay: 2
+    - prefabName: Mouse
+      holeId: Hole04
+      amount: 4
+      spawnTimeInterval: 1
+      spawnDelay: 4

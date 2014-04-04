@@ -63,7 +63,6 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         //Check which cheese tile is the closest
         foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
         {
-            Debug.LogError(tile);
             float distance = Vector2.Distance(transform.position.v2(), tile.location.v2());
             if (distance < smallestDistance)
             {
@@ -104,8 +103,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
         if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
         {
+            handle.StopRoutine();
             //begin eating the cheese
-            Debug.Log("eating cheeese");
+            //Debug.Log("eating cheeese");
             handle.StartRoutine(Attack());
         }
     }
@@ -114,7 +114,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         CatchingMiceTile cheeseTile = currentTile;
         while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0)
         {
-            Debug.Log(currentTile.trapObject.Stacks);
+            //Debug.Log(currentTile.trapObject.Stacks);
             cheeseTile.trapObject.Stacks -= damage;
 
             yield return new WaitForSeconds(attackInterval);

@@ -3,9 +3,11 @@ using System.Collections;
 
 public class CatchingMiceHole
 {
+    public string id = "";
     public ICatchingMiceCharacter.CharacterDirections spawnDirection = ICatchingMiceCharacter.CharacterDirections.Undefined;
     public Vector3 spawnPoint = Vector3.zero;
     public CatchingMiceTile parentTile = null;
+    
     public CatchingMiceHole(ICatchingMiceCharacter.CharacterDirections direction, CatchingMiceTile tile)
     {
         spawnDirection = direction;
