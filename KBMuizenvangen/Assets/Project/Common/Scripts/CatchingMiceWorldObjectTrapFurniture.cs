@@ -1,8 +1,57 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject 
+public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
+    protected float _stacks = 3;
+    protected float _cost = 1;
+    protected float _damage = 1;
+
+    public float Stacks
+    {
+        get
+        {
+            return _stacks;
+        }
+        set
+        {
+            _stacks = value;
+        }
+    }
+
+    public float Cost
+    {
+        get
+        {
+            return _cost;
+        }
+        set
+        {
+            _cost = value;
+        }
+    }
+
+    public float Damage
+    {
+        get
+        {
+            return _damage;
+        }
+        set
+        {
+            _damage = value;
+        }
+    }
+
+    public void OnHit(ICatchingMiceCharacter character)
+    {
+        character.Health -= _damage;
+        _stacks--;
+    }
+    public void DestroySelf()
+    {
+
+    }
     public override void SetTileType(CatchingMiceTile tile)
     {
         CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];

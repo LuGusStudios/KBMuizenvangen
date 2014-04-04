@@ -106,7 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gridOffset: 0
-  tileType: 4
+  tileType: 8
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -6,10 +6,34 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     protected List<Waypoint> navigationGraph = null;
     public float timeToReachTile = 0.5f;
 
+    //Offset from 0-->1
+    public float zOffset = 0.0f;
+
     public CatchingMiceTile currentTile = null;
     public Waypoint targetWaypoint = null;
     public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
 
+    protected CharacterDirections _currentDirection;
+    protected CharacterDirections _startDirection;
+
+    protected float _health = 1.0f;
+    public abstract float Health{ get; set;}
+
+    public float damage = 1.0f;
+    public float attackInterval = 0.5f;
+
+    public bool moving = false;
+    public ILugusCoroutineHandle handle = null;
+
+    public enum CharacterDirections
+    {
+        Up = 1,			// 0001
+        Right = 2,		// 0010
+        Down = 4,		// 0100
+        Left = 8,		// 1000
+
+        Undefined = -1
+    }
     public virtual void GetTarget()
     {
         //go to target
@@ -22,28 +46,29 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         if(targetWaypoint != null)
         {
             List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
-
-            LugusCoroutines.use.StartRoutine(MoveToDestination(path)); 
+            
+            handle.StartRoutine(MoveToDestination(path)); 
         }
     }
-    public virtual void DoCurrentTileBehaviour()
-    {
-
-    }
-    protected void Awake()
+    public abstract void DoCurrentTileBehaviour(int pathIndex);
+    public abstract IEnumerator Attack();
+    protected virtual void Awake()
     {
         SetupLocal();
     }
-    protected void Start()
+    protected virtual void Start()
     {
         SetupGlobal();
     }
     public virtual void SetupLocal()
     {
+        currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
         //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
+
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+        handle = LugusCoroutines.use.GetHandle();
     }
     public virtual void SetupGlobal()
     {
@@ -211,25 +236,25 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     }
     public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
-        float depth = transform.position.z;
         int pathIndex = path.Count - 1;
+        Debug.Log("Move");
+        moving = true;
+
         while (pathIndex > -1)
         {
             gameObject.StopTweens();
 
             Vector3 movePosition = path[pathIndex].transform.position;
-
+            
             //check which zdepth the object must be
             if (transform.position.z < path[pathIndex].transform.position.z)
             {
                 movePosition.z = transform.position.z;
             }
-
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
             //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
 
-            //float maxDistance = 0.4f; // units (in this setup = pixels)
             bool reachedTarget = false;
             while (!reachedTarget)
             {
@@ -243,18 +268,24 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
             if (pathIndex > 0)
             {
-                if (path[pathIndex - 1].transform.position.z <= path[pathIndex].transform.position.z)
+                if (path[pathIndex - 1].transform.position.z < path[pathIndex].transform.position.z)
                 {
-                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z);
+                    transform.position = transform.position.z(path[pathIndex - 1].transform.position.z).zAdd(-zOffset); 
                 }
                 else
-                    transform.position = transform.position.z(path[pathIndex].transform.position.z);
+                    transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
             }
             else
-                transform.position = transform.position.z(path[pathIndex].transform.position.z);
+            {
+                transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
+                //handle.StopRoutine();
+            }
 
             currentTile = path[pathIndex].parentTile;
-            DoCurrentTileBehaviour();
+            
+            DoCurrentTileBehaviour(pathIndex);
+
+            path.Remove(path[pathIndex]);
 
             pathIndex--;
         }
@@ -262,6 +293,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         // we have reached the final target now (or should have...)
         gameObject.StopTweens();
 
-        //moving = false;
+        moving = false;
+
     }
 }
