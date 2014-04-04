@@ -227,7 +227,7 @@ public class CatchingMicePathFinding : MonoBehaviour
     public void SetupLocal()
     {
         //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.WaypointList);
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
     }

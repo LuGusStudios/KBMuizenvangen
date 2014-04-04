@@ -67,6 +67,10 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             SpawnMouseDebug();
         }
+        if (GUILayout.Button("Spawn Player"))
+        {
+            CharacterDebug();
+        }
     }
 
     //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid
@@ -112,15 +116,13 @@ public class CatchingMiceLevelWindow : EditorWindow
                
             Waypoint target = null;
 
-            CatchingMiceTile targetTile = null;
             float smallestDistance = float.MaxValue;
             //Check which cheese tile is the closest
-            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.CheeseTiles)
+            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
             {
                 float distance = Vector2.Distance(pathfindScript.transform.position.v2(), tile.location.v2());
                 if (distance < smallestDistance)
                 {
-                    targetTile = tile;
                     smallestDistance = distance;
                     target = tile.waypoint;
                 }
@@ -168,6 +170,35 @@ public class CatchingMiceLevelWindow : EditorWindow
             else
                 movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Ground;
             movePrefab.GetComponent<CatchingMiceCharacterMouse>().GetTarget();
+        }
+    }
+    public void CharacterDebug()
+    {
+        GameObject characterPrefab = null;
+        ICatchingMiceCharacter Controller = null;
+
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+        {
+            Controller = prefab.GetComponent<ICatchingMiceCharacter>();
+            if (Controller != null)
+            {
+                characterPrefab = prefab;
+                
+            }
+        }
+        GameObject pathfindingGO = GameObject.Find("PathFindingObject");
+        if (pathfindingGO == null)
+        {
+            pathfindingGO = new GameObject();
+            pathfindingGO.name = "PathFindingObject";
+            GameObject activeObject = Selection.activeGameObject;
+            if (activeObject != null)
+                pathfindingGO.transform.position = activeObject.transform.position;
+            pathfindingGO.AddComponent<CatchingMicePathFinding>();
+        }
+        if (characterPrefab != null)
+        {
+            GameObject movePrefab = Instantiate(characterPrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
         }
     }
 }

@@ -6,7 +6,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
 
     public float gridOffset = 0.5f;
     public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
-    protected BoxCollider2D[] BoxColliders2D;
+    protected BoxCollider2D[] _BoxColliders2D;
     
     protected void Awake()
     {
@@ -25,9 +25,9 @@ public class CatchingMiceWorldObject : MonoBehaviour
 
     public virtual void CalculateColliders()
     {
-        BoxColliders2D = GetComponentsInChildren<BoxCollider2D>();
+        _BoxColliders2D = GetComponentsInChildren<BoxCollider2D>();
         //gets the indices of box colliders
-        foreach (BoxCollider2D col2D in BoxColliders2D)
+        foreach (BoxCollider2D col2D in _BoxColliders2D)
         {
             float xTiles = Mathf.Ceil(col2D.size.x / CatchingMiceLevelManager.use.scale);
             float yTiles = Mathf.Ceil(col2D.size.y / CatchingMiceLevelManager.use.scale);
@@ -49,7 +49,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
             }
         }
         //when there is no boxcollider, then it only takes up 1 tile
-        if(BoxColliders2D.Length <= 0)
+        if(_BoxColliders2D.Length <= 0)
         {
             Debug.Log("no collider has been found. will be using 1 tile");
             SetTileType(CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x,transform.position.y));
