@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeToReachTile: .699999988
+  zOffset: .75
   targetWaypoint: {fileID: 0}
   walkable: -1
   damage: 1

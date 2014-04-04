@@ -15,65 +15,44 @@ MonoBehaviour:
   height: 13
   level: 0
   characters:
-  - id: CharacterTest
+  - prefabName: CharacterTest
     timeToReachTile: .5
     xLocation: 4
     yLocation: 5
-  - id: CharacterTest
-    timeToReachTile: 1
+  - prefabName: CharacterTest
+    timeToReachTile: .200000003
     xLocation: 5
     yLocation: 7
   tileItems:
-  - id: FurnitureFridge_1x1_01
-    tileCoordinates: {x: 0, y: 0}
-  - id: FurnitureFridge_1x1_01
+  - prefabName: FurnitureCloset_4x2_01
+    tileCoordinates: {x: 7, y: 3}
+  - prefabName: FurnitureCoffeeTable_1x1_01
     tileCoordinates: {x: 3, y: 2}
-  - id: FurnitureCloset_4x2_01
+  - prefabName: FurnitureFridge_1x1_01
+    tileCoordinates: {x: 1, y: 2}
+  - prefabName: FurnitureSofa_3x1_01
+    tileCoordinates: {x: 2, y: 5}
+  cheeses:
+  - prefabName: Cheese_1x1_01
     tileCoordinates: {x: 5, y: 5}
-  - id: FurnitureSofa_3x1_01
-    tileCoordinates: {x: 3, y: 3}
-  - id: FurnitureCoffeeTable_1x1_01
-    tileCoordinates: {x: 1, y: 5}
-  - id: FurnitureCloset_4x2_01
-    tileCoordinates: {x: 2, y: 8}
-  - id: Cheese_1x1_01
-    tileCoordinates: {x: 1, y: 0}
-  - id: TrapSpray_1x1_01
-    tileCoordinates: {x: 0, y: 0}
-  - id: Cheese_1x1_01
-    tileCoordinates: {x: 10, y: 10}
-  - id: TrapMouseTrap_1x1_01
-    tileCoordinates: {x: 1, y: 1}
-  enemies:
-  - id: Mouse
-    tileCoordinates: {x: 0, y: 11}
-    startDirection: 2
-    startWave: 0
-    startCount: 1
-    addedPerWave: 1
-    spawnTimeInterval: .5
-    spawnTimeOffset: 0
-  - id: Mouse
-    tileCoordinates: {x: 2, y: 12}
-    startDirection: 4
-    startWave: 0
-    startCount: 1
-    addedPerWave: 1
-    spawnTimeInterval: .5
-    spawnTimeOffset: 0
-  - id: Mouse
-    tileCoordinates: {x: 11, y: 10}
-    startDirection: 8
-    startWave: 0
-    startCount: 1
-    addedPerWave: 1
-    spawnTimeInterval: .5
-    spawnTimeOffset: 0
-  - id: Mouse
-    tileCoordinates: {x: 5, y: 0}
+    stacks: 5
+  - prefabName: Cheese_1x1_01
+    tileCoordinates: {x: 5, y: 6}
+    stacks: 10
+  holeItems:
+  - prefabName: Hole_1x1_01
+    holeId: Hole01
+    tileCoordinates: {x: 2, y: 0}
     startDirection: 1
-    startWave: 0
-    startCount: 1
-    addedPerWave: 1
-    spawnTimeInterval: .5
-    spawnTimeOffset: 0
+  waves:
+  - enemies:
+    - prefabName: Mouse
+      holeId: Hole01
+      amount: 5
+      spawnTimeInterval: 2
+      spawnDelay: 0
+    - prefabName: Mouse
+      holeId: Hole01
+      amount: 5
+      spawnTimeInterval: 2
+      spawnDelay: 5
