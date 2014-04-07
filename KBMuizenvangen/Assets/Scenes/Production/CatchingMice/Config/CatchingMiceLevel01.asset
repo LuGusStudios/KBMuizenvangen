@@ -83,3 +83,29 @@ MonoBehaviour:
       amount: 4
       spawnTimeInterval: 1
       spawnDelay: 4
+  - enemies:
+    - prefabName: Mouse
+      holeId: Hole01
+      amount: 2
+      spawnTimeInterval: .800000012
+      spawnDelay: 0
+    - prefabName: Mouse
+      holeId: Hole01
+      amount: 5
+      spawnTimeInterval: 1
+      spawnDelay: 1
+    - prefabName: Mouse
+      holeId: Hole02
+      amount: 6
+      spawnTimeInterval: 1
+      spawnDelay: 3
+    - prefabName: Mouse
+      holeId: Hole03
+      amount: 3
+      spawnTimeInterval: 1
+      spawnDelay: 2
+    - prefabName: Mouse
+      holeId: Hole04
+      amount: 4
+      spawnTimeInterval: 1
+      spawnDelay: 4

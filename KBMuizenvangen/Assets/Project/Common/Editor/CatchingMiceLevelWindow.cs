@@ -47,10 +47,12 @@ public class CatchingMiceLevelWindow : EditorWindow
 
         if (GUILayout.Button("Build Level " + levelIndex))
         {
+            
             CatchingMiceLevelManager.use.BuildLevel(levelIndex);
         }
         if (GUILayout.Button("Build Catching Mice level"))
         {
+            LugusCoroutines.use.StopAllRoutines();
             CatchingMiceLevelManager.use.BuildLevelDebug(width,height);
 
         }

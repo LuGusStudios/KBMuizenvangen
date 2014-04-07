@@ -38,7 +38,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             pathToWalk.Clear();
             Debug.Log(hit.name);
 
-            _character = hit.GetComponent<CatchingMiceCharacterPlayer>();
+            _character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
             if(_character != null)
             {
                 _character.handle.StopRoutine();

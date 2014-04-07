@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 {
+    public int timesToAttack = 3;
     public override float Health
     {
         get
@@ -33,22 +34,6 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         
     }
 
-    //protected void Awake()
-    //{
-    //    SetupLocal();
-    //}
-
-    //// Use this for initialization
-    //protected void Start () 
-    //{
-    //    SetupGlobal();
-    //}
-	
-	// Update is called once per frame
-    protected void Update() 
-    {
-
-	}
     protected void OnEnable()
     {
         CatchingMiceLevelManager.use.CheeseRemoved += CheeseRemoved;
@@ -59,6 +44,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     }
     public override void GetTarget()
     {
+        if (CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
+            return;
+
         float smallestDistance = float.MaxValue;
         //Check which cheese tile is the closest
         foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
@@ -112,18 +100,25 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public override IEnumerator Attack()
     {
         CatchingMiceTile cheeseTile = currentTile;
-        while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0)
+        int attacked = 0;
+        while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0 && attacked < timesToAttack)
         {
             //Debug.Log(currentTile.trapObject.Stacks);
             cheeseTile.trapObject.Stacks -= damage;
 
+            attacked++;
             yield return new WaitForSeconds(attackInterval);
         }
-        if (CatchingMiceLevelManager.use.cheeseTiles.Count > 0)
+        if (CatchingMiceLevelManager.use.cheeseTiles.Count > 0 && cheeseTile.trapObject.Stacks <= 0)
         {
             Debug.Log("getting new target");
 
             GetTarget();
+        }
+        else
+        {
+            //mouse ate the cheese x timesToAttack, ate too much, now die
+            DieRoutine();
         }
     }
     public void DieRoutine()
@@ -131,7 +126,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         //Drop cookie
         //Play Death animation (cloud particle)
         CatchingMiceLevelManager.use.CheeseRemoved -= CheeseRemoved;
+        CatchingMiceGameManager.use.ModifyAmountToKill(-1);
         handle.StopRoutine();
+        //Destroy(this.gameObject);
         gameObject.SetActive(false);
     }
 }

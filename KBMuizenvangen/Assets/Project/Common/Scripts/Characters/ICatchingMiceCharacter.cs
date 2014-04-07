@@ -237,7 +237,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
         int pathIndex = path.Count - 1;
-        Debug.Log("Move");
         moving = true;
 
         while (pathIndex > -1)

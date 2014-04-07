@@ -15,7 +15,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     protected Transform _objectParent = null;
     protected Transform _navigationParent = null;
     protected Transform _characterParent = null;
-    protected Transform _prefabParent = null;
+    protected Transform _spawnParent = null;
+    protected Transform _enemyParent = null;
 
     public CatchingMiceLevelDefinition[] levels = null;
     public int width = 13;
@@ -34,6 +35,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public List<Waypoint> waypointList = new List<Waypoint>();
     [HideInInspector]
     public List<CatchingMiceWaveDefinition> wavesList = new List<CatchingMiceWaveDefinition>();
+    protected List<GameObject> _enemyList = new List<GameObject>();
 
     public List<CatchingMiceHole> holeTiles = new List<CatchingMiceHole>();
 
@@ -60,7 +62,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         _objectParent = _levelRoot.FindChild("ObjectParent");
         _navigationParent = _levelRoot.FindChild("NavigationParent");
         _characterParent = _levelRoot.FindChild("CharacterParent");
-        _prefabParent = _levelRoot.FindChild("PrefabParent");
+        _enemyParent = _levelRoot.FindChild("EnemyParent");
+        _spawnParent = _levelRoot.FindChild("SpawnParent"); 
     }
 
     public void ClearLevel()
@@ -89,6 +92,14 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             for (int i = _characterParent.childCount - 1; i >= 0; i--)
             {
                 DestroyImmediate(_characterParent.GetChild(i).gameObject);
+            }
+            for (int i = _enemyParent.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(_enemyParent.GetChild(i).gameObject);
+            }
+            for (int i = _spawnParent.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(_spawnParent.GetChild(i).gameObject);
             }
             waypointList.Clear();
             cheeseTiles.Clear();
@@ -130,6 +141,14 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         for (int i = _characterParent.childCount - 1; i >= 0; i--)
         {
             Destroy(_characterParent.GetChild(i).gameObject);
+        }
+        for (int i = _enemyParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_enemyParent.GetChild(i).gameObject);
+        }
+        for (int i = _spawnParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_spawnParent.GetChild(i).gameObject);
         }
         waypointList.Clear();
         cheeseTiles.Clear();
@@ -507,12 +526,19 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             Debug.LogError("wave exceeds the waves list. useing last wave count.");
             waveIndex = wavesList.Count - 1;
         }
+
+        //now it's not pooling so delete every child in enemy parent
+        for (int i = _enemyParent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(_enemyParent.GetChild(i).gameObject);
+        }
+
         CatchingMiceWaveDefinition wave = wavesList[waveIndex];
         int amountToKill = 0;
-        foreach (CatchingMiceEnemyDefinition enemyDefinition in wave.enemies)
+        for (int i = 0; i < wave.enemies.Length; i++)
         {
             //get the prefab from string name
-            if (string.IsNullOrEmpty(enemyDefinition.prefabName))
+            if (string.IsNullOrEmpty(wave.enemies[i].prefabName))
             {
                 Debug.LogError("Character ID is null or empty!");
                 continue;
@@ -520,7 +546,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             GameObject enemyPrefab = null;
             foreach (GameObject go in enemyPrefabs)
             {
-                if (go.name == enemyDefinition.prefabName)
+                if (go.name == wave.enemies[i].prefabName)
                 {
                     enemyPrefab = go;
                     break;
@@ -528,55 +554,147 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             }
             if (enemyPrefab == null)
             {
-                Debug.LogError("Did not find hole item ID: " + enemyDefinition.prefabName);
+                Debug.LogError("Did not find hole item ID: " + wave.enemies[i].prefabName);
                 return;
             }
+
             
-            //get spawnlocation from hole id
-            CatchingMiceHole spawnTile = null;
-            foreach (CatchingMiceHole hole in holeTiles)
-            {
-                if(hole.id == enemyDefinition.holeId)
-                {
-                    spawnTile = hole;
-                }
-            }
-            if (spawnTile == null)
-            {
-                Debug.LogError("hole id has not been found for " + enemyDefinition.prefabName);
-                return;
-            }
             //everything has been found, start new coroutine with spawnwave
-            LugusCoroutines.use.StartRoutine(SpawnSubWave(enemyPrefab,spawnTile, enemyDefinition.amount, enemyDefinition.spawnTimeInterval, enemyDefinition.spawnDelay));
-            amountToKill += enemyDefinition.amount;
+            //LugusCoroutines.use.StartRoutine(SpawnSubWave(enemyPrefab, spawnTile, enemyDefinition.amount, enemyDefinition.spawnTimeInterval, enemyDefinition.spawnDelay));
+
+            InstantiateSubWave(i, enemyPrefab, wave.enemies[i].amount);
+
+            amountToKill += wave.enemies[i].amount;
         }
+        //foreach (CatchingMiceEnemyDefinition enemyDefinition in wave.enemies)
+        //{
+        //    //get the prefab from string name
+        //    if (string.IsNullOrEmpty(enemyDefinition.prefabName))
+        //    {
+        //        Debug.LogError("Character ID is null or empty!");
+        //        continue;
+        //    }
+        //    GameObject enemyPrefab = null;
+        //    foreach (GameObject go in enemyPrefabs)
+        //    {
+        //        if (go.name == enemyDefinition.prefabName)
+        //        {
+        //            enemyPrefab = go;
+        //            break;
+        //        }
+        //    }
+        //    if (enemyPrefab == null)
+        //    {
+        //        Debug.LogError("Did not find hole item ID: " + enemyDefinition.prefabName);
+        //        return;
+        //    }
+            
+        //    //get spawnlocation from hole id
+        //    CatchingMiceHole spawnTile = null;
+        //    foreach (CatchingMiceHole hole in holeTiles)
+        //    {
+        //        if(hole.id == enemyDefinition.holeId)
+        //        {
+        //            spawnTile = hole;
+        //        }
+        //    }
+        //    if (spawnTile == null)
+        //    {
+        //        Debug.LogError("hole id has not been found for " + enemyDefinition.prefabName);
+        //        return;
+        //    }
+        //    //everything has been found, start new coroutine with spawnwave
+        //    LugusCoroutines.use.StartRoutine(SpawnSubWave(enemyPrefab,spawnTile, enemyDefinition.amount, enemyDefinition.spawnTimeInterval, enemyDefinition.spawnDelay));
+            
+        //    amountToKill += enemyDefinition.amount;
+        //}
         CatchingMiceGameManager.use.SetAmountToKill(amountToKill);
     }
-    protected IEnumerator SpawnSubWave(GameObject spawnGO,CatchingMiceHole spawnTile, int amount, float spawnInterval, float spawnDelay)
+    protected void InstantiateSubWave(int index, GameObject spawnGO, int amount)
     {
-        if(spawnDelay>0)
-            yield return new WaitForSeconds(spawnDelay);
+        //if the object already exist use it, else make new one
+        GameObject waveParent = GameObject.Find("subwave"+index);
+        if(waveParent == null)
+            waveParent = new GameObject("subwave"+index);
 
-        float spawnIntervalLower = spawnInterval * 0.9f;
-        float spawnIntervalUpper = spawnInterval * 1.1f;
-
+        waveParent.transform.position = new Vector3(-1000, -100, 0);
+        waveParent.transform.parent = _spawnParent;
+         
         for (int i = 0; i < amount; i++)
         {
-            //instantiate 
-            GameObject go = GetGameObjectFromPool(spawnGO,spawnTile);
-            CatchingMiceCharacterMouse mouseScript = go.GetComponent<CatchingMiceCharacterMouse>();
-            if(mouseScript!= null)
+            GameObject enemy = GetNextEnemyFromPool(spawnGO);
+            enemy.transform.parent = waveParent.transform;
+            enemy.transform.localPosition = Vector3.zero;
+        }
+
+        _enemyList.Add(waveParent);
+    }
+    public void SpawnInstantiatedWave(int waveIndex)
+    {
+        CatchingMiceWaveDefinition wave = wavesList[waveIndex];
+        for (int i = 0; i < wave.enemies.Length; i++)
+        {
+           LugusCoroutines.use.StartRoutine(SpawnInstantiatedSubWave(i, wave.enemies[i]));
+        }
+    }
+    protected IEnumerator SpawnInstantiatedSubWave(int index, CatchingMiceEnemyDefinition enemy)
+    {
+        if (enemy.spawnDelay > 0)
+            yield return new WaitForSeconds(enemy.spawnDelay);
+
+        float spawnIntervalLower = enemy.spawnTimeInterval * 0.9f;
+        float spawnIntervalUpper = enemy.spawnTimeInterval * 1.1f;
+
+        //get spawnlocation from hole id
+        CatchingMiceHole spawnTile = null;
+        foreach (CatchingMiceHole hole in holeTiles)
+        {
+            if (hole.id == enemy.holeId)
             {
+                spawnTile = hole;
+                break;
+            }
+        }
+        if (spawnTile == null)
+        {
+            Debug.LogError("hole id has not been found for " + enemy.prefabName);
+            yield break;
+        }
+        GameObject parentGO = null;
+        foreach (GameObject parent in _enemyList)
+        {
+            if(parent.name == "subwave"+index)
+            {
+                parentGO = parent;
+                break;
+            }
+        }
+        if(parentGO==null)
+        {
+            Debug.LogError("subwaveName has not been found");
+            yield break;
+        }
+        for (int i = 0; i < enemy.amount; i++)
+        {
+            Transform child = parentGO.transform.GetChild(0);
+            CatchingMiceCharacterMouse mouseScript = child.GetComponent<CatchingMiceCharacterMouse>();
+            if (mouseScript != null)
+            {
+                child.transform.parent = _enemyParent;
+                child.transform.position = spawnTile.spawnPoint.zAdd(-mouseScript.zOffset);
+                mouseScript.currentTile = spawnTile.parentTile;
                 mouseScript.GetTarget();
             }
-            yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(spawnIntervalLower,spawnIntervalUpper));
+            yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(spawnIntervalLower, spawnIntervalUpper));
         }
         yield break;
     }
-    public GameObject GetGameObjectFromPool(GameObject gameObjectToGet, CatchingMiceHole spawnTile)
+    public GameObject GetNextEnemyFromPool(GameObject gameObjectToGet)
     {
-        return (GameObject)Instantiate(gameObjectToGet,spawnTile.spawnPoint,Quaternion.identity);
+        //TODO pooling: search for inactive objects before instantiating new gameobject
+        return (GameObject)Instantiate(gameObjectToGet);
     }
+   
     public void AssignNeighbours()
     {
         for (int i = 0; i < waypointList.Count-1; i++)
@@ -603,7 +721,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     }
     public GameObject GetPrefab(string name)
     {
-        Transform child = _prefabParent.FindChild(name);
+        Transform child = _spawnParent.FindChild(name);
 
         if (child != null)
             return child.gameObject;
