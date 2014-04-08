@@ -3,11 +3,11 @@ using System.Collections;
 
 public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
-    protected float _stacks = 3;
-    protected float _cost = 1;
-    protected float _damage = 1;
+    protected int _stacks = 3;
+    protected float _cost = 1.0f;
+    protected float _damage = 1.0f;
 
-    public float Stacks
+    public int Stacks
     {
         get
         {
@@ -62,19 +62,21 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
 
     public override void SetTileType(CatchingMiceTile tile)
     {
-        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
         //World objects are the furniture, ground traps cannot be set on furniture types
-        if (tile.worldObject == null)
-        {
-            //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-            levelTile.tileType = levelTile.tileType | tileType;
-            levelTile.trapObject = this;
-            transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
-        }
-        else
+        if (tile.worldObject != null)
         {
             Debug.LogError("Ground trap " + transform.name + " cannot be placed\non furniture tile " + tile.worldObject.name + " !");
+            return;
         }
+        
+        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
+        
+        //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
+        levelTile.tileType = levelTile.tileType | tileType;
+        levelTile.trapObject = this;
+        transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
+        
+            
                     
     }    
 }

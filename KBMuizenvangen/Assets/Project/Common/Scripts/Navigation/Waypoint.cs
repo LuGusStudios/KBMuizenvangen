@@ -11,8 +11,9 @@ public class Waypoint : MonoBehaviour
     {
         Ground = 1,
         Furniture = 2,
+        Collide = 4,
+        
         Both = 3,
-
         None = -1 // place at the bottom for nicer auto-complete in IDE
     }
 	public bool debug = false;

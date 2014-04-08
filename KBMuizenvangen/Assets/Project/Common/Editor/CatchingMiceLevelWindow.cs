@@ -47,10 +47,12 @@ public class CatchingMiceLevelWindow : EditorWindow
 
         if (GUILayout.Button("Build Level " + levelIndex))
         {
+            
             CatchingMiceLevelManager.use.BuildLevel(levelIndex);
         }
         if (GUILayout.Button("Build Catching Mice level"))
         {
+            LugusCoroutines.use.StopAllRoutines();
             CatchingMiceLevelManager.use.BuildLevelDebug(width,height);
 
         }
@@ -65,7 +67,8 @@ public class CatchingMiceLevelWindow : EditorWindow
         }
         if (GUILayout.Button("Test movement behaviour"))
         {
-            SpawnMouseDebug();
+            CatchingMiceLevelManager.use.InstantiateWave(0);
+            //SpawnMouseDebug();
         }
         if (GUILayout.Button("Spawn Player"))
         {
@@ -140,6 +143,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     }
     public void SpawnMouseDebug()
     {
+        
         GameObject mousePrefab = null;
         CatchingMiceCharacterMouse mouseController = null;
 
@@ -149,7 +153,7 @@ public class CatchingMiceLevelWindow : EditorWindow
             if (mouseController != null)
             {
                 mousePrefab = prefab;
-                
+
             }
         }
         GameObject pathfindingGO = GameObject.Find("PathFindingObject");
@@ -175,15 +179,13 @@ public class CatchingMiceLevelWindow : EditorWindow
     public void CharacterDebug()
     {
         GameObject characterPrefab = null;
-        ICatchingMiceCharacter Controller = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+        foreach (ICatchingMiceCharacter prefab in CatchingMiceLevelManager.use.characterPrefabs)
         {
-            Controller = prefab.GetComponent<ICatchingMiceCharacter>();
-            if (Controller != null)
+            if (prefab != null)
             {
-                characterPrefab = prefab;
-                
+                characterPrefab = prefab.gameObject;
+                break;
             }
         }
         GameObject pathfindingGO = GameObject.Find("PathFindingObject");
