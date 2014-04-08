@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
 {
@@ -22,6 +23,36 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         base.SetupLocal();
         zOffset = 0.95f;
     }
+
+    public IEnumerator CalculatePath(List<Waypoint> pathFromMouse)
+    {
+        //go to target
+        List<Waypoint> graph = navigationGraph;
+        bool fullPath = false;
+        Waypoint currentWaypoint = null;
+        float speed = 1.0f;
+
+        for (int i = 1; i < pathFromMouse.Count ; i++)
+        {
+            
+            currentWaypoint = pathFromMouse[i - 1];
+
+            targetWaypoint = pathFromMouse[i];
+
+            //Debug.LogError("current waypoint " + currentWaypoint + " targetWaypoint " + targetWaypoint);
+
+            speed = Vector2.Distance(targetWaypoint.parentTile.gridIndices , currentWaypoint.parentTile.gridIndices) ;
+            if (speed <= 0)
+                speed = 1;
+            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
+
+            LugusCoroutines.use.StartRoutine(MoveToDestination(path));
+            
+            while (moving)
+                yield return null;
+        }
+    }
+
     public override void DoCurrentTileBehaviour(int pathIndex)
     {
 
