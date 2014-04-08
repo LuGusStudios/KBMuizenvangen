@@ -41,3 +41,4 @@ function Update () {
 	transform.position = Vector3.Lerp(transform.position, Pos, Time.deltaTime);
 	
 }
+
