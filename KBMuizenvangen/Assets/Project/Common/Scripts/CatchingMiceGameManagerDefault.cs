@@ -7,14 +7,15 @@ public class CatchingMiceGameManager : LugusSingletonExisting<CatchingMiceGameMa
 public class CatchingMiceGameManagerDefault : MonoBehaviour 
 {
     public bool gameRunning = false;
-    protected float timer = 0;
-    protected int pickupCount = 0;
-    protected int currentWave = 0;
-    protected int amountToKill = 0;
+    protected float _timer = 0;
+    protected int _pickupCount = 0;
+    protected int _currentWave = 0;
+    protected int _amountToKill = 0;
      
-    protected float preWaveTime = 2.0f;
+    protected float _preWaveTime = 2.0f;
     protected ILugusCoroutineHandle _gameRoutineHandle = null;
 
+    protected bool _infiniteLevel = false;
     public enum State
     {
         PreWave = 1, //Let the player place their traps
@@ -51,6 +52,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     }
     public void DoNewStateBehaviour(State newState)
     {
+        //this can be usefull for ending the PreWavePhase early, so it can start with a wave
         if (_gameRoutineHandle != null)
         {
             _gameRoutineHandle.StopRoutine();
@@ -69,12 +71,14 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
                 break;
             case State.Won:
                 Debug.Log("you won.");
+                WinState();
                 break;
             case State.Lost:
                 Debug.Log("you lost");
+                LoseState();
                 break;
             case State.NONE:
-                Debug.LogError("State can't be none");
+                Debug.LogError("New state can't be none.");
                 break;
             default:
                 break;
@@ -84,20 +88,19 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     {
         Debug.Log("starting pre wave phase");
         //instantiate every object
-        CatchingMiceLevelManager.use.InstantiateWave(currentWave);
+        CatchingMiceLevelManager.use.InstantiateWave(_currentWave);
 
-        yield return new WaitForSeconds(preWaveTime);
+        yield return new WaitForSeconds(_preWaveTime);
         state = State.Wave;
     }
     public IEnumerator WavePhase()
     {
         Debug.Log("starting wave phase");
         //spawn waves
-        CatchingMiceLevelManager.use.SpawnInstantiatedWave(currentWave);
+        CatchingMiceLevelManager.use.SpawnInstantiatedWave(_currentWave);
         //wait until wave is done, or cheese has been eaten
-        while (amountToKill > 0 && CatchingMiceLevelManager.use.cheeseTiles.Count > 0)
+        while (_amountToKill > 0 && CatchingMiceLevelManager.use.cheeseTiles.Count > 0)
         {
-
             yield return null;
         }
 
@@ -107,17 +110,16 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     public void PostWavePhase()
     {
         Debug.Log("starting post wave phase");
-        currentWave++;
+        _currentWave++;
 
         //check if start next wave (preWavePhase), cheese has been eaten or waves has been iterated
-        if(currentWave > CatchingMiceLevelManager.use.wavesList.Count-1)
+        if(_currentWave > CatchingMiceLevelManager.use.wavesList.Count-1)
         {
             //can be changed so when you want infinite levels
             state = State.Won;
         }
         else if(CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
         {
-            //you lost
             state = State.Lost;
         }
         else
@@ -126,18 +128,15 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
             state = State.PreWave;
         }
     }
-    public void EndPhase()
+    public void WinState()
     {
-        Debug.Log("starting end phase");
-        //check if won, or lost
-        if(state == State.Won)
-        {
-            gameRunning = false;
-        }
-        if(state == State.Lost)
-        {
-
-        }
+        Debug.Log("starting end phase won");
+       
+    }
+    public void LoseState()
+    {
+        Debug.Log("starting end phase lost");
+       
     }
     public void StartGame()
     {
@@ -216,22 +215,22 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	}
     public void ModifyPickUpCount(int modifyValue)
     {
-        pickupCount += modifyValue;
+        _pickupCount += modifyValue;
     }
     public void SetAmountToKill(int amount)
     {
-        amountToKill = amount;
-        Debug.LogWarning("amount to kill :" + amountToKill);
+        _amountToKill = amount;
+        Debug.LogWarning("amount to kill :" + _amountToKill);
     }
     public void ModifyAmountToKill(int modifyValue)
     {
-        amountToKill += modifyValue;
+        _amountToKill += modifyValue;
         //Debug.Log("Modified, amount is now : " + amountToKill);
     }
 	// Update is called once per frame
     protected void Update()
     {
         if (gameRunning)
-            timer += Time.deltaTime;
+            _timer += Time.deltaTime;
     }
 }

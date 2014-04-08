@@ -803,11 +803,12 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
         return levelTiles[x, y];
     }
-
+    public Waypoint GetWaypointFromTile(Vector2 gridIndices)
+    {
+        return levelTiles[Mathf.RoundToInt(gridIndices.x), Mathf.RoundToInt(gridIndices.y)].waypoint;
+    }
     public Waypoint GetWaypointFromTile(int x, int y)
     {
-        //CatchingMiceTile tile = levelTiles[x,y];
-
         return levelTiles[x, y].waypoint;
     }
 

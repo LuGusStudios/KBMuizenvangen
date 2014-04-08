@@ -25,8 +25,6 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         base.SetupLocal();
 
         zOffset = 0.75f;
-        //walkable = Waypoint.WaypointType.Ground;
-
         
     }
     public override void SetupGlobal()
@@ -45,7 +43,11 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public override void GetTarget()
     {
         if (CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
+        {
+            //Debug.LogWarning("No more cheese left!");
             return;
+        }
+            
 
         float smallestDistance = float.MaxValue;
         //Check which cheese tile is the closest
@@ -104,7 +106,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0 && attacked < timesToAttack)
         {
             //Debug.Log(currentTile.trapObject.Stacks);
-            cheeseTile.trapObject.Stacks -= damage;
+            cheeseTile.trapObject.Stacks -= (int)damage;
 
             attacked++;
             yield return new WaitForSeconds(attackInterval);

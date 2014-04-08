@@ -11,7 +11,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
     public CatchingMiceTile currentTile = null;
     public Waypoint targetWaypoint = null;
-    public Waypoint.WaypointType walkable = Waypoint.WaypointType.None;
+    public Waypoint.WaypointType walkable = Waypoint.WaypointType.Ground;
 
     protected CharacterDirections _currentDirection;
     protected CharacterDirections _startDirection;
@@ -293,6 +293,14 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         gameObject.StopTweens();
 
         moving = false;
+    }
+    public virtual bool IsWalkable(CatchingMiceTile tile)
+    {
+        if (tile.waypoint.waypointType == Waypoint.WaypointType.Collide)
+        {
+            return false;
+        }
 
+        return true;
     }
 }
