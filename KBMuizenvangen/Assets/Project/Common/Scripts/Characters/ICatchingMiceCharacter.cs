@@ -234,7 +234,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         return path;
     }
-    public virtual IEnumerator MoveToDestination(List<Waypoint> path, float speed = 1.0f)
+    public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
         int pathIndex = path.Count - 1;
         moving = true;
@@ -250,7 +250,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             {
                 movePosition.z = transform.position.z;
             }
-            gameObject.MoveTo(movePosition).Time(timeToReachTile/speed).Execute();
+            gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
             //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
 

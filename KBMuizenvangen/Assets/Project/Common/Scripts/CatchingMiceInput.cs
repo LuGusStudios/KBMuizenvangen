@@ -44,14 +44,14 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             _character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
             if(_character != null)
             {
-                _character.handle.StopRoutine();
+                _character.StopCurrentBehaviour();
                 
                 Debug.Log("character added " + _character.currentTile.waypoint);
                 //pathToWalk.Add(_character.currentTile.waypoint);
                 //_previousTile = _character.currentTile;
                 //_lastAddedWaypoint = _character.currentTile;
                 CatchingMiceTile tile =  CatchingMiceLevelManager.use.GetTileByLocation(hit.position.x, hit.position.y);
-                pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.location.v2()));
+                pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
                 _lastAddedWaypoint = tile;
             }
             
@@ -71,7 +71,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             //Debug.Log("UP");
             //pathToWalk.Reverse();
             List<Waypoint> path = new List<Waypoint>(pathToWalk);
-            _character.handle.StartRoutine(_character.CalculatePath(path));
+            _character.MoveWithPath(path);
             _character = null; 
             //pathToWalk.Clear();
         }
@@ -134,14 +134,30 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
         CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(dragPoint.x, dragPoint.y);
         //only add a tile when its new tile is more than half a grid away
         if (Vector2.Distance(tile.gridIndices, _lastAddedWaypoint.gridIndices) < CatchingMiceLevelManager.use.scale / 2)
-            return;
+            return; 
 
+        float distance = Vector2.Distance(tile.gridIndices,_lastAddedWaypoint.gridIndices);
+        float maxDistance = CatchingMiceLevelManager.use.scale * 2; 
         //if distance is more then x grids away interpolate
+        if (distance > maxDistance) 
+        {
+            while (distance > maxDistance)
+            {
+                // interpolated vector: value * (endpoint - beginpoint) + beginpoint --> value between begin and end point
+                Vector3 interpolated = (maxDistance) * Vector3.Normalize(tile.gridIndices.v3() - _lastAddedWaypoint.gridIndices.v3()) + _lastAddedWaypoint.gridIndices.v3();
+                
+                CatchingMiceTile interpolatedTile = CatchingMiceLevelManager.use.GetTile(interpolated.v2());
+
+                pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(interpolatedTile.gridIndices));
+                _lastAddedWaypoint = interpolatedTile;
+                //Debug.Log("added interpolated tile " + interpolated);
+                distance -= maxDistance;
+            }
+        }
 
 
+        pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
 
-        pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.location.v2()));
-        Debug.Log("adding tile");
         _lastAddedWaypoint = tile;
         
         

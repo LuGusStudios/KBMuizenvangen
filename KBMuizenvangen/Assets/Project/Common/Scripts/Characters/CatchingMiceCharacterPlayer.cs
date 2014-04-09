@@ -6,6 +6,8 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
 {
     protected CatchingMiceCharacterMouse _enemy = null;
     protected bool _canAttack = true;
+
+    protected ILugusCoroutineHandle walkHandle = null;
     public override float Health
     {
         get
@@ -22,6 +24,7 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
     {
         base.SetupLocal();
         zOffset = 0.95f;
+        walkHandle = LugusCoroutines.use.GetHandle();
     }
 
     public IEnumerator CalculatePath(List<Waypoint> pathFromMouse)
@@ -30,27 +33,22 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         List<Waypoint> graph = navigationGraph;
         bool fullPath = false;
         Waypoint currentWaypoint = null;
-        float speed = 1.0f;
 
-        for (int i = 1; i < pathFromMouse.Count ; i++)
+        for (int i = 1; i < pathFromMouse.Count; i++)
         {
-            
             currentWaypoint = pathFromMouse[i - 1];
 
             targetWaypoint = pathFromMouse[i];
 
             //Debug.LogError("current waypoint " + currentWaypoint + " targetWaypoint " + targetWaypoint);
 
-            speed = Vector2.Distance(targetWaypoint.parentTile.gridIndices , currentWaypoint.parentTile.gridIndices) ;
-            if (speed <= 0)
-                speed = 1;
             List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
 
-            LugusCoroutines.use.StartRoutine(MoveToDestination(path));
-            
-            while (moving)
-                yield return null;
+            yield return walkHandle.StartRoutine(MoveToDestination(path));
+
         }
+
+        
     }
 
     public override void DoCurrentTileBehaviour(int pathIndex)
@@ -89,7 +87,52 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
             }
         }
     }
+    public void StopCurrentBehaviour()
+    {
+        if (handle != null)
+            handle.StopRoutine();    
+        if(walkHandle != null)
+            walkHandle.StopRoutine();
+        gameObject.StopTweens();
+        moving = false;
+    }
+    public void MoveWithPath(List<Waypoint> path)
+    {
+        StopCurrentBehaviour();
 
+        //post process before actually going through the path
+        int count = 2;
+        while (count < path.Count)
+        {
+            Vector2 wpStart = path[count - 2].parentTile.gridIndices;
+            Vector2 wpMiddle = path[count - 1].parentTile.gridIndices;
+            Vector2 wpEnd = path[count].parentTile.gridIndices;
+
+
+            //check if the tile in between is on the same x or y axis
+            if ((wpEnd.x == wpMiddle.x && wpMiddle.x == wpStart.x) ||
+                (wpEnd.y == wpMiddle.y && wpMiddle.y == wpStart.y))
+            {
+                //check if the middle tile is inbetween the tiles
+                if ((wpEnd.x > wpMiddle.x && wpMiddle.x > wpStart.x) ||
+                     (wpEnd.y > wpMiddle.y && wpMiddle.y > wpStart.y))
+                { 
+                    path.RemoveAt(count - 1);
+                    continue;
+                }
+            }
+
+            count++;
+            //when there are less the 3 waypoints to check 
+            if (path.Count < 2)
+                break;
+
+        }
+
+        Debug.Log("path count : " + path.Count);
+
+        handle.StartRoutine(CalculatePath(path));
+    }
 	// Update is called once per frame
 	protected void Update () 
     {
