@@ -44,6 +44,12 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
 
             List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
 
+            //the very first waypoint of the first list can be dismissed
+            //if (i == 1)
+            //{
+            //    path.RemoveAt(path.Count - 1);
+            //}
+
             yield return walkHandle.StartRoutine(MoveToDestination(path));
 
         }
