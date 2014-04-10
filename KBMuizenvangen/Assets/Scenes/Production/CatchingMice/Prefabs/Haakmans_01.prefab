@@ -417,7 +417,7 @@ GameObject:
   - 111: {fileID: 11100000}
   - 137: {fileID: 13700000}
   m_Layer: 0
-  m_Name: Haakmans_Side
+  m_Name: LEFT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -795,7 +795,7 @@ GameObject:
   - 111: {fileID: 11100002}
   - 137: {fileID: 13700002}
   m_Layer: 0
-  m_Name: Haakmans_Front
+  m_Name: DOWN
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1173,7 +1173,7 @@ GameObject:
   - 111: {fileID: 11100004}
   - 137: {fileID: 13700004}
   m_Layer: 0
-  m_Name: Haakmans_Back
+  m_Name: UP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
