@@ -15,12 +15,12 @@ MonoBehaviour:
   height: 13
   level: 0
   characters:
-  - prefabName: CharacterTest
-    timeToReachTile: .5
-    xLocation: 4
+  - prefabName: Cat01
+    timeToReachTile: .75
+    xLocation: 5
     yLocation: 5
-  - prefabName: CharacterTest
-    timeToReachTile: .200000003
+  - prefabName: Cat01
+    timeToReachTile: .75
     xLocation: 5
     yLocation: 7
   tileItems:

@@ -451,19 +451,19 @@ public class CatchingMiceHoleDefinition
                         switch (parser.content)
                         {
                             case "down":
-                                holeTile.startDirection = ICatchingMiceCharacter.CharacterDirections.Down;
+                                holeTile.startDirection = CatchingMiceHole.CharacterDirections.Down;
                                 break;
                             case "left":
-                                holeTile.startDirection = ICatchingMiceCharacter.CharacterDirections.Left;
+                                holeTile.startDirection = CatchingMiceHole.CharacterDirections.Left;
                                 break;
                             case "up":
-                                holeTile.startDirection = ICatchingMiceCharacter.CharacterDirections.Up;
+                                holeTile.startDirection = CatchingMiceHole.CharacterDirections.Up;
                                 break;
                             case "right":
-                                holeTile.startDirection = ICatchingMiceCharacter.CharacterDirections.Right;
+                                holeTile.startDirection = CatchingMiceHole.CharacterDirections.Right;
                                 break;
                             case "undefined":
-                                holeTile.startDirection = ICatchingMiceCharacter.CharacterDirections.Undefined;
+                                holeTile.startDirection = CatchingMiceHole.CharacterDirections.Undefined;
                                 break;
                         }
                         break;
@@ -499,19 +499,19 @@ public class CatchingMiceHoleDefinition
         rawdata += tabs + "\t<StartDirection>";
         switch (holeTile.startDirection)
         {
-            case ICatchingMiceCharacter.CharacterDirections.Down:
+            case CatchingMiceHole.CharacterDirections.Down:
                 rawdata += "down";
                 break;
-            case ICatchingMiceCharacter.CharacterDirections.Left:
+            case CatchingMiceHole.CharacterDirections.Left:
                 rawdata += "left";
                 break;
-            case ICatchingMiceCharacter.CharacterDirections.Up:
+            case CatchingMiceHole.CharacterDirections.Up:
                 rawdata += "up";
                 break;
-            case ICatchingMiceCharacter.CharacterDirections.Right:
+            case CatchingMiceHole.CharacterDirections.Right:
                 rawdata += "right";
                 break;
-            case ICatchingMiceCharacter.CharacterDirections.Undefined:
+            case CatchingMiceHole.CharacterDirections.Undefined:
             default:
                 rawdata += "undefined";
                 break;
@@ -526,7 +526,7 @@ public class CatchingMiceHoleDefinition
     public string prefabName = "";
     public string holeId = "";
     public Vector2 tileCoordinates = Vector2.zero;
-    public ICatchingMiceCharacter.CharacterDirections startDirection = ICatchingMiceCharacter.CharacterDirections.Undefined;
+    public CatchingMiceHole.CharacterDirections startDirection = CatchingMiceHole.CharacterDirections.Undefined;
 }
 [System.Serializable]
 public class CatchingMiceWaveDefinition
