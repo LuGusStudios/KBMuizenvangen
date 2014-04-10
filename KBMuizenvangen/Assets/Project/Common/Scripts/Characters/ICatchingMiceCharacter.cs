@@ -13,8 +13,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public Waypoint targetWaypoint = null;
     public Waypoint.WaypointType walkable = Waypoint.WaypointType.Ground;
 
-    protected CharacterDirections _currentDirection;
-    protected CharacterDirections _startDirection;
+    public Vector3 movementDirection = Vector3.zero;
 
     protected float _health = 1.0f;
     public abstract float Health{ get; set;}
@@ -25,15 +24,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public bool moving = false;
     public ILugusCoroutineHandle handle = null;
 
-    public enum CharacterDirections
-    {
-        Up = 1,			// 0001
-        Right = 2,		// 0010
-        Down = 4,		// 0100
-        Left = 8,		// 1000
-
-        Undefined = -1
-    }
     public virtual void GetTarget()
     {
         //go to target
@@ -69,6 +59,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
         handle = LugusCoroutines.use.GetHandle();
+
+        movementDirection = Vector3.zero;
     }
     public virtual void SetupGlobal()
     {
@@ -250,16 +242,19 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             {
                 movePosition.z = transform.position.z;
             }
+
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
-            //movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
+            movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
+
+            float maxDistance = 0.1f * CatchingMiceLevelManager.use.scale;
 
             bool reachedTarget = false;
             while (!reachedTarget)
             {
                 yield return null;
 
-                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= 0);// maxDistance);
+                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= maxDistance);// maxDistance);
             }
 
             //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
@@ -294,6 +289,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         moving = false;
     }
+
     public virtual bool IsWalkable(CatchingMiceTile tile)
     {
         if (tile.waypoint.waypointType == Waypoint.WaypointType.Collide)

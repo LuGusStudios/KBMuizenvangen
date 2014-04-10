@@ -493,19 +493,19 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             //place the right orientation of the prefab
             switch (holeSpawnpoint.spawnDirection)
             {
-                case ICatchingMiceCharacter.CharacterDirections.Down:
+                case CatchingMiceHole.CharacterDirections.Down:
                     //this is the right rotation already
                     break;
-                case ICatchingMiceCharacter.CharacterDirections.Left:
+                case CatchingMiceHole.CharacterDirections.Left:
                     holeItem.transform.Rotate(new Vector3(0, 0, -90));
                     break;
-                case ICatchingMiceCharacter.CharacterDirections.Right:
+                case CatchingMiceHole.CharacterDirections.Right:
                     holeItem.transform.Rotate(new Vector3(0, 0, 90));
                     break;
-                case ICatchingMiceCharacter.CharacterDirections.Up:
+                case CatchingMiceHole.CharacterDirections.Up:
                     holeItem.transform.localScale = holeItemPrefab.transform.localScale.y(-1);
                     break;
-                case ICatchingMiceCharacter.CharacterDirections.Undefined:
+                case CatchingMiceHole.CharacterDirections.Undefined:
                     Debug.LogError("Undefined direcion passed. Spawnpoint could not be made.");
                     break;
             }
