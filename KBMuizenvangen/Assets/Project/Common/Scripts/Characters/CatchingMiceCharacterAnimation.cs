@@ -25,9 +25,24 @@ namespace KikaAndBob
 public class CatchingMiceCharacterAnimation : MonoBehaviour 
 {
     public BoneAnimation[] animations;
-    public BoneAnimation currentAnimation = null;
+    public BoneAnimation currentAnimationContainer = null;
 
     public ICatchingMiceCharacter character = null;
+
+    public string currentAnimationClip = "";
+    public string currentAnimationPath = "";  
+
+    //String example DOWN/Cat01Front_Jump --> 
+    //"_currentMovementQuadrant  + / + characterNameAnimation + frontAnimationClip + jumpAnimationClip
+    public String characterNameAnimation = "Cat01";
+    public String jumpAnimationClip = "_Jump";
+    public String walkAnimationClip = "_Walk";
+    public String attackAnimationClip = "_Attack";
+    public String idleAnimationClip = "_Idle";
+
+    public String sideAnimationClip = "Side";
+    public String frontAnimationClip = "Front";
+    public String backAnimationClip = "Back";
 
     protected KikaAndBob.MovementQuadrant _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
 
@@ -89,9 +104,10 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         if (!character.moving)
         {
             // TODO: possibly add an Idle animation routine or something here
-            if (currentAnimation.name != "IDLE")
+            if (currentAnimationContainer.name != "DOWN")
             {
-                PlayAnimation("IDLE");
+                Debug.Log("Do idle " + currentAnimationContainer.name);
+                PlayAnimation("DOWN/" + characterNameAnimation + frontAnimationClip + idleAnimationClip);
             }
             return;
         }
@@ -143,43 +159,63 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         PlayAnimation(animationClipName, !movingLeft);
     }
-    public void PlayAnimation(string clipName, bool moveRight = true)
+    public void PlayAnimation(string animationPath, bool moveRight = true)
     {
-        currentAnimation = null;
-        foreach (BoneAnimation animation in animations)
+
+        string[] parts = animationPath.Split('/');
+        if (parts.Length != 2)
         {
-            animation.gameObject.SetActive(false);
-            if (animation.name == clipName)
+            Debug.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
+            return;
+        }
+
+        string containerName = parts[0];
+        string clipName = parts[1];
+		
+
+        currentAnimationContainer = null;
+        foreach (BoneAnimation container in animations)
+        {
+            if (container.name == containerName)
             {
-                currentAnimation = animation;
-                animation.gameObject.SetActive(true);
+                currentAnimationContainer = container;
+                currentAnimationContainer.gameObject.SetActive(true);
+                currentAnimationContainer.animation.enabled = true;
+            }
+            else
+            {
+                container.gameObject.SetActive(false);
+                //currentAnimationContainer.animation.enabled = false;
             }
         }
 
-        if (currentAnimation == null)
+        if (currentAnimationContainer == null)
         {
-            Debug.LogError(name + " : No animation found for name " + clipName);
-            currentAnimation = animations[0];
+            Debug.LogError(name + " : No animation found for name " + animationPath);
+            currentAnimationContainer = animations[0];
         }
 
-        currentAnimation.Stop();
-        //Debug.Log ("PLAYING ANIMATION " + currentAnimation.animation.clip.name + " ON " + currentAnimation.name );
-        currentAnimation.Play(currentAnimation.animation.clip.name, PlayMode.StopAll);
+        currentAnimationPath = animationPath;
+        currentAnimationClip = clipName;
+
+        currentAnimationContainer.Stop();
+        Debug.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
+        currentAnimationContainer.Play(clipName);
         
         if (moveRight)
         {
             // if going right, the scale.x needs to be positive 
-            if (currentAnimation.transform.localScale.x < 0)
+            if (currentAnimationContainer.transform.localScale.x < 0)
             {
-                currentAnimation.transform.localScale = currentAnimation.transform.localScale.x(Mathf.Abs(currentAnimation.transform.localScale.x));
+                currentAnimationContainer.transform.localScale = currentAnimationContainer.transform.localScale.x(Mathf.Abs(currentAnimationContainer.transform.localScale.x));
             }
         }
         else // moving left
         {
             // if going left, the scale.x needs to be negative
-            if (currentAnimation.transform.localScale.x > 0)
+            if (currentAnimationContainer.transform.localScale.x > 0)
             {
-                currentAnimation.transform.localScale = currentAnimation.transform.localScale.x(currentAnimation.transform.localScale.x * -1.0f);
+                currentAnimationContainer.transform.localScale = currentAnimationContainer.transform.localScale.x(currentAnimationContainer.transform.localScale.x * -1.0f);
             }
         }
     }
@@ -197,7 +233,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         character = transform.GetComponent<ICatchingMiceCharacter>();
 
-        
+        PlayAnimation("DOWN/" + characterNameAnimation + frontAnimationClip + jumpAnimationClip);
     }
 
     protected void Awake()

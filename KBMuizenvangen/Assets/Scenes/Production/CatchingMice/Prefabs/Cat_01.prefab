@@ -1549,6 +1549,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400204}
   - 114: {fileID: 11400006}
+  - 114: {fileID: 11400008}
   m_Layer: 0
   m_Name: Cat_01
   m_TagString: Untagged
@@ -51785,6 +51786,30 @@ MonoBehaviour:
   damage: 1
   attackInterval: .5
   moving: 0
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b347bcf9ae107e946987ecd85d0b3bcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animations: []
+  currentAnimationContainer: {fileID: 0}
+  character: {fileID: 0}
+  currentAnimationClip: 
+  currentAnimationPath: 
+  characterNameAnimation: Cat01
+  jumpAnimationClip: _Jump
+  walkAnimationClip: Walk
+  attackAnimationClip: Attack
+  idleAnimationClip: _Idle
+  sideAnimationClip: Side
+  frontAnimationClip: Front
+  backAnimationClip: Back
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

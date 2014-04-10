@@ -238,6 +238,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             Vector3 movePosition = path[pathIndex].transform.position;
             
             //check which zdepth the object must be
+            //Left hand axis, bigger z is further away
+            //when going up
             if (transform.position.z < path[pathIndex].transform.position.z)
             {
                 movePosition.z = transform.position.z;
@@ -262,6 +264,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
             if (pathIndex > 0)
             {
+
                 if (path[pathIndex - 1].transform.position.z < path[pathIndex].transform.position.z)
                 {
                     transform.position = transform.position.z(path[pathIndex - 1].transform.position.z).zAdd(-zOffset); 

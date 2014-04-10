@@ -15,12 +15,12 @@ MonoBehaviour:
   height: 13
   level: 0
   characters:
-  - prefabName: Cat01
-    timeToReachTile: .75
+  - prefabName: Cat_01
+    timeToReachTile: .5
     xLocation: 5
     yLocation: 5
-  - prefabName: Cat01
-    timeToReachTile: .75
+  - prefabName: Cat_01
+    timeToReachTile: .5
     xLocation: 5
     yLocation: 7
   tileItems:
