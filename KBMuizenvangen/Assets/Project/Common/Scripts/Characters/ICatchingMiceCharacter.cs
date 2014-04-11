@@ -21,7 +21,14 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public float damage = 1.0f;
     public float attackInterval = 0.5f;
 
+    public delegate void OnJump(bool start);
+    public delegate void OnHit();
+
+    public event OnJump onJump;
+    public event OnHit onHit;
+
     public bool moving = false;
+    public bool jumping = false;
     public ILugusCoroutineHandle handle = null;
 
     public virtual void GetTarget()
@@ -238,14 +245,35 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             Vector3 movePosition = path[pathIndex].transform.position;
             
             //check which zdepth the object must be
+            //Left hand axis, bigger z is further away
+            //when going up
             if (transform.position.z < path[pathIndex].transform.position.z)
             {
                 movePosition.z = transform.position.z;
             }
+            
+            //TODO: needs to account offset (furniture offsets)
+            float yOffset = 0.0f;
+            if (currentTile.worldObject != null)
+                yOffset = currentTile.worldObject.gridOffset;
+
+            float pathYOffset = 0.0f;
+            if (path[pathIndex].parentTile.worldObject != null)
+                pathYOffset = path[pathIndex].parentTile.worldObject.gridOffset;
+
+            movementDirection = Vector3.Normalize(path[pathIndex].parentTile.location.z(transform.position.z) - transform.position.yAdd(-yOffset)) ;
+
+
+            //check if the cat needs to jump, when your type is not the same as you current tile, it mean the character is jumping
+            if ((currentTile.waypoint.waypointType & path[pathIndex].waypointType) != path[pathIndex].waypointType)
+            {
+                jumping = true;
+                if (onJump != null)
+                    onJump(true);
+                yield return new WaitForSeconds(0.3f);
+            }
 
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
-
-            movementDirection = Vector3.Normalize(path[pathIndex].transform.position.z(transform.position.z) - transform.position);
 
             float maxDistance = 0.1f * CatchingMiceLevelManager.use.scale;
 
@@ -262,6 +290,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
             if (pathIndex > 0)
             {
+
                 if (path[pathIndex - 1].transform.position.z < path[pathIndex].transform.position.z)
                 {
                     transform.position = transform.position.z(path[pathIndex - 1].transform.position.z).zAdd(-zOffset); 
@@ -276,12 +305,29 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             }
 
             currentTile = path[pathIndex].parentTile;
+
             
             DoCurrentTileBehaviour(pathIndex);
 
             path.Remove(path[pathIndex]);
 
             pathIndex--;
+
+            if (jumping)
+            {
+                jumping = false;
+                if(pathIndex>-1)
+                {
+                    if((currentTile.waypoint.waypointType & path[pathIndex].waypointType) == path[pathIndex].waypointType)
+                    {
+                        if (onJump != null)
+                            onJump(false);
+                    }
+                }
+                
+                
+
+            }
         }
 
         // we have reached the final target now (or should have...)

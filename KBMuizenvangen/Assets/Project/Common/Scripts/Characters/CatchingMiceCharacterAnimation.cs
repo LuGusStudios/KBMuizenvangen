@@ -25,11 +25,29 @@ namespace KikaAndBob
 public class CatchingMiceCharacterAnimation : MonoBehaviour 
 {
     public BoneAnimation[] animations;
-    public BoneAnimation currentAnimation = null;
+    public BoneAnimation currentAnimationContainer = null;
 
     public ICatchingMiceCharacter character = null;
 
+    public string currentAnimationClip = "";
+    public string currentAnimationPath = "";
+
+    protected string _lastAnimationClip = "";
+
+    //String example DOWN/Cat01Front_Jump --> 
+    //"_currentMovementQuadrant  + / + characterNameAnimation + frontAnimationClip + jumpAnimationClip
+    public String characterNameAnimation = "Cat01";
+    public String jumpAnimationClip = "_Jump";
+    public String walkAnimationClip = "_Walk";
+    public String attackAnimationClip = "_Attack";
+    public String idleAnimationClip = "_Idle";
+
+    protected String _sideAnimationClip = "Side";
+    protected String _frontAnimationClip = "Front"; 
+    protected String _backAnimationClip = "Back";
+
     protected KikaAndBob.MovementQuadrant _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
+    protected bool _jumped = false;
 
     // convenience function
     protected KikaAndBob.MovementQuadrant DirectionToQuadrant(Vector3 movementDirection)
@@ -88,24 +106,29 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     {
         if (!character.moving)
         {
-            // TODO: possibly add an Idle animation routine or something here
-            if (currentAnimation.name != "IDLE")
-            {
-                PlayAnimation("IDLE");
-            }
+            IdleLoop();
             return;
         }
-
         Vector3 movementDirection = character.movementDirection;
-
+        
         KikaAndBob.MovementQuadrant newQuadrant = DirectionToQuadrant(movementDirection);
-
-
-        if ((character.moving) && (newQuadrant != _currentMovementQuadrant))
+        
+        if ((character.moving) && (newQuadrant != _currentMovementQuadrant)) 
         {
             LoadQuadrantAnimation(newQuadrant);
         }
     }
+
+    protected virtual void IdleLoop()
+    {
+        if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + idleAnimationClip)
+        {
+
+            PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
+        }
+           
+    }
+
     protected void LoadQuadrantAnimation(KikaAndBob.MovementQuadrant quadrantReal)
     {
         // 1. Map the quadrant to the correct AnimationClip name
@@ -118,10 +141,10 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         // we only have animations for the left side of the quadrants (up, left_up, left, left_down and down)
         // the other side is achieved by mirroring the animations by changing localScale.x
         KikaAndBob.MovementQuadrant quadrantAnimation = quadrantReal;
-        bool movingLeft = false;
+        bool movingRight = false;
         if ((quadrantReal & KikaAndBob.MovementQuadrant.RIGHT) == KikaAndBob.MovementQuadrant.RIGHT)
         {
-            movingLeft = true;
+            movingRight = true;
 
             // use bitwise NOT operator to remove RIGHT, then add LEFT with OR operator 
             // http://stackoverflow.com/questions/750240/how-do-i-set-or-clear-the-first-3-bits-using-bitwise-operations
@@ -137,53 +160,132 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
             quadrantAnimation = quadrantAnimation & (~KikaAndBob.MovementQuadrant.DOWN);
         }
 
-        string animationClipName = "" + quadrantAnimation.ToString();
+        string animationClipName = "" + quadrantAnimation.ToString() + "/" + characterNameAnimation;
 
+        animationClipName += CheckFacing(quadrantAnimation);
+        
 
-
-        PlayAnimation(animationClipName, !movingLeft);
-    }
-    public void PlayAnimation(string clipName, bool moveRight = true)
-    {
-        currentAnimation = null;
-        foreach (BoneAnimation animation in animations)
+        //check which kind of animation walk/attack/jump
+        if(character.jumping)
         {
-            animation.gameObject.SetActive(false);
-            if (animation.name == clipName)
+            animationClipName += jumpAnimationClip;
+        }
+        else
+        {
+            animationClipName += walkAnimationClip; 
+        }
+        
+
+
+        PlayAnimation(animationClipName, !movingRight);
+    }
+    public virtual void PlayAnimation(string animationPath, bool moveRight = true)
+    {
+
+        string[] parts = animationPath.Split('/');
+        if (parts.Length != 2)
+        {
+            Debug.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
+            return;
+        }
+
+        string containerName = parts[0];
+        string clipName = parts[1];
+		
+
+        currentAnimationContainer = null;
+        foreach (BoneAnimation container in animations)
+        {
+            if (container.name == containerName)
             {
-                currentAnimation = animation;
-                animation.gameObject.SetActive(true);
+                currentAnimationContainer = container;
+                currentAnimationContainer.gameObject.SetActive(true);
+                currentAnimationContainer.animation.enabled = true;
+            }
+            else
+            {
+                container.gameObject.SetActive(false);
+                //currentAnimationContainer.animation.enabled = false;
             }
         }
 
-        if (currentAnimation == null)
+        if (currentAnimationContainer == null)
         {
-            Debug.LogError(name + " : No animation found for name " + clipName);
-            currentAnimation = animations[0];
+            Debug.LogError(name + " : No animation found for name " + animationPath);
+            currentAnimationContainer = animations[0];
         }
 
-        currentAnimation.Stop();
-        //Debug.Log ("PLAYING ANIMATION " + currentAnimation.animation.clip.name + " ON " + currentAnimation.name );
-        currentAnimation.Play(currentAnimation.animation.clip.name, PlayMode.StopAll);
+        currentAnimationPath = animationPath;
+        currentAnimationClip = clipName;
+
         
+        //Debug.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
+        if (_lastAnimationClip.Contains("JUMP"))
+        {
+            //currentAnimationContainer.PlayQueued(clipName);
+            //currentAnimationContainer.Play(clipName);
+            currentAnimationContainer.Play(clipName);
+            Debug.LogError("PLAYING CLIP " + clipName);
+        }
+        else
+        {
+            currentAnimationContainer.CrossFade(clipName,0.05f);
+        }
+
+        _lastAnimationClip = currentAnimationClip;
+
         if (moveRight)
         {
             // if going right, the scale.x needs to be positive 
-            if (currentAnimation.transform.localScale.x < 0)
+            if (currentAnimationContainer.transform.localScale.x < 0)
             {
-                currentAnimation.transform.localScale = currentAnimation.transform.localScale.x(Mathf.Abs(currentAnimation.transform.localScale.x));
+                currentAnimationContainer.transform.localScale = currentAnimationContainer.transform.localScale.x(Mathf.Abs(currentAnimationContainer.transform.localScale.x));
             }
         }
         else // moving left
         {
             // if going left, the scale.x needs to be negative
-            if (currentAnimation.transform.localScale.x > 0)
+            if (currentAnimationContainer.transform.localScale.x > 0)
             {
-                currentAnimation.transform.localScale = currentAnimation.transform.localScale.x(currentAnimation.transform.localScale.x * -1.0f);
+                currentAnimationContainer.transform.localScale = currentAnimationContainer.transform.localScale.x(currentAnimationContainer.transform.localScale.x * -1.0f);
             }
         }
     }
-    public void SetupLocal()
+
+    
+
+    protected String CheckFacing(KikaAndBob.MovementQuadrant quadrantAnimation)
+    {
+        switch (quadrantAnimation)
+        {
+            case KikaAndBob.MovementQuadrant.UP:
+                return _backAnimationClip;
+                break;
+            case KikaAndBob.MovementQuadrant.RIGHT:
+                return _sideAnimationClip;
+                //because of the naming of cat no definition of Side needs to be added
+                if (character is CatchingMiceCharacterPlayer && !character.jumping)
+                {
+                    break;
+                }
+                break;
+            case KikaAndBob.MovementQuadrant.DOWN:
+                return _frontAnimationClip;
+                break;
+            case KikaAndBob.MovementQuadrant.LEFT:
+                if (character is CatchingMiceCharacterPlayer && !character.jumping)
+                {
+                    break;
+                }
+                return _sideAnimationClip;
+                break;
+            default:
+                Debug.LogError("no correct movement quadrant had been chosen");
+                break;
+        }
+        return "";
+    }
+    public virtual void SetupLocal()
     {
         if (animations.Length == 0)
         {
@@ -194,12 +296,36 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         {
             Debug.LogError(name + " : no BoneAnimations found for this animator!");
         }
-
-        character = transform.GetComponent<ICatchingMiceCharacter>();
-
         
-    }
+        if(character == null)
+        {
+            character = transform.GetComponent<ICatchingMiceCharacter>();
+        }
 
+        if (character == null)
+        {
+            Debug.LogError(name + " : no character found!");
+        }
+        else
+        {
+            character.onJump += OnJump;
+        }
+
+        //PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
+    }
+    public void OnJump(bool start)
+    {
+        if(start)
+        {
+            KikaAndBob.MovementQuadrant quadrant = DirectionToQuadrant(character.movementDirection);
+            LoadQuadrantAnimation(quadrant);
+        }
+        else
+        {
+            KikaAndBob.MovementQuadrant quadrant = DirectionToQuadrant(character.movementDirection);
+            LoadQuadrantAnimation(quadrant);
+        }
+    }
     protected void Awake()
     {
         SetupLocal();

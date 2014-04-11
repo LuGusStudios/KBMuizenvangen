@@ -46,7 +46,6 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             {
                 _character.StopCurrentBehaviour();
                 
-                Debug.Log("character added " + _character.currentTile.waypoint);
                 //pathToWalk.Add(_character.currentTile.waypoint);
                 //_previousTile = _character.currentTile;
                 //_lastAddedWaypoint = _character.currentTile;
@@ -73,20 +72,11 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             List<Waypoint> path = new List<Waypoint>(pathToWalk);
             _character.MoveWithPath(path);
             _character = null; 
-            //pathToWalk.Clear();
+            pathToWalk.Clear();
         }
 
-        //visualisation of the motion the player makes
-        if (pathToWalk.Count > 0)
-        {
-            _lineRenderer.SetVertexCount(pathToWalk.Count);
-            for (int i = 0; i < pathToWalk.Count; i++)
-            {
-                _lineRenderer.SetPosition(i, pathToWalk[i].transform.position.z(-1));
-            }
-        }
-        else
-            _lineRenderer.SetVertexCount(0);
+        VisualizePath();
+        
 	}
     protected void CheckDraggingPoints()
     {
@@ -161,6 +151,20 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
         _lastAddedWaypoint = tile;
         
         
+    }
+    public void VisualizePath()
+    {
+        //visualisation of the motion the player makes
+        if (pathToWalk.Count > 0)
+        {
+            _lineRenderer.SetVertexCount(pathToWalk.Count);
+            for (int i = 0; i < pathToWalk.Count; i++)
+            {
+                _lineRenderer.SetPosition(i, pathToWalk[i].transform.position.z(-1));
+            }
+        }
+        else
+            _lineRenderer.SetVertexCount(0);
     }
     protected void OnDrawGizmos()
     {

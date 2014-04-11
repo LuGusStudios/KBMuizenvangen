@@ -85,7 +85,6 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
                 //First mouse found, kill it and end
                 if (_enemy != null)
                 {
-                    Debug.Log("Getting hits " + hit.transform);
                     //attack the mouse
                     LugusCoroutines.use.StartRoutine(Attack());
                     break;
@@ -135,7 +134,7 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
 
         }
 
-        Debug.Log("path count : " + path.Count);
+        //Debug.Log("path count : " + path.Count);
 
         handle.StartRoutine(CalculatePath(path));
     }
