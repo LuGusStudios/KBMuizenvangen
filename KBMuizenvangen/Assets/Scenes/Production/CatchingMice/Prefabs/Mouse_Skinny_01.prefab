@@ -24,6 +24,8 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400002}
+  - 114: {fileID: 11400006}
+  - 114: {fileID: 11400008}
   m_Layer: 0
   m_Name: Mouse_Skinny_01
   m_TagString: Untagged
@@ -21281,6 +21283,48 @@ MonoBehaviour:
   mMeshColor: {r: 1, g: 1, b: 1, a: 1}
   updateColors: 0
   updatePrefabs: 1
+--- !u!114 &11400006
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e12e47f441847b4390673ef9b85bcf2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToReachTile: .5
+  zOffset: 0
+  targetWaypoint: {fileID: 0}
+  walkable: 3
+  movementDirection: {x: 0, y: 0, z: 0}
+  damage: 1
+  attackInterval: .5
+  moving: 0
+  jumping: 0
+  timesToAttack: 3
+--- !u!114 &11400008
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 091b18949656b6c468d2d66623040f63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animations: []
+  currentAnimationContainer: {fileID: 0}
+  character: {fileID: 0}
+  currentAnimationClip: 
+  currentAnimationPath: 
+  characterNameAnimation: Mouse_Skinny_
+  jumpAnimationClip: _Jump
+  walkAnimationClip: _Walk
+  attackAnimationClip: _Attack
+  idleAnimationClip: _Eat
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1

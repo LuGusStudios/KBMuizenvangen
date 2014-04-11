@@ -212,6 +212,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	void Start () 
     {
         StartGame();
+     
 	}
     public void ModifyPickUpCount(int modifyValue)
     {

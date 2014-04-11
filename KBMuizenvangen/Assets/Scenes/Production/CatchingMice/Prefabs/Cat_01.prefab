@@ -1564,7 +1564,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: .5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400204}
@@ -2857,7 +2857,7 @@ Animation:
   - {fileID: 7400000, guid: 6325db69b70583f42900aaf921b513b9, type: 2}
   - {fileID: 7400000, guid: a70cab02c0e38284c8f340283dd9ec37, type: 2}
   m_WrapMode: 0
-  m_PlayAutomatically: 1
+  m_PlayAutomatically: 0
   m_AnimatePhysics: 0
   m_CullingType: 0
 --- !u!114 &11400000
@@ -3399,7 +3399,7 @@ MonoBehaviour:
   - {fileID: 400002}
   mMaterials:
   - {fileID: 2100000, guid: bfa7e0cb1f07e4b42a2ccdc51989bdfd, type: 2}
-  buildID: 201404101338054681
+  buildID: 201404111256489876
   mFinalImportScale: 1
   mDefaultAnimationName: Cat01_Idle
   mLastBoneColor:
@@ -25603,7 +25603,7 @@ MonoBehaviour:
           inTangent: 0
           outTangent: 0
   - animationName: Cat01_Walk
-    fps: 25
+    fps: 50
     wrapMode: 2
     mix: 0
     blendMode: 0
@@ -28567,7 +28567,7 @@ MonoBehaviour:
           inTangent: 0
           outTangent: 0
   - animationName: Cat01Side_Jump
-    fps: 24
+    fps: 15
     wrapMode: 2
     mix: 0
     blendMode: 0
@@ -51781,11 +51781,12 @@ MonoBehaviour:
   timeToReachTile: .5
   zOffset: 0
   targetWaypoint: {fileID: 0}
-  walkable: 1
+  walkable: 3
   movementDirection: {x: 0, y: 0, z: 0}
   damage: 1
   attackInterval: .5
   moving: 0
+  jumping: 0
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51804,12 +51805,9 @@ MonoBehaviour:
   currentAnimationPath: 
   characterNameAnimation: Cat01
   jumpAnimationClip: _Jump
-  walkAnimationClip: Walk
-  attackAnimationClip: Attack
+  walkAnimationClip: _Walk
+  attackAnimationClip: _Attack
   idleAnimationClip: _Idle
-  sideAnimationClip: Side
-  frontAnimationClip: Front
-  backAnimationClip: Back
 --- !u!137 &13700000
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
