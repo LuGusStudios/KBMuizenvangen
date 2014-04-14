@@ -40,35 +40,64 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     {
         //CatchingMiceLevelManager.use.CheeseRemoved -= CheeseRemoved;
     }
-    public override void GetTarget()
+    public virtual void GetTarget()
     {
         if (CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
         {
             //Debug.LogWarning("No more cheese left!");
             return;
         }
-            
+        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.cheeseTiles);
+        targetWaypoint = GetTargetWaypoint(tiles);
+
+        //float smallestDistance = float.MaxValue;
+        ////Check which cheese tile is the closest
+        //foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
+        //{
+        //    float distance = Vector2.Distance(transform.position.v2(), tile.location.v2());
+        //    if (distance < smallestDistance)
+        //    {
+        //        smallestDistance = distance;
+
+        //        targetWaypoint = tile.waypoint;
+        //    }
+        //}
+
+        if (targetWaypoint != null)
+        {
+            CalculateTarget(targetWaypoint);
+        }
+        else
+        {
+            Debug.LogError("No target found");
+        }
+    }
+   
+    protected Waypoint GetTargetWaypoint(List<CatchingMiceTile> tileList)
+    {
+        Waypoint target = null;
 
         float smallestDistance = float.MaxValue;
         //Check which cheese tile is the closest
-        foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
+        foreach (CatchingMiceTile tile in tileList)
         {
             float distance = Vector2.Distance(transform.position.v2(), tile.location.v2());
             if (distance < smallestDistance)
             {
                 smallestDistance = distance;
 
-                targetWaypoint = tile.waypoint;
+                target = tile.waypoint;
             }
         }
 
-        if (targetWaypoint != null)
+        if (target != null)
         {
-            base.GetTarget();
+            return target;
         }
         else
         {
             Debug.LogError("No target found");
+            return null;
         }
     }
     public void CheeseRemoved(CatchingMiceTile tile)
@@ -96,11 +125,13 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             handle.StopRoutine();
             //begin eating the cheese
             //Debug.Log("eating cheeese");
-            handle.StartRoutine(Attack());
+            handle.StartRoutine(Attack()); 
         }
     }
     public override IEnumerator Attack()
     {
+        attacking = true;
+        OnHitEvent();
         CatchingMiceTile cheeseTile = currentTile;
         int attacked = 0;
         while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0 && attacked < timesToAttack)
@@ -111,6 +142,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             attacked++;
             yield return new WaitForSeconds(attackInterval);
         }
+        attacking = false;
         if (CatchingMiceLevelManager.use.cheeseTiles.Count > 0 && cheeseTile.trapObject.Stacks <= 0)
         {
             Debug.Log("getting new target");
@@ -132,5 +164,10 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         handle.StopRoutine();
         //Destroy(this.gameObject);
         gameObject.SetActive(false);
+    }
+
+    public void GetHit(float damage)
+    {
+        Health -= damage;
     }
 }

@@ -65,9 +65,10 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             FindClosestCheese();
         }
-        if (GUILayout.Button("Test movement behaviour"))
+        if (GUILayout.Button("Reset Game"))
         {
-            CatchingMiceLevelManager.use.InstantiateWave(0);
+            CatchingMiceGameManager.use.StartGame();
+            
             //SpawnMouseDebug();
         }
         if (GUILayout.Button("Spawn Player"))

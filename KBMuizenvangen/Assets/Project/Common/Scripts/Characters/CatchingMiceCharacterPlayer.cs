@@ -34,8 +34,13 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         bool fullPath = false;
         Waypoint currentWaypoint = null;
 
+        
+
         for (int i = 1; i < pathFromMouse.Count; i++)
         {
+            if (interrupt)
+                break;
+
             currentWaypoint = pathFromMouse[i - 1];
 
             targetWaypoint = pathFromMouse[i];
@@ -43,12 +48,6 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
             //Debug.LogError("current waypoint " + currentWaypoint + " targetWaypoint " + targetWaypoint);
 
             List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
-
-            //the very first waypoint of the first list can be dismissed
-            //if (i == 1)
-            //{
-            //    path.RemoveAt(path.Count - 1);
-            //}
 
             yield return walkHandle.StartRoutine(MoveToDestination(path));
 
@@ -66,10 +65,13 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         //attack a mouse and wait until you can attack again
         if(_enemy != null)
         {
-            _enemy.Health -= damage;
+            attacking = true;
+            _enemy.GetHit(damage);
             _canAttack = false;
+            OnHitEvent();
             yield return new WaitForSeconds(attackInterval);
             _canAttack = true;
+            attacking = false; 
         }
     }
 	
@@ -92,14 +94,14 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
             }
         }
     }
-    public void StopCurrentBehaviour()
+    public override void StopCurrentBehaviour()
     {
-        if (handle != null)
-            handle.StopRoutine();    
-        if(walkHandle != null)
+        base.StopCurrentBehaviour();
+        
+        if (walkHandle != null)
             walkHandle.StopRoutine();
-        gameObject.StopTweens();
-        moving = false;
+
+        interrupt = false;
     }
     public void MoveWithPath(List<Waypoint> path)
     {

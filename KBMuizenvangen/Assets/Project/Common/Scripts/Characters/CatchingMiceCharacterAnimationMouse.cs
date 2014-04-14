@@ -3,13 +3,13 @@ using System.Collections;
 
 public class CatchingMiceCharacterAnimationMouse : CatchingMiceCharacterAnimation
 {
-
-    protected override void IdleLoop()
+    public override void OnHit()
     {
-        // idle of the mice will be eating, no normal idle state
-        if (currentAnimationClip != characterNameAnimation + _sideAnimationClip + idleAnimationClip)
+        if (currentAnimationClip != characterNameAnimation + _backAnimationClip + eatingAnimationClip)
         {
-            PlayAnimation("RIGHT/" + characterNameAnimation + _sideAnimationClip + idleAnimationClip);
+            //Debug.LogError("Loading Eating Animation Clip");
+            PlayAnimation("UP/" + characterNameAnimation + _backAnimationClip + eatingAnimationClip);
+            _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
     public override void PlayAnimation(string animationPath, bool moveRight = true)
@@ -17,9 +17,5 @@ public class CatchingMiceCharacterAnimationMouse : CatchingMiceCharacterAnimatio
         string correctedAnimationPath = animationPath.Replace("LEFT", "RIGHT");
         base.PlayAnimation(correctedAnimationPath, !moveRight);
     }
-    public override void SetupLocal()
-    {
-        base.SetupLocal();
-        PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + walkAnimationClip);
-    }
+    
 }
