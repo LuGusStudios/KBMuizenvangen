@@ -32,9 +32,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
-        CatchingMiceLevelManager.use.CheeseRemoved += CheeseRemoved;
+        CatchingMiceLevelManager.use.CheeseRemoved += TargetRemoved;
     }
     protected void OnDisable()
     {
@@ -100,13 +100,14 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             return null;
         }
     }
-    public void CheeseRemoved(CatchingMiceTile tile)
+    public void TargetRemoved(CatchingMiceTile tile)
     {
         //only get new target when your target waypoint has been removed
         if (tile.waypoint != targetWaypoint)
             return;
 
-        handle.StopRoutine();
+        //StopAllCoroutines(); 
+        //handle.StopRoutine();
         GetTarget();
     }
     public override void DoCurrentTileBehaviour(int pathIndex)
@@ -122,10 +123,11 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
         if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
         {
-            handle.StopRoutine();
+            //handle.StopRoutine();
             //begin eating the cheese
             //Debug.Log("eating cheeese");
-            handle.StartRoutine(Attack()); 
+            StartCoroutine(Attack());
+            //handle.StartRoutine(Attack()); 
         }
     }
     public override IEnumerator Attack()
@@ -155,13 +157,13 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             DieRoutine();
         }
     }
-    public void DieRoutine()
+    public virtual void DieRoutine()
     {
         //Drop cookie
         //Play Death animation (cloud particle)
-        CatchingMiceLevelManager.use.CheeseRemoved -= CheeseRemoved;
+        CatchingMiceLevelManager.use.CheeseRemoved -= TargetRemoved;
         CatchingMiceGameManager.use.ModifyAmountToKill(-1);
-        handle.StopRoutine();
+        //handle.StopRoutine();
         //Destroy(this.gameObject);
         gameObject.SetActive(false);
     }

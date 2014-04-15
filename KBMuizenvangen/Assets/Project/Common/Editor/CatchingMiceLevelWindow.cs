@@ -14,7 +14,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     Transform cursor = null; 
     Transform levelParent = null;
 
-    
+    Vector2 TrapTile = Vector2.zero;
 
     [MenuItem("KikaAndBob/CathingMice/LevelWindow")]
 	// Use this for initialization
@@ -44,7 +44,7 @@ public class CatchingMiceLevelWindow : EditorWindow
         width = EditorGUILayout.IntField(width);
         height = EditorGUILayout.IntField(height);
         levelIndex = EditorGUILayout.IntField("Level index", levelIndex);
-
+        
         if (GUILayout.Button("Build Level " + levelIndex))
         {
             
@@ -74,6 +74,12 @@ public class CatchingMiceLevelWindow : EditorWindow
         if (GUILayout.Button("Spawn Player"))
         {
             CharacterDebug();
+        }
+
+        TrapTile = EditorGUILayout.Vector2Field("Trap Spawn tile", TrapTile);
+        if (GUILayout.Button("Spawn Trap"))
+        {
+            SpawnTrap(TrapTile);
         }
     }
 
@@ -201,7 +207,48 @@ public class CatchingMiceLevelWindow : EditorWindow
         }
         if (characterPrefab != null)
         {
-            GameObject movePrefab = Instantiate(characterPrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
+            Instantiate(characterPrefab, pathfindingGO.transform.position, Quaternion.identity);
         }
+    }
+
+    public void SpawnTrap(Vector2 location)
+    {
+        GameObject trapPrefab = null;
+
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
+        {
+            if (prefab.GetComponent<CatchingMiceWorldObjectTrapGround>() != null)
+            {
+                trapPrefab = prefab.gameObject;
+                break;
+            }
+        }
+
+        if(trapPrefab == null)
+        {
+            Debug.Log("no trap prefab found");
+            return;
+        }
+
+        CatchingMiceTile targetTile = CatchingMiceLevelManager.use.GetTile(location);
+
+        if(targetTile.worldObject != null)
+        {
+            Debug.LogError("Ground traps cannot be placed on furniture");
+            return;
+        }
+
+        targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Trap;
+        
+
+        GameObject trap = (GameObject)Instantiate(trapPrefab);
+
+        trap.transform.parent = CatchingMiceLevelManager.use._objectParent;
+        trap.transform.localPosition = targetTile.location;
+        
+        targetTile.trapObject = trap.GetComponent<CatchingMiceWorldObjectTrapGround>();
+
+
+        CatchingMiceLevelManager.use.trapTiles.Add(targetTile);
     }
 }

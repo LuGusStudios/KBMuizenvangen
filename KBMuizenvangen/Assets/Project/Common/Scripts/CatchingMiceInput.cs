@@ -71,7 +71,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
         }
         
         //when not dragging anymore get the path converted from the waypoints
-        else if (LugusInput.use.up && pathToWalk.Count > 0 && _character != null)
+        else if (LugusInput.use.up && pathToWalk.Count > 1 && _character != null)
         {
 
             //Debug.Log("UP");

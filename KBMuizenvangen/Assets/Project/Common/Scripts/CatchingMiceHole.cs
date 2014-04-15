@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceHole
+public class CatchingMiceHole : MonoBehaviour
 {
     public enum CharacterDirections
     {
@@ -18,7 +18,7 @@ public class CatchingMiceHole
     public Vector3 spawnPoint = Vector3.zero;
     public CatchingMiceTile parentTile = null;
     
-    public CatchingMiceHole(CharacterDirections direction, CatchingMiceTile tile)
+    public void SetHoleSpawnPoint(CharacterDirections direction, CatchingMiceTile tile)
     {
         spawnDirection = direction;
         parentTile = tile;
@@ -44,7 +44,6 @@ public class CatchingMiceHole
                 break;
         }
     }
-
 	// Use this for initialization
 	void Start () {
 	

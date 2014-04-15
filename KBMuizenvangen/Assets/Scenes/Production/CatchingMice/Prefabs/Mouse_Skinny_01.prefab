@@ -21299,6 +21299,7 @@ MonoBehaviour:
   targetWaypoint: {fileID: 0}
   walkable: 3
   movementDirection: {x: 0, y: 0, z: 0}
+  _health: 5
   damage: 1
   attackInterval: .5
   moving: 0
