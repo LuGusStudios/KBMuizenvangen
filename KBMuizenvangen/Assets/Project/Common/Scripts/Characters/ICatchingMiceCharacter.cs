@@ -15,6 +15,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
     public Vector3 movementDirection = Vector3.zero;
 
+    [SerializeField]
     protected float _health = 1.0f;
     public abstract float Health{ get; set;}
 
@@ -31,7 +32,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public bool jumping = false;
     public bool attacking = false;
     public bool interrupt = false;
-    public ILugusCoroutineHandle handle = null;
+    //public ILugusCoroutineHandle handle = null;
 
     public virtual void CalculateTarget(Waypoint target)
     {
@@ -45,8 +46,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         if(targetWaypoint != null)
         {
             List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
-            
-            handle.StartRoutine(MoveToDestination(path)); 
+            StartCoroutine(MoveToDestination(path));
+
+            //handle.StartRoutine(MoveToDestination(path)); 
         }
     }
     public abstract void DoCurrentTileBehaviour(int pathIndex);
@@ -67,7 +69,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
-        handle = LugusCoroutines.use.GetHandle();
+        //handle = LugusCoroutines.use.GetHandle();
 
         movementDirection = Vector3.zero;
     }
@@ -244,10 +246,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         while (pathIndex > -1 && !interrupt)
         {
-            gameObject.StopTweens();
+            //gameObject.StopTweens();
 
             Vector3 movePosition = path[pathIndex].transform.position;
-            
             //check which zdepth the object must be
             //Left hand axis, bigger z is further away
             //when going up
@@ -255,6 +256,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             {
                 movePosition.z = transform.position.z;
             }
+           
             
             //TODO: needs to account offset (furniture offsets)
             float yOffset = 0.0f;
@@ -272,6 +274,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
                     onJump();
                 yield return new WaitForSeconds(0.3f);
             }
+
+            
+            
 
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
@@ -301,7 +306,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             else
             {
                 transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
-                //handle.StopRoutine();
             }
 
             currentTile = path[pathIndex].parentTile;
@@ -325,8 +329,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     }
     public virtual void StopCurrentBehaviour()
     {
-        if (handle != null)
-            handle.StopRoutine();
+        StopAllCoroutines();
+        //if (handle != null)
+        //    handle.StopRoutine();
         gameObject.StopTweens();
         moving = false;
     }

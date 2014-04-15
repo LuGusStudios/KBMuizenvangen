@@ -137,8 +137,8 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         }
 
         //Debug.Log("path count : " + path.Count);
-
-        handle.StartRoutine(CalculatePath(path));
+        StartCoroutine(CalculatePath(path));
+        //handle.StartRoutine(CalculatePath(path));
     }
 	// Update is called once per frame
 	protected void Update () 

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class CatchingMiceWorldObject : MonoBehaviour
 {
 
@@ -8,6 +8,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
     public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
     protected BoxCollider2D[] _BoxColliders2D;
     public CatchingMiceTile parentTile = null;
+
     protected void Awake()
     {
         SetupLocal();
@@ -26,15 +27,18 @@ public class CatchingMiceWorldObject : MonoBehaviour
     public virtual void CalculateColliders()
     {
         _BoxColliders2D = GetComponentsInChildren<BoxCollider2D>();
+        List<CatchingMiceTile> tileList = new List<CatchingMiceTile>();
+
+
         //gets the indices of box colliders
         foreach (BoxCollider2D col2D in _BoxColliders2D)
         {
             float xTiles = Mathf.Ceil(col2D.size.x / CatchingMiceLevelManager.use.scale);
             float yTiles = Mathf.Ceil(col2D.size.y / CatchingMiceLevelManager.use.scale);
-            //TODO: needs to go over every other point, not every point
-            for (int y = 1; y < (int)yTiles * 2; y++)
+            //needs to go over every other point
+            for (int y = 1; y < (int)yTiles * 2; y+=2)
             {
-                for (int x = 1; x < (int)xTiles * 2; x++)
+                for (int x = 1; x < (int)xTiles * 2; x+=2)
                 {
                     //gets most left position of the collider and add the wanted tile distance
                     float xTile = ((col2D.transform.position.x + col2D.center.x) - col2D.Bounds().extents.x) + xTiles / (xTiles * 2) * x;
@@ -42,9 +46,9 @@ public class CatchingMiceWorldObject : MonoBehaviour
                     float yTile = ((col2D.transform.position.y + col2D.center.y) - col2D.Bounds().extents.y) - gridOffset + yTiles / (yTiles * 2) * y;
                     //Debug.Log("yTile : " + yTile); 
                     CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTile(Mathf.RoundToInt(xTile / CatchingMiceLevelManager.use.scale), Mathf.RoundToInt(yTile / CatchingMiceLevelManager.use.scale));
-
-                    SetTileType(tile); 
-                   
+                    
+                    tileList.Add(tile);
+                    //SetTileType(tile); 
                 }
             }
         }
@@ -52,18 +56,24 @@ public class CatchingMiceWorldObject : MonoBehaviour
         if(_BoxColliders2D.Length <= 0)
         {
             Debug.Log("no collider has been found. will be using 1 tile");
-            SetTileType(CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x,transform.position.y));
+            CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x,transform.position.y);
+            tileList.Add(tile);
         }
+        Debug.Log(transform.name +  tileList.Count);
+        SetTileType(tileList);
     }
 
-    public virtual void SetTileType(CatchingMiceTile tile)
+    public virtual void SetTileType(List<CatchingMiceTile> tiles)
     {
-        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
-        //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-        levelTile.tileType = tileType;
-        levelTile.worldObject = this;
-        //the z axis will be the anchor point of the object. So the anchor point needs the be the lowest tile of the sprite
-        levelTile.location.z = transform.position.z;
+        foreach (CatchingMiceTile tile in tiles)
+        {
+            CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
+            levelTile.tileType = tileType;
+            levelTile.worldObject = this;
+            //the z axis will be the anchor point of the object. So the anchor point needs the be the lowest tile of the sprite
+            levelTile.location.z = transform.position.z;
+        }
+        
     }
     // Use this for initialization
 	void Start ()

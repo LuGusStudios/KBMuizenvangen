@@ -17,6 +17,7 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
             
             if (targetWaypoint != null)
             {
+                Debug.LogError("Getting new trap " + CatchingMiceLevelManager.use.trapTiles.Count);
                 CalculateTarget(targetWaypoint); 
             }
             else
@@ -35,12 +36,12 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
     public override void DoCurrentTileBehaviour(int pathIndex)
     {
         base.DoCurrentTileBehaviour(pathIndex);
-         if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && pathIndex==0)
+        if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && pathIndex==0)
         {
-            handle.StopRoutine();
+            //handle.StopRoutine();
             //begin eating the cheese
-            //Debug.Log("eating cheeese");
-            handle.StartRoutine(AttackTrap()); 
+            StartCoroutine(AttackTrap());
+            //handle = LugusCoroutines.use.StartRoutine(AttackTrap()); 
         }
     }
     public IEnumerator AttackTrap()
@@ -58,9 +59,20 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
         }
         attacking = false;
       
-        Debug.Log("getting new target");
+
 
         GetTarget();
         
+    }
+    protected override void OnEnable()
+    {
+        CatchingMiceLevelManager.use.CheeseRemoved += TargetRemoved;
+        CatchingMiceLevelManager.use.TrapRemoved += TargetRemoved;
+
+    }
+    public override void DieRoutine()
+    {
+        base.DieRoutine();
+        CatchingMiceLevelManager.use.TrapRemoved -= TargetRemoved;
     }
 }

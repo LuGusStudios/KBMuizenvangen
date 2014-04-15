@@ -9540,11 +9540,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e12e47f441847b4390673ef9b85bcf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToReachTile: 1
+  timeToReachTile: .800000012
   zOffset: 0
   targetWaypoint: {fileID: 0}
   walkable: 1
   movementDirection: {x: 0, y: 0, z: 0}
+  _health: 5
   damage: 1
   attackInterval: .5
   moving: 0

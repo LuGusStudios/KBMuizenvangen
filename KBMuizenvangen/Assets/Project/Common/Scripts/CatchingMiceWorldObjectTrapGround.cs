@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
@@ -60,23 +61,29 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
         gameObject.SetActive(false);
     }
 
-    public override void SetTileType(CatchingMiceTile tile)
+    public override void SetTileType(List<CatchingMiceTile> tiles)
     {
-        //World objects are the furniture, ground traps cannot be set on furniture types
-        if (tile.worldObject != null)
+        foreach (CatchingMiceTile tile in tiles)
         {
-            Debug.LogError("Ground trap " + transform.name + " cannot be placed\non furniture tile " + tile.worldObject.name + " !");
-            return;
-        }
-        
-        CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
-        
-        //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
-        levelTile.tileType = levelTile.tileType | tileType;
-        levelTile.trapObject = this;
-        transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
-        
-            
-                    
+            //World objects are the furniture, ground traps cannot be set on furniture types
+            if (tile.worldObject != null)
+            {
+                Debug.LogError("Ground trap " + transform.name + " cannot be placed\non furniture tile " + tile.worldObject.name + " !");
+                return;
+            }
+
+            if ((tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
+            {
+                Debug.LogError("Ground trap " + transform.name + " cannot be of type Furniture(trap).");
+                return;
+            }
+
+            CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
+
+            //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
+            levelTile.tileType = levelTile.tileType | tileType;
+            levelTile.trapObject = this;
+            transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
+        }       
     }    
 }

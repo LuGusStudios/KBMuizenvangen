@@ -16,6 +16,14 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     protected ILugusCoroutineHandle _gameRoutineHandle = null;
 
     protected bool _infiniteLevel = false;
+
+    public float Timer 
+    {
+        get
+        {
+            return _timer;
+        }
+    }
     public enum State
     {
         PreWave = 1, //Let the player place their traps
@@ -143,6 +151,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
         CatchingMiceLevelManager.use.ClearLevel();
         CatchingMiceLevelManager.use.BuildLevel(0);
         LugusCoroutines.use.StopAllRoutines();
+        gameRunning = true;
         _currentWave = 0;
         state = State.PreWave;
     }
@@ -189,7 +198,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
             // otherwhise, moving objects with colliders (all our Buttons) wouldn't update collision correctly!
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-            _paused = true;
+            _paused = true; 
 
         }
         else
@@ -228,7 +237,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     public void ModifyAmountToKill(int modifyValue)
     {
         _amountToKill += modifyValue;
-        //Debug.Log("Modified, amount is now : " + amountToKill);
+        Debug.Log("Modified, amount is now : " + _amountToKill);
     }
 	// Update is called once per frame
     protected void Update()
