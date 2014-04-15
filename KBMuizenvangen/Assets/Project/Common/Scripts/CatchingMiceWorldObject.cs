@@ -7,7 +7,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
     public float gridOffset = 0.5f;
     public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
     protected BoxCollider2D[] _BoxColliders2D;
-    
+    public CatchingMiceTile parentTile = null;
     protected void Awake()
     {
         SetupLocal();

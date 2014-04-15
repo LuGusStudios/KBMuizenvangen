@@ -38,26 +38,33 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             if (hit == null)
                 return;
              
-            pathToWalk.Clear();
-            Debug.Log(hit.name);
+            //pathToWalk.Clear();
+            //Debug.Log(hit.name);
 
             _character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
             if(_character != null)
             {
+                if (_character.jumping)
+                {
+                    _character.interrupt = true; 
+                    return;
+                }
+                    
+
                 _character.StopCurrentBehaviour();
+
+                CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(_character.transform.position.x, _character.transform.position.y);
+                pathToWalk.Add(_character.currentTile.waypoint);
                 
-                //pathToWalk.Add(_character.currentTile.waypoint);
-                //_previousTile = _character.currentTile;
-                //_lastAddedWaypoint = _character.currentTile;
-                CatchingMiceTile tile =  CatchingMiceLevelManager.use.GetTileByLocation(hit.position.x, hit.position.y);
-                pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
+                //CatchingMiceTile tile =  CatchingMiceLevelManager.use.GetTileByLocation(hit.position.x, hit.position.y);
+                //pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
                 _lastAddedWaypoint = tile;
             }
             
         }
 
         //When dragging, try get the right swipe path
-	    else if(LugusInput.use.dragging && _character != null)
+	    else if(LugusInput.use.dragging && _character != null && pathToWalk.Count > 0)
         {
             //CheckDraggingPoints();   
             CheckDraggingPointsOffGrid();
@@ -120,11 +127,42 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
     }
     protected void CheckDraggingPointsOffGrid()
     {
+        Transform hit = LugusInput.use.RayCastFromMouse();
+        float yOffset = 0.0f;
+        //on need to check this for the first count only
+        //because the player is taller than 1 tile, when you click on the tile that is above your tile, you don't want that added
+        //if you're still in the cat collider with your mouse, don't add
+        if (hit != null)
+        {
+            if (pathToWalk.Count == 1)
+            {
+            CatchingMiceCharacterPlayer character = null;
+            character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
+            if (character != null && character == _character)
+                return;
+            }
+
+            //check furniture tiles for shifts
+            CatchingMiceWorldObject FurnitureObject = null;
+            FurnitureObject = hit.parent.GetComponent<CatchingMiceWorldObject>();
+            if (FurnitureObject != null)
+            {
+                //make sure we have the furniture and not a trap
+                //if it is null than you hit a ground trap, so no furniture object
+                if (FurnitureObject.parentTile.worldObject != null)
+                    yOffset = FurnitureObject.parentTile.worldObject.gridOffset * CatchingMiceLevelManager.use.scale;
+            }
+
+        }
+            
+        
+
+
         Vector3 dragPoint = LugusInput.use.ScreenTo3DPoint(_character.transform);
-        CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(dragPoint.x, dragPoint.y);
+        CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(dragPoint.x, dragPoint.y - yOffset);
         //only add a tile when its new tile is more than half a grid away
         if (Vector2.Distance(tile.gridIndices, _lastAddedWaypoint.gridIndices) < CatchingMiceLevelManager.use.scale / 2)
-            return; 
+            return;
 
         float distance = Vector2.Distance(tile.gridIndices,_lastAddedWaypoint.gridIndices);
         float maxDistance = CatchingMiceLevelManager.use.scale * 2; 

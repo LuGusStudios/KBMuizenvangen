@@ -3568,6 +3568,16 @@ MonoBehaviour:
   - {fileID: 100002, guid: f55b0d76be49f6e4d98cb3927b5af338, type: 2}
   holeItems:
   - {fileID: 100002, guid: 447cd1e24ad0c0c41bfe7bef7cf39825, type: 2}
+  trapItems:
+  - {fileID: 100002, guid: 7f37c9308feeeab45af9b5d88de1cba7, type: 2}
+  - {fileID: 100000, guid: fee588d06ee563e468e14f7027218321, type: 2}
+  - {fileID: 100004, guid: a4f2248133c52d846afc43ad85b9ea87, type: 2}
+  - {fileID: 100004, guid: 68b714737e35f8040bc4208e20ffba4d, type: 2}
+  - {fileID: 100004, guid: 08206c85ebc67fe43a43bc3089363ea4, type: 2}
+  - {fileID: 100004, guid: 85671cc754acc6c4a8e8c5f80bf061a7, type: 2}
+  - {fileID: 100002, guid: b199d88c19ca32944a650db47d21bc6f, type: 2}
+  - {fileID: 100004, guid: 562a1bec473acd5469d685d0f09252f5, type: 2}
+  - {fileID: 100006, guid: ac7b379d411e9b048ac81b872f9c57c1, type: 2}
   waypointList:
   - {fileID: 2049430686}
   - {fileID: 1857633933}
@@ -7351,7 +7361,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 701054866}
   m_Enabled: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Size: {x: 4, y: 1.79999995}
   m_Center: {x: 0, y: 0}
 --- !u!1 &701406991

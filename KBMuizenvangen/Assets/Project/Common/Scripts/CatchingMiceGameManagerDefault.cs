@@ -142,6 +142,8 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     {
         CatchingMiceLevelManager.use.ClearLevel();
         CatchingMiceLevelManager.use.BuildLevel(0);
+        LugusCoroutines.use.StopAllRoutines();
+        _currentWave = 0;
         state = State.PreWave;
     }
     public void StopGame()

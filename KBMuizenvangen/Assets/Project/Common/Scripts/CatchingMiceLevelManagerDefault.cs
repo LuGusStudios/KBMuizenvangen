@@ -9,7 +9,6 @@ public class CatchingMiceLevelManager : LugusSingletonExisting<CatchingMiceLevel
 
 public class CatchingMiceLevelManagerDefault : MonoBehaviour 
 {
-
     protected Transform _levelRoot = null;
     protected Transform _levelParent = null;
     protected Transform _objectParent = null;
@@ -22,7 +21,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public int width = 13;
     public int height = 13;
 
-    public CatchingMiceTile[,] levelTiles;
+    public CatchingMiceTile[,] levelTiles = null;
     public float scale = 1;
 
     public ICatchingMiceCharacter[] characterPrefabs = null;
@@ -30,6 +29,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public GameObject[] tileItems = null;
     public GameObject[] cheeseItems = null;
     public GameObject[] holeItems = null;
+    public GameObject[] trapItems = null;
 
     [HideInInspector]
     public List<Waypoint> waypointList = new List<Waypoint>();
@@ -38,6 +38,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     protected List<GameObject> _enemyList = new List<GameObject>();
 
     public List<CatchingMiceHole> holeTiles = new List<CatchingMiceHole>();
+    public List<CatchingMiceTile> trapTiles = new List<CatchingMiceTile>();
 
     public List<CatchingMiceTile> cheeseTiles = new List<CatchingMiceTile>();
     public delegate void CheeseRemovedEventHandler(CatchingMiceTile cheeseTile);
@@ -333,6 +334,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             CatchingMiceWorldObject tileObjectScript = tileItem.GetComponent<CatchingMiceWorldObject>();
             if (tileObjectScript != null)
             {
+                tileObjectScript.parentTile = targetTile;
                 tileObjectScript.CalculateColliders();
             }
             else

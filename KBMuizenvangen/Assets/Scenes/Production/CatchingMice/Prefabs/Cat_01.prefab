@@ -1564,7 +1564,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 100000}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: .349999994, z: -2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 400204}
@@ -2801,7 +2801,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1, y: 1.70000005}
   m_Center: {x: 0, y: 0}
 --- !u!111 &11100000
 Animation:
@@ -3399,7 +3399,7 @@ MonoBehaviour:
   - {fileID: 400002}
   mMaterials:
   - {fileID: 2100000, guid: bfa7e0cb1f07e4b42a2ccdc51989bdfd, type: 2}
-  buildID: 201404111256489876
+  buildID: 201404141449320358
   mFinalImportScale: 1
   mDefaultAnimationName: Cat01_Idle
   mLastBoneColor:
@@ -28567,7 +28567,7 @@ MonoBehaviour:
           inTangent: 0
           outTangent: 0
   - animationName: Cat01Side_Jump
-    fps: 15
+    fps: 22
     wrapMode: 2
     mix: 0
     blendMode: 0
@@ -51784,9 +51784,11 @@ MonoBehaviour:
   walkable: 3
   movementDirection: {x: 0, y: 0, z: 0}
   damage: 1
-  attackInterval: .5
+  attackInterval: 1
   moving: 0
   jumping: 0
+  attacking: 0
+  interrupt: 0
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -51806,7 +51808,7 @@ MonoBehaviour:
   characterNameAnimation: Cat01
   jumpAnimationClip: _Jump
   walkAnimationClip: _Walk
-  attackAnimationClip: _Attack
+  eatingAnimationClip: _Attack02
   idleAnimationClip: _Idle
 --- !u!137 &13700000
 SkinnedMeshRenderer:

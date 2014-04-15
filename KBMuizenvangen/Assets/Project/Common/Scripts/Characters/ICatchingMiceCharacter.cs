@@ -21,7 +21,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public float damage = 1.0f;
     public float attackInterval = 0.5f;
 
-    public delegate void OnJump(bool start);
+    public delegate void OnJump();
     public delegate void OnHit();
 
     public event OnJump onJump;
@@ -29,9 +29,11 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
     public bool moving = false;
     public bool jumping = false;
+    public bool attacking = false;
+    public bool interrupt = false;
     public ILugusCoroutineHandle handle = null;
 
-    public virtual void GetTarget()
+    public virtual void CalculateTarget(Waypoint target)
     {
         //go to target
         List<Waypoint> graph = navigationGraph;
@@ -237,8 +239,10 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     {
         int pathIndex = path.Count - 1;
         moving = true;
+        //when interrupting a jump complete the jump to the tile
+        interrupt = false;
 
-        while (pathIndex > -1)
+        while (pathIndex > -1 && !interrupt)
         {
             gameObject.StopTweens();
 
@@ -257,10 +261,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             if (currentTile.worldObject != null)
                 yOffset = currentTile.worldObject.gridOffset;
 
-            float pathYOffset = 0.0f;
-            if (path[pathIndex].parentTile.worldObject != null)
-                pathYOffset = path[pathIndex].parentTile.worldObject.gridOffset;
-
             movementDirection = Vector3.Normalize(path[pathIndex].parentTile.location.z(transform.position.z) - transform.position.yAdd(-yOffset)) ;
 
 
@@ -269,7 +269,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             {
                 jumping = true;
                 if (onJump != null)
-                    onJump(true);
+                    onJump();
                 yield return new WaitForSeconds(0.3f);
             }
 
@@ -305,7 +305,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             }
 
             currentTile = path[pathIndex].parentTile;
-
             
             DoCurrentTileBehaviour(pathIndex);
 
@@ -313,29 +312,24 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
             pathIndex--;
 
-            if (jumping)
-            {
-                jumping = false;
-                if(pathIndex>-1)
-                {
-                    if((currentTile.waypoint.waypointType & path[pathIndex].waypointType) == path[pathIndex].waypointType)
-                    {
-                        if (onJump != null)
-                            onJump(false);
-                    }
-                }
-                
-                
-
-            }
+            //this bool is used for cat side because naming of animations are not consistant 
+            //(example: Cat01_Idle and Cat01Side_Jump)
+            jumping = false;
         }
 
         // we have reached the final target now (or should have...)
         gameObject.StopTweens();
 
         moving = false;
-    }
 
+    }
+    public virtual void StopCurrentBehaviour()
+    {
+        if (handle != null)
+            handle.StopRoutine();
+        gameObject.StopTweens();
+        moving = false;
+    }
     public virtual bool IsWalkable(CatchingMiceTile tile)
     {
         if (tile.waypoint.waypointType == Waypoint.WaypointType.Collide)
@@ -344,5 +338,11 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void OnHitEvent()
+    {
+        if (onHit != null)
+            onHit();
     }
 }
