@@ -4,10 +4,25 @@ using System.Collections.Generic;
 
 public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
+    protected float _health = 100.0f;
     protected int _stacks = 3;
     protected float _cost = 1.0f;
     protected float _damage = 1.0f;
-
+    public float Health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            _health = value;
+            if (_health <= 0)
+            {
+                DestroySelf();
+            }
+        }
+    }
     public int Stacks
     {
         get
@@ -51,13 +66,12 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
     public void OnHit( ICatchingMiceCharacter character)
     {
         character.Health -= _damage;
-        Stacks--;
     }
 
     public void DestroySelf()
     {
         //remove the cheese from the list and tiletype
-        CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y),tileType);
+        CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(parentTile.gridIndices.x), Mathf.RoundToInt(parentTile.gridIndices.y), tileType);
         gameObject.SetActive(false);
     }
 
@@ -66,7 +80,7 @@ public class CatchingMiceWorldObjectTrapGround : CatchingMiceWorldObject , ICatc
         foreach (CatchingMiceTile tile in tiles)
         {
             //World objects are the furniture, ground traps cannot be set on furniture types
-            if (tile.worldObject != null)
+            if (tile.worldObject != null) 
             {
                 Debug.LogError("Ground trap " + transform.name + " cannot be placed\non furniture tile " + tile.worldObject.name + " !");
                 return;

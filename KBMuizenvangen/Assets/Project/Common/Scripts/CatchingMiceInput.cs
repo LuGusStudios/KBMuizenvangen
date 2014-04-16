@@ -147,10 +147,14 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             FurnitureObject = hit.parent.GetComponent<CatchingMiceWorldObject>();
             if (FurnitureObject != null)
             {
-                //make sure we have the furniture and not a trap
-                //if it is null than you hit a ground trap, so no furniture object
-                if (FurnitureObject.parentTile.worldObject != null)
-                    yOffset = FurnitureObject.parentTile.worldObject.gridOffset * CatchingMiceLevelManager.use.scale;
+                if (FurnitureObject.parentTile != null)
+                {
+                    //make sure we have the furniture and not a trap
+                    //if it is null than you hit a ground trap, so no furniture object
+                    if (FurnitureObject.parentTile.worldObject != null)
+                        yOffset = FurnitureObject.parentTile.worldObject.gridOffset * CatchingMiceLevelManager.use.scale;
+                }
+                
             }
 
         }

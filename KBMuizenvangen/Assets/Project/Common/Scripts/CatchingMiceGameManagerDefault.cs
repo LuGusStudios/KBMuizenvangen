@@ -237,7 +237,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
     public void ModifyAmountToKill(int modifyValue)
     {
         _amountToKill += modifyValue;
-        Debug.Log("Modified, amount is now : " + _amountToKill);
+        //Debug.Log("Modified, amount is now : " + _amountToKill);
     }
 	// Update is called once per frame
     protected void Update()

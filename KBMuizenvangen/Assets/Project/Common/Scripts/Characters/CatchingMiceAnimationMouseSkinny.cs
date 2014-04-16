@@ -13,6 +13,10 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
+    public void OnGetHit()
+    {
+        LugusCoroutines.use.StartRoutine(SmoothMovesUtil.Blink(animationContainers, Color.red, 1f, 3));
+    }
     protected void OnAttack()
     {
         if (currentAnimationClip != characterNameAnimation + _sideAnimationClip + attackAnimationClip)
@@ -37,6 +41,7 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
         {
             character.onJump += OnJump;
             character.onHit += OnHit;
+            ((CatchingMiceMouseSkinny)character).onGetHit += OnGetHit;
             ((CatchingMiceMouseSkinny)character).onAttack += OnAttack;
         }
     }

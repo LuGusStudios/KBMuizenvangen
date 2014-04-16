@@ -3,11 +3,28 @@ using System.Collections;
 using System.Collections.Generic;
 public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , ICatchingMiceWorldObjectTrap
 {
+    [SerializeField]
+    protected float _health = 100.0f;
     protected int _stacks = 3;
     protected float _cost = 1.0f;
     [SerializeField]
     protected float _damage = 1.0f;
 
+    public float Health
+    {
+        get
+        {
+            return _health;
+        }
+        set
+        {
+            _health = value;
+            if (_health <= 0)
+            {
+                DestroySelf();
+            }
+        }
+    }
     public int Stacks
     {
         get
@@ -17,6 +34,10 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
         set
         {
             _stacks = value;
+            if (_stacks <= 0)
+            {
+                DestroySelf();
+            }
         }
     }
 
@@ -47,12 +68,11 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
     public void OnHit(ICatchingMiceCharacter character)
     {
         character.Health -= _damage;
-        _stacks--;
     }
     public void DestroySelf()
     {
         //remove the cheese from the list and tiletype
-        CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y),tileType);
+        CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(parentTile.gridIndices.x), Mathf.RoundToInt(parentTile.gridIndices.y), tileType);
         gameObject.SetActive(false);
     }
     public override void SetTileType(List<CatchingMiceTile> tiles)

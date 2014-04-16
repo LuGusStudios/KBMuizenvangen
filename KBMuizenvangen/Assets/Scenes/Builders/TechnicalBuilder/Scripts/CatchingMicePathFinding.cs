@@ -7,7 +7,7 @@ public class CatchingMicePathFinding : MonoBehaviour
 {
     public List<Waypoint> navigationGraph = null;
     public List<Waypoint> path = null;
-    public Waypoint.WaypointType wayType = Waypoint.WaypointType.None;
+    public CatchingMiceTile.TileType wayType = CatchingMiceTile.TileType.None;
     protected void OnAwake()
     {
         SetupLocal();
@@ -64,7 +64,7 @@ public class CatchingMicePathFinding : MonoBehaviour
     }
 
     // TODO: move this to Util?
-    protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, Waypoint.WaypointType waypointType)
+    protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, CatchingMiceTile.TileType waypointType)
     {
         // https://code.google.com/p/csharpgameprogramming/source/browse/trunk/Examples/AdventureGames/PathFinding/AStar.cs
 

@@ -4014,7 +4014,7 @@ MonoBehaviour:
   mAnimationStates: []
   mLocalTransform: {fileID: 400040}
   mMeshColor: {r: 1, g: 1, b: 1, a: 1}
-  updateColors: 0
+  updateColors: 1
   updatePrefabs: 1
 --- !u!114 &11400002
 MonoBehaviour:
@@ -6413,7 +6413,7 @@ MonoBehaviour:
   mAnimationStates: []
   mLocalTransform: {fileID: 400082}
   mMeshColor: {r: 1, g: 1, b: 1, a: 1}
-  updateColors: 0
+  updateColors: 1
   updatePrefabs: 1
 --- !u!114 &11400004
 MonoBehaviour:
@@ -9527,7 +9527,7 @@ MonoBehaviour:
   mAnimationStates: []
   mLocalTransform: {fileID: 400124}
   mMeshColor: {r: 1, g: 1, b: 1, a: 1}
-  updateColors: 0
+  updateColors: 1
   updatePrefabs: 1
 --- !u!114 &11400006
 MonoBehaviour:
@@ -9564,7 +9564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 091b18949656b6c468d2d66623040f63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animations: []
+  animationContainers: []
   currentAnimationContainer: {fileID: 0}
   character: {fileID: 0}
   currentAnimationClip: 

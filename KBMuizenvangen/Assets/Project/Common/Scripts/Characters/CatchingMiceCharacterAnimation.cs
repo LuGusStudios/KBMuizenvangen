@@ -24,7 +24,7 @@ namespace KikaAndBob
 
 public class CatchingMiceCharacterAnimation : MonoBehaviour 
 {
-    public BoneAnimation[] animations;
+    public BoneAnimation[] animationContainers;
     public BoneAnimation currentAnimationContainer = null;
 
     public ICatchingMiceCharacter character = null;
@@ -183,7 +183,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 		
 
         currentAnimationContainer = null;
-        foreach (BoneAnimation container in animations)
+        foreach (BoneAnimation container in animationContainers)
         {
             if (container.name == containerName)
             {
@@ -201,7 +201,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         if (currentAnimationContainer == null)
         {
             Debug.LogError(name + " : No animation found for name " + animationPath);
-            currentAnimationContainer = animations[0];
+            currentAnimationContainer = animationContainers[0];
         }
 
         currentAnimationPath = animationPath;
@@ -275,12 +275,12 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     }
     public virtual void SetupLocal()
     {
-        if (animations.Length == 0)
+        if (animationContainers.Length == 0)
         {
-            animations = transform.GetComponentsInChildren<BoneAnimation>();
+            animationContainers = transform.GetComponentsInChildren<BoneAnimation>();
         }
 
-        if (animations.Length == 0)
+        if (animationContainers.Length == 0)
         {
             Debug.LogError(name + " : no BoneAnimations found for this animator!");
         }

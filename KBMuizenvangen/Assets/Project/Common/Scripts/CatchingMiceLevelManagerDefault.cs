@@ -112,6 +112,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             cheeseTiles.Clear();
             holeTiles.Clear();
             _enemyParentList.Clear();
+            trapTiles.Clear();
             spawnRoutine.StopRoutine();
         }
 #else
@@ -164,6 +165,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         holeTiles.Clear();
         _enemyParentList.Clear();
         spawnRoutine.StopRoutine();
+        trapTiles.Clear();
     }
     
 
@@ -265,7 +267,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
                 if ((levelTiles[x, y].tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture) 
                 {
-                    wp.waypointType = Waypoint.WaypointType.Furniture;
+                    wp.waypointType = CatchingMiceTile.TileType.Furniture;
                     CatchingMiceWorldObject catchingMiceObject = levelTiles[x, y].worldObject;
                     if (catchingMiceObject != null)
                     {
@@ -650,6 +652,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             GameObject enemy = GetNextEnemyFromPool(spawnGO);
             enemy.transform.parent = waveParent.transform;
             enemy.transform.localPosition = Vector3.zero;
+            //enemy.SetActive(false);
         }
 
         _enemyParentList.Add(waveParent);
@@ -717,6 +720,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             CatchingMiceCharacterMouse mouseScript = child.GetComponent<CatchingMiceCharacterMouse>();
             if (mouseScript != null)
             {
+                //child.gameObject.SetActive(true);
                 child.transform.parent = _enemyParent;
                 child.transform.position = spawnTile.spawnPoint.zAdd(-mouseScript.zOffset);
                 mouseScript.currentTile = spawnTile.parentTile;
@@ -852,11 +856,11 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public void RemoveTrapFromTile(int x, int y, CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.Trap)
     {
         CatchingMiceTile tile = levelTiles[x, y];
-        foreach (Transform go in _objectParent)
-        {
-            if(tile.location.v2() == go.position.v2())
-            {
-                go.gameObject.SetActive(false);
+        //foreach (Transform go in _objectParent)
+        //{
+        //    if(tile.location.v2() == go.position.v2())
+        //    {
+        //        go.gameObject.SetActive(false);
 
                 if ((tile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
                 {
@@ -866,6 +870,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
                     {
                         CheeseRemoved(tile);
                     }
+                    tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Cheese;
+                    tile.trapObject = null;
                 }
                 else if ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap)
                 {
@@ -874,16 +880,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
                     if(TrapRemoved!=null)
                     {
                         TrapRemoved(tile);
+                        Debug.Log("Trap removed");
                     }
+                    tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Trap;
+                    tile.trapObject = null;
                 }
 
 
-                tile.tileType = tile.tileType ^ tileType;
-                tile.trapObject = null;
                 
-                break;
-            }
-        }
+                
+        //        break;
+        //    }
+        //}
     }
     // Use this for initialization
 	void Start () {

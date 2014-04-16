@@ -65,3 +65,23 @@ MonoBehaviour:
       amount: 5
       spawnTimeInterval: .800000012
       spawnDelay: 0
+    - prefabName: Mouse_Fat_01
+      holeId: Hole02
+      amount: 5
+      spawnTimeInterval: .800000012
+      spawnDelay: 3
+    - prefabName: Mouse_Normal_01
+      holeId: Hole03
+      amount: 5
+      spawnTimeInterval: .800000012
+      spawnDelay: 2
+    - prefabName: Mouse_Fast_01
+      holeId: Hole04
+      amount: 5
+      spawnTimeInterval: .800000012
+      spawnDelay: 2
+    - prefabName: Mouse_Skinny_01
+      holeId: Hole04
+      amount: 5
+      spawnTimeInterval: .800000012
+      spawnDelay: 1

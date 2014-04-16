@@ -11,7 +11,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
     public CatchingMiceTile currentTile = null;
     public Waypoint targetWaypoint = null;
-    public Waypoint.WaypointType walkable = Waypoint.WaypointType.Ground;
+    public CatchingMiceTile.TileType walkable = CatchingMiceTile.TileType.Ground;
 
     public Vector3 movementDirection = Vector3.zero;
 
@@ -45,8 +45,12 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         if(targetWaypoint != null)
         {
-            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
-            StartCoroutine(MoveToDestination(path));
+            
+
+           List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
+
+            if (fullPath)
+                StartCoroutine(MoveToDestination(path));
 
             //handle.StartRoutine(MoveToDestination(path)); 
         }
@@ -63,22 +67,22 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     }
     public virtual void SetupLocal()
     {
-        currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
-        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
-
-        if (navigationGraph.Count == 0)
-            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+       
         //handle = LugusCoroutines.use.GetHandle();
 
         movementDirection = Vector3.zero;
     }
     public virtual void SetupGlobal()
     {
-        
+        currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
+        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
+
+        if (navigationGraph.Count == 0)
+            Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
     }
     // TODO: move this to Util?
-    protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, Waypoint.WaypointType waypointType)
+    protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, CatchingMiceTile.TileType waypointType)
     {
         // https://code.google.com/p/csharpgameprogramming/source/browse/trunk/Examples/AdventureGames/PathFinding/AStar.cs
 
@@ -240,13 +244,15 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
         int pathIndex = path.Count - 1;
-        moving = true;
+        
         //when interrupting a jump complete the jump to the tile
         interrupt = false;
 
         while (pathIndex > -1 && !interrupt)
         {
             //gameObject.StopTweens();
+
+            moving = true;
 
             Vector3 movePosition = path[pathIndex].transform.position;
             //check which zdepth the object must be
@@ -274,9 +280,6 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
                     onJump();
                 yield return new WaitForSeconds(0.3f);
             }
-
-            
-            
 
             gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
 
@@ -329,15 +332,15 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     }
     public virtual void StopCurrentBehaviour()
     {
-        StopAllCoroutines();
+        StopAllCoroutines(); 
         //if (handle != null)
         //    handle.StopRoutine();
-        gameObject.StopTweens();
+        //gameObject.StopTweens();
         moving = false;
     }
     public virtual bool IsWalkable(CatchingMiceTile tile)
     {
-        if (tile.waypoint.waypointType == Waypoint.WaypointType.Collide)
+        if (tile.waypoint.waypointType == CatchingMiceTile.TileType.Collide)
         {
             return false;
         }
