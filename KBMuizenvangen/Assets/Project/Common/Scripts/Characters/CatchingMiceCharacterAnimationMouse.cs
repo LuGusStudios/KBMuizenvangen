@@ -12,7 +12,7 @@ public class CatchingMiceCharacterAnimationMouse : CatchingMiceCharacterAnimatio
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
-    public void OnGetHit()
+    public virtual void OnGetHit()
     {
         LugusCoroutines.use.StartRoutine(SmoothMovesUtil.Blink(animationContainers, Color.red, 1f, 3));
     }

@@ -114,6 +114,11 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             //handle.StartRoutine(Attack()); 
         }
     }
+    public override IEnumerator MoveToDestination(List<Waypoint> path)
+    {
+        yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(0,0.5f));
+        yield return StartCoroutine(base.MoveToDestination(path));
+    }
     public override IEnumerator Attack()
     {
         attacking = true;

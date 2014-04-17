@@ -3,7 +3,7 @@ using System.Collections;
 
 public class CatchingMiceTrapAoE : ICatchingMiceTrapType
 {
-    public void Update()
+    public void FixedUpdate()
     {
         if (!CatchingMiceGameManager.use.GameRunning)
             return;
@@ -19,14 +19,14 @@ public class CatchingMiceTrapAoE : ICatchingMiceTrapType
 
     public override void CheckForHit()
     {
-        Collider2D[] colliders = Physics2D.OverlapAreaAll(_pointUpperLeft, _pointLowerRight);
+        Collider2D[] colliders = Physics2D.OverlapAreaAll(_pointLeft, _pointRight);
 
         foreach (Collider2D collision in colliders)
         {
             CatchingMiceCharacterMouse enemy = collision.transform.parent.GetComponent<CatchingMiceCharacterMouse>();
             if(enemy != null)
             {
-                trap.OnHit(enemy);
+                _trap.OnHit(enemy);
                 //trap.Stacks--;
                 Debug.Log("Hitting enemy " + enemy.name);
             }

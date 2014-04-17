@@ -5,6 +5,7 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
 {
     [SerializeField]
     protected float _health = 100.0f;
+    [SerializeField]
     protected int _stacks = 3;
     protected float _cost = 1.0f;
     [SerializeField]
@@ -64,7 +65,13 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
             _damage = value;
         }
     }
-
+    public CatchingMiceWorldObject TrapObject
+    {
+        get
+        {
+            return this;
+        }
+    }
     public void OnHit(ICatchingMiceCharacter character)
     {
         character.Health -= _damage;
@@ -77,6 +84,7 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
     }
     public override void SetTileType(List<CatchingMiceTile> tiles)
     {
+        //check if every tile can be placed first before applying the types to the level tiles
         foreach (CatchingMiceTile tile in tiles)
         {
             if (tile.worldObject == null)
@@ -90,6 +98,10 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
                 Debug.LogError("Furniture trap " + transform.name + " cannot be of type ground(trap).");
                 return;
             }
+        }
+        //every tile can be placed
+        foreach (CatchingMiceTile tile in tiles)
+        {
             CatchingMiceTile levelTile = CatchingMiceLevelManager.use.levelTiles[(int)tile.gridIndices.x, (int)tile.gridIndices.y];
 
             //Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
@@ -103,16 +115,17 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceWorldObject , IC
 
             gridOffset = tile.worldObject.gridOffset;
             transform.position = transform.position.yAdd(gridOffset).zAdd(-0.5f);         
-        }   
+        }
+    }
+    public void DoBehaviour()
+    {
+        ICatchingMiceTrapType[] traptypes = GetComponentsInChildren<ICatchingMiceTrapType>();
+        foreach (ICatchingMiceTrapType traptype in traptypes)
+        {
+            traptype.DoBehaviour();
+        }
     }
 
-    // Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
+    
 }

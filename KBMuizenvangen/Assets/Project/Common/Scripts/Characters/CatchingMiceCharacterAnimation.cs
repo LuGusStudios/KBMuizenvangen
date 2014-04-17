@@ -317,7 +317,6 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + eatingAnimationClip)
         {
-            Debug.LogError("Loading Idle Animation Clip");
             PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + eatingAnimationClip);
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }

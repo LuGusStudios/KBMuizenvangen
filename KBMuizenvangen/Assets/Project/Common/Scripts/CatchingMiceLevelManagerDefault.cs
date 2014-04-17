@@ -32,6 +32,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     public CatchingMiceHole[] holeItems = null;
     public GameObject[] trapItems = null;
 
+    public List<ICatchingMiceCharacter> playerList = new List<ICatchingMiceCharacter>();
     [HideInInspector]
     public List<Waypoint> waypointList = new List<Waypoint>();
     [HideInInspector]
@@ -108,9 +109,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             {
                 DestroyImmediate(_spawnParent.GetChild(i).gameObject);
             }
-            waypointList.Clear();
-            cheeseTiles.Clear();
-            holeTiles.Clear();
+            
+            
             _enemyParentList.Clear();
             trapTiles.Clear();
             spawnRoutine.StopRoutine();
@@ -160,9 +160,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
         {
             Destroy(_spawnParent.GetChild(i).gameObject);
         }
-        waypointList.Clear();
-        cheeseTiles.Clear();
-        holeTiles.Clear();
         _enemyParentList.Clear();
         spawnRoutine.StopRoutine();
         trapTiles.Clear();
@@ -250,6 +247,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
     public void PlaceWaypoints()
     {
+
+        waypointList.Clear();
+
         // iterate over entire grid
         for (int y = height - 1; y >= 0; y--)
         {
@@ -357,6 +357,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     }
     protected void PlaceLevelCheeses(CatchingMiceCheeseDefinition[] cheeseDefinitions)
     {
+
+        cheeseTiles.Clear();
+
         foreach (CatchingMiceCheeseDefinition definition in cheeseDefinitions)
         {
             GameObject tileItemPrefab = null;
@@ -412,6 +415,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             Debug.LogError("This level has no characters!");
             return; 
         }
+
+        playerList.Clear();
+
         foreach (CatchingMiceCharacterDefinition characterDefinition in characterDefinitions)
         {
             if (string.IsNullOrEmpty(characterDefinition.prefabName))
@@ -440,7 +446,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             if (startTile == null)
             {
                 Debug.LogWarning("Character " + characterDefinition.prefabName + " was placed on a non-existing tile. Not placing.");
-                return;
+                continue;
             }
 
             ICatchingMiceCharacter characterSpawned = (ICatchingMiceCharacter)Instantiate(characterPrefabFound);
@@ -459,10 +465,14 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
             {
                 characterSpawned.timeToReachTile = characterDefinition.timeToReachTile;
             }
+
+            playerList.Add(characterSpawned);
         }
     }
     public void PlaceEnemySpawnpoint(CatchingMiceHoleDefinition[] holeDefinitions)
     {
+        holeTiles.Clear();
+
         if (holeDefinitions == null || holeDefinitions.Length < 1)
         {
             Debug.LogError("This level has no characters!");
@@ -852,54 +862,50 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
     {
         return levelTiles[x, y].waypoint;
     }
+    public CatchingMiceTile[] GetTileAround(CatchingMiceTile tile)
+    {
+        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>();
 
+        for (int x = -1; x <= 1; x++)
+        {
+            for (int y = -1; y <= 1; y++)
+            {
+                //don't add your own tile
+                if (x == 0 && y == 0)
+                    continue;
+                tiles.Add(GetTile(tile.gridIndices.v3().xAdd(x).yAdd(y)));
+            }
+        }
+
+        return tiles.ToArray();
+    }
     public void RemoveTrapFromTile(int x, int y, CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.Trap)
     {
         CatchingMiceTile tile = levelTiles[x, y];
-        //foreach (Transform go in _objectParent)
-        //{
-        //    if(tile.location.v2() == go.position.v2())
-        //    {
-        //        go.gameObject.SetActive(false);
 
-                if ((tile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
-                {
-                    cheeseTiles.Remove(tile);
-                    //announce this cheese tile has been removed
-                    if(CheeseRemoved != null)
-                    {
-                        CheeseRemoved(tile);
-                    }
-                    tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Cheese;
-                    tile.trapObject = null;
-                }
-                else if ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap)
-                {
-                    //remove from trapTiles
-                    trapTiles.Remove(tile);
-                    if(TrapRemoved!=null)
-                    {
-                        TrapRemoved(tile);
-                        Debug.Log("Trap removed");
-                    }
-                    tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Trap;
-                    tile.trapObject = null;
-                }
-
-
-                
-                
-        //        break;
-        //    }
-        //}
+        if ((tile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
+        {
+            cheeseTiles.Remove(tile);
+            //announce this cheese tile has been removed
+            if(CheeseRemoved != null)
+            {
+                CheeseRemoved(tile);
+            }
+            tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Cheese;
+            tile.trapObject = null;
+        }
+        else if ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap)
+        {
+            //remove from trapTiles
+            trapTiles.Remove(tile);
+            if(TrapRemoved!=null)
+            {
+                TrapRemoved(tile);
+                Debug.Log("Trap removed");
+            }
+            tile.tileType = tile.tileType ^ CatchingMiceTile.TileType.Trap;
+            tile.trapObject = null;
+        }
     }
-    // Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+   
 }

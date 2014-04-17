@@ -1,27 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceTrapSingle : ICatchingMiceTrapType 
+public class CatchingMiceTrapSingleRecharge : ICatchingMiceTrapType 
 {
+    protected bool _recharged = true;
 
-    public override void SetupLocal()
-    {
-        base.SetupLocal();
-        
-        _startTime = CatchingMiceGameManager.use.Timer - interval;
-    }
-	
-	// Update is called once per frame
-	void FixedUpdate () 
+    void FixedUpdate() 
     {
         if (!CatchingMiceGameManager.use.GameRunning)
             return;
 
-
-        if (CatchingMiceGameManager.use.Timer - _startTime > interval)
-        {
-            CheckForHit();
-        }
+        if(_recharged)
+            CheckForHit(); 
 	}
 
     public override void CheckForHit()
@@ -35,13 +25,24 @@ public class CatchingMiceTrapSingle : ICatchingMiceTrapType
             {
                 _trap.OnHit(enemy);
                 _trap.Stacks--;
-                Debug.Log("Hitting enemy " + enemy.name);
+                //Debug.Log("Hitting enemy " + enemy.name);
+                _recharged = false;
                 ResetTimer();
                 break;
             }
         }
-       
+
     }
+
+    public override void DoBehaviour()
+    {
+        //after interval time you can recharge the trap
+        if (CatchingMiceGameManager.use.Timer - _startTime > interval)
+        {
+            _recharged = true;
+        }
+    }
+
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

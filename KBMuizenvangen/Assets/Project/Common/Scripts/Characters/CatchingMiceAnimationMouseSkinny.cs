@@ -13,10 +13,6 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
-    public void OnGetHit()
-    {
-        LugusCoroutines.use.StartRoutine(SmoothMovesUtil.Blink(animationContainers, Color.red, 1f, 3));
-    }
     protected void OnAttack()
     {
         if (currentAnimationClip != characterNameAnimation + _sideAnimationClip + attackAnimationClip)
