@@ -224,6 +224,8 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             CatchingMiceTile[] tilesAround = CatchingMiceLevelManager.use.GetTileAround(character.currentTile);
             foreach (CatchingMiceTile tile in tilesAround)
             {
+                if (tile == null)
+                    continue;
                 if (tile.trapObject == null)
                     continue;
                 if(tile.trapObject == trap)
