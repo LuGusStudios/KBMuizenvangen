@@ -6,23 +6,23 @@ using System.Collections.Generic;
 
 public class Waypoint : MonoBehaviour  
 {
-    [Flags]
-    public enum WaypointType
-    {
-        Ground = 1,
-        Furniture = 2,
-        Collide = 4,
+    //[Flags]
+    //public enum WaypointType
+    //{
+    //    Ground = 1,
+    //    Furniture = 2,
+    //    Collide = 4,
         
-        Both = 3,
-        None = -1 // place at the bottom for nicer auto-complete in IDE
-    }
+    //    Both = 3,
+    //    None = -1 // place at the bottom for nicer auto-complete in IDE
+    //}
 	public bool debug = false;
 
 	public int layerOrder = 0;
 	
 	[HideInInspector]
-	public List<Waypoint> neighbours = new List<Waypoint>(); 
-	public WaypointType waypointType = WaypointType.Ground;
+	public List<Waypoint> neighbours = new List<Waypoint>();
+    public CatchingMiceTile.TileType waypointType = CatchingMiceTile.TileType.Ground;
 
     public CatchingMiceTile parentTile = null;
 
@@ -170,7 +170,7 @@ public class Waypoint : MonoBehaviour
 	        float percentageZ = zRange.PercentageInInterval(transform.position.z /*layerOrder*/);
 
 	       
-	        if (waypointType == WaypointType.Ground)
+	        if (waypointType == CatchingMiceTile.TileType.Ground)
 	        {
                 Gizmos.color = colors[(int)colorIndexRange.ValueFromPercentage(percentageZ)].a(0.5f);
 	        }

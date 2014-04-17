@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 {
+    public delegate void OnGetHit();
+    public event OnGetHit onGetHit;
+
     public int timesToAttack = 3;
     public override float Health
     {
@@ -14,6 +17,8 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         set
         {
             _health = value;
+            if (onGetHit != null)
+                onGetHit();
             if (_health <= 0)
             {
                 DieRoutine();
@@ -26,19 +31,15 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 
         zOffset = 0.75f;
         
-    }
-    public override void SetupGlobal()
-    {
-        
-    }
 
-    protected virtual void OnEnable()
-    {
-        CatchingMiceLevelManager.use.CheeseRemoved += TargetRemoved;
     }
-    protected void OnDisable()
+    protected virtual void OnEnable() 
     {
-        //CatchingMiceLevelManager.use.CheeseRemoved -= CheeseRemoved;
+
+    }
+    protected virtual void OnDisable()
+    {
+        //CatchingMiceLevelManager.use.CheeseRemoved -= TargetRemoved;
     }
     public virtual void GetTarget()
     {
@@ -47,21 +48,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             //Debug.LogWarning("No more cheese left!");
             return;
         }
+
         List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.cheeseTiles);
         targetWaypoint = GetTargetWaypoint(tiles);
-
-        //float smallestDistance = float.MaxValue;
-        ////Check which cheese tile is the closest
-        //foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
-        //{
-        //    float distance = Vector2.Distance(transform.position.v2(), tile.location.v2());
-        //    if (distance < smallestDistance)
-        //    {
-        //        smallestDistance = distance;
-
-        //        targetWaypoint = tile.waypoint;
-        //    }
-        //}
 
         if (targetWaypoint != null)
         {
@@ -92,7 +81,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 
         if (target != null)
         {
-            return target;
+            return target; 
         }
         else
         {
@@ -102,10 +91,11 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     }
     public void TargetRemoved(CatchingMiceTile tile)
     {
-        //only get new target when your target waypoint has been removed
-        if (tile.waypoint != targetWaypoint)
+        //current waypoint is null when pooling 
+        if (targetWaypoint == null)
             return;
 
+        StopCurrentBehaviour();
         //StopAllCoroutines(); 
         //handle.StopRoutine();
         GetTarget();
@@ -113,13 +103,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public override void DoCurrentTileBehaviour(int pathIndex)
     {
         //Debug.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
-        if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && currentTile.trapObject != null)
-        {
-            //get hit by trap object
-            //process hit
-            currentTile.trapObject.OnHit(this);
-            
-        }
+
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
         if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
         {
@@ -129,6 +113,11 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             StartCoroutine(Attack());
             //handle.StartRoutine(Attack()); 
         }
+    }
+    public override IEnumerator MoveToDestination(List<Waypoint> path)
+    {
+        yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(0,0.5f));
+        yield return StartCoroutine(base.MoveToDestination(path));
     }
     public override IEnumerator Attack()
     {
@@ -171,5 +160,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public void GetHit(float damage)
     {
         Health -= damage;
+        if (onGetHit != null)
+            onGetHit();
     }
 }

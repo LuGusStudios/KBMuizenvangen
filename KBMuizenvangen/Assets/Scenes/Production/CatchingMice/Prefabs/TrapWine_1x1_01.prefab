@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 400004}
   - 114: {fileID: 11400000}
+  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: TrapWine_1x1_01
   m_TagString: Untagged
@@ -107,6 +108,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridOffset: 0
   tileType: 8
+  _health: 100
+  _stacks: 3
+  _damage: 1
+--- !u!114 &11400002
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 100004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48874f51d6fd72641b70cbd0be6472af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interval: 2
+  tileRange: 1
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

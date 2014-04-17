@@ -99,8 +99,9 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         base.StopCurrentBehaviour();
         
         if (walkHandle != null)
-            walkHandle.StopRoutine();
+            walkHandle.StopRoutine(); 
 
+        gameObject.StopTweens();
         interrupt = false;
     }
     public void MoveWithPath(List<Waypoint> path)

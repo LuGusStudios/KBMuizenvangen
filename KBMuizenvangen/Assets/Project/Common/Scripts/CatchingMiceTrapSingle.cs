@@ -1,21 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceTrapAoE : ICatchingMiceTrapType
+public class CatchingMiceTrapSingle : ICatchingMiceTrapType 
 {
-    public void FixedUpdate()
+
+    public override void SetupLocal()
+    {
+        base.SetupLocal();
+        
+        _startTime = CatchingMiceGameManager.use.Timer - interval;
+    }
+	
+	// Update is called once per frame
+	void FixedUpdate () 
     {
         if (!CatchingMiceGameManager.use.GameRunning)
             return;
 
 
-        if( CatchingMiceGameManager.use.Timer - _startTime > interval )
+        if (CatchingMiceGameManager.use.Timer - _startTime > interval)
         {
             CheckForHit();
-            ResetTimer();
         }
-
-    }
+	}
 
     public override void CheckForHit()
     {
@@ -24,13 +31,16 @@ public class CatchingMiceTrapAoE : ICatchingMiceTrapType
         foreach (Collider2D collision in colliders)
         {
             CatchingMiceCharacterMouse enemy = collision.transform.parent.GetComponent<CatchingMiceCharacterMouse>();
-            if(enemy != null)
+            if (enemy != null)
             {
                 _trap.OnHit(enemy);
-                //trap.Stacks--;
+                _trap.Stacks--;
                 Debug.Log("Hitting enemy " + enemy.name);
+                ResetTimer();
+                break;
             }
         }
+       
     }
     void OnDrawGizmos()
     {

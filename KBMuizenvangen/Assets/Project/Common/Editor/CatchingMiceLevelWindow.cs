@@ -81,6 +81,10 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             SpawnTrap(TrapTile);
         }
+        if (GUILayout.Button("Spawn AoE Trap"))
+        {
+            SpawnAoETrap(TrapTile);
+        }
     }
 
     //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid
@@ -120,9 +124,9 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             pathfindScript.SetupLocal();
             if (useBothTypes)
-                pathfindScript.wayType = Waypoint.WaypointType.Both;
+                pathfindScript.wayType = CatchingMiceTile.TileType.Both;
             else
-                pathfindScript.wayType = Waypoint.WaypointType.Ground;
+                pathfindScript.wayType = CatchingMiceTile.TileType.Ground;
                
             Waypoint target = null;
 
@@ -177,9 +181,9 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             GameObject movePrefab = Instantiate(mousePrefab, pathfindingGO.transform.position, Quaternion.identity) as GameObject;
             if (useBothTypes)
-                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Both;
+                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = CatchingMiceTile.TileType.Both;
             else
-                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = Waypoint.WaypointType.Ground;
+                movePrefab.GetComponent<CatchingMiceCharacterMouse>().walkable = CatchingMiceTile.TileType.Ground;
             movePrefab.GetComponent<CatchingMiceCharacterMouse>().GetTarget();
         }
     }
@@ -238,6 +242,12 @@ public class CatchingMiceLevelWindow : EditorWindow
             return;
         }
 
+        if(targetTile.trapObject != null)
+        {
+            Debug.LogError("A trap has been placed on this tile already.");
+            return;
+        }
+
         targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Trap;
         
 
@@ -245,8 +255,56 @@ public class CatchingMiceLevelWindow : EditorWindow
 
         trap.transform.parent = CatchingMiceLevelManager.use._objectParent;
         trap.transform.localPosition = targetTile.location;
-        
+        trap.GetComponent<CatchingMiceWorldObjectTrapGround>().parentTile = targetTile;
+
         targetTile.trapObject = trap.GetComponent<CatchingMiceWorldObjectTrapGround>();
+
+
+        CatchingMiceLevelManager.use.trapTiles.Add(targetTile);
+    }
+    public void SpawnAoETrap(Vector2 location)
+    {
+        GameObject trapPrefab = null;
+
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
+        {
+            if (prefab.GetComponent<CatchingMiceTrapAoE>() != null)
+            {
+                trapPrefab = prefab.gameObject;
+                break;
+            }
+        }
+
+        if (trapPrefab == null)
+        {
+            Debug.Log("no trap prefab found");
+            return;
+        }
+
+        CatchingMiceTile targetTile = CatchingMiceLevelManager.use.GetTile(location);
+
+        if (targetTile.worldObject == null)
+        {
+            Debug.LogError("Furniture traps cannot be placed on ground");
+            return;
+        }
+
+        if (targetTile.trapObject != null)
+        {
+            Debug.LogError("A trap has been placed on this tile already.");
+            return;
+        }
+
+        targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Trap;
+
+
+        GameObject trap = (GameObject)Instantiate(trapPrefab);
+
+        trap.transform.parent = CatchingMiceLevelManager.use._objectParent;
+        trap.transform.localPosition = targetTile.location.yAdd(targetTile.worldObject.gridOffset).zAdd(-0.1f) ;
+        trap.GetComponent<CatchingMiceWorldObjectTrapFurniture>().parentTile = targetTile;
+
+        targetTile.trapObject = trap.GetComponent<CatchingMiceWorldObjectTrapFurniture>();
 
 
         CatchingMiceLevelManager.use.trapTiles.Add(targetTile);

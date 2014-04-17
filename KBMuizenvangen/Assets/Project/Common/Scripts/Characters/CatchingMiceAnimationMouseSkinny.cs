@@ -37,6 +37,7 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
         {
             character.onJump += OnJump;
             character.onHit += OnHit;
+            ((CatchingMiceMouseSkinny)character).onGetHit += OnGetHit;
             ((CatchingMiceMouseSkinny)character).onAttack += OnAttack;
         }
     }
