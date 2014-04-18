@@ -28,8 +28,8 @@ public class CatchingMiceTrapInteractive : ICatchingMiceTrapType
 
         foreach (CatchingMiceTile tile in tiles)
         {
-            if (tile == null)
-                continue;
+            //if (tile == null)
+            //    continue;
             //only add on floortiles
             if (tile.worldObject != null)
                 continue;

@@ -873,7 +873,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
                 //don't add your own tile
                 if (x == 0 && y == 0)
                     continue;
-                tiles.Add(GetTile(tile.gridIndices.v3().xAdd(x).yAdd(y)));
+                CatchingMiceTile inspectedTile = GetTile(tile.gridIndices.v3().xAdd(x).yAdd(y));
+                if(inspectedTile != null)
+                    tiles.Add(inspectedTile);
             }
         }
 
