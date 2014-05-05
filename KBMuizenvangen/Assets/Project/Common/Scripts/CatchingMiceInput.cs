@@ -167,35 +167,52 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 
         Vector3 dragPoint = LugusInput.use.ScreenTo3DPoint(_character.transform);
         CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(dragPoint.x, dragPoint.y - yOffset);
-        //only add a tile when its new tile is more than half a grid away
-        if (Vector2.Distance(tile.gridIndices, _lastAddedWaypoint.gridIndices) < CatchingMiceLevelManager.use.scale / 2)
-            return;
 
+		if (tile == null)
+		{
+			return;
+		}
+
+        //only add a tile when its new tile is more than half a grid away
         float distance = Vector2.Distance(tile.gridIndices, _lastAddedWaypoint.gridIndices);
-        float maxDistance = CatchingMiceLevelManager.use.scale * 2;
+        if (distance < CatchingMiceLevelManager.use.scale / 2)
+		{
+            return;
+		}
+
+        float maxDistance = CatchingMiceLevelManager.use.scale /** 2*/;
+
         //if distance is more then x grids away interpolate
+		// A path can be broken when there are null-tiles in the list
+		bool brokenPath = false;
         if (distance > maxDistance)
         {
-            while (distance > maxDistance)
+            while ((distance > maxDistance) && !brokenPath)
             {
                 // interpolated vector: value * (endpoint - beginpoint) + beginpoint --> value between begin and end point
                 Vector3 interpolated = (maxDistance) * Vector3.Normalize(tile.gridIndices.v3() - _lastAddedWaypoint.gridIndices.v3()) + _lastAddedWaypoint.gridIndices.v3();
 
                 CatchingMiceTile interpolatedTile = CatchingMiceLevelManager.use.GetTile(interpolated.v2());
 
-                pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(interpolatedTile.gridIndices));
-                _lastAddedWaypoint = interpolatedTile;
-                //Debug.Log("added interpolated tile " + interpolated);
-                distance -= maxDistance;
+				if (interpolatedTile != null)
+				{
+					pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(interpolatedTile.gridIndices));
+					_lastAddedWaypoint = interpolatedTile;
+				}
+				else
+				{
+					brokenPath = true;
+				}
+
+				distance -= maxDistance;
             }
         }
 
-
-        pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
-
-        _lastAddedWaypoint = tile;
-
-
+		if (!brokenPath)
+		{
+			pathToWalk.Add(CatchingMiceLevelManager.use.GetWaypointFromTile(tile.gridIndices));
+			_lastAddedWaypoint = tile;
+		}
     }
 
     public void DoTrapBehaviourInput()

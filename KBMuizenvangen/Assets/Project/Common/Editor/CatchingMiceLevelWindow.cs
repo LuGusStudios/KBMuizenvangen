@@ -158,7 +158,7 @@ public class CatchingMiceLevelWindow : EditorWindow
         GameObject mousePrefab = null;
         CatchingMiceCharacterMouse mouseController = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.enemyPrefabs)
         {
             mouseController = prefab.GetComponent<CatchingMiceCharacterMouse>();
             if (mouseController != null)
@@ -219,7 +219,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     {
         GameObject trapPrefab = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapPrefabs)
         {
             if (prefab.GetComponent<CatchingMiceWorldObjectTrapGround>() != null)
             {
@@ -266,7 +266,7 @@ public class CatchingMiceLevelWindow : EditorWindow
     {
         GameObject trapPrefab = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
+        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapPrefabs)
         {
             if (prefab.GetComponent<CatchingMiceTrapAoE>() != null)
             {

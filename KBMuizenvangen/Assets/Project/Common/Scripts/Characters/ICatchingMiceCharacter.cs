@@ -81,7 +81,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
     }
-    // TODO: move this to Util?
+   
+	// TODO: move this to Util?
     protected List<Waypoint> AStarCalculate(List<Waypoint> waypoints, Waypoint start, Waypoint stop, out bool wasFullPath, CatchingMiceTile.TileType waypointType)
     {
         // https://code.google.com/p/csharpgameprogramming/source/browse/trunk/Examples/AdventureGames/PathFinding/AStar.cs
@@ -91,8 +92,11 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         // 1. Setup : clear cost and parents of waypoints
         foreach (Waypoint waypoint in waypoints)
         {
-            waypoint.AStarCost = 0.0f;
-            waypoint.AStarParent = null;
+			if (waypoint != null)
+			{
+				waypoint.AStarCost = 0.0f;
+				waypoint.AStarParent = null;
+			}
         }
 
         List<Waypoint> openList = new List<Waypoint>();
