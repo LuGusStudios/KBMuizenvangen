@@ -31,12 +31,12 @@ public abstract class ICatchingMiceTrapType : MonoBehaviour
     {
         //get y offset
         CatchingMiceWorldObject furniture = null;
-        furniture = _trap.TrapObject.parentTile.worldObject; // transform.GetComponent<CatchingMiceWorldObject>().parentTile.worldObject; 
+        furniture = _trap.TrapObject.parentTile.furniture; // transform.GetComponent<CatchingMiceWorldObject>().parentTile.worldObject; 
 
         if (furniture != null)
         {
             //Debug.LogError(furniture.parentTile.worldObject);
-            _offset = furniture.parentTile.worldObject.gridOffset;
+            _offset = furniture.parentTile.furniture.gridOffset;
         }
 
         //when traps are bigger than 1 tile, check the collider for its center

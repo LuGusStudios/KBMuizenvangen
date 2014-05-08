@@ -157,8 +157,8 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
                 {
                     //make sure we have the furniture and not a trap
                     //if it is null than you hit a ground trap, so no furniture object
-                    if (FurnitureObject.parentTile.worldObject != null)
-                        yOffset = FurnitureObject.parentTile.worldObject.gridOffset * CatchingMiceLevelManager.use.scale;
+                    if (FurnitureObject.parentTile.furniture != null)
+                        yOffset = FurnitureObject.parentTile.furniture.gridOffset * CatchingMiceLevelManager.use.scale;
                 }
 
             }
@@ -235,7 +235,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
             return;
 
         //go over the 2 characters and check if the trap is in range
-        List<ICatchingMiceCharacter> characters = new List<ICatchingMiceCharacter>(CatchingMiceLevelManager.use.playerList);
+        List<ICatchingMiceCharacter> characters = new List<ICatchingMiceCharacter>(CatchingMiceLevelManager.use.Players);
         foreach (ICatchingMiceCharacter character in characters)
         {
             CatchingMiceTile[] tilesAround = CatchingMiceLevelManager.use.GetTileAround(character.currentTile);

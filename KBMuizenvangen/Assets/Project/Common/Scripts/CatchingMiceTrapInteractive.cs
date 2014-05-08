@@ -31,7 +31,7 @@ public class CatchingMiceTrapInteractive : ICatchingMiceTrapType
             //if (tile == null)
             //    continue;
             //only add on floortiles
-            if (tile.worldObject != null)
+            if (tile.furniture != null)
                 continue;
             //when there is no trap spawn a minitrap
             if(tile.trapObject == null)

@@ -19,12 +19,16 @@ public class CatchingMiceTile
         FurnitureTrap = 10,
         None = -1 // place at the bottom for nicer auto-complete in IDE
     }
+    
+	public TileType tileType = TileType.None;
 
-    public CatchingMiceWorldObject worldObject = null;
+    public CatchingMiceWorldObject furniture = null;
     public ICatchingMiceWorldObjectTrap trapObject = null;
+	public CatchingMiceWorldObject cheese = null;
+	public CatchingMiceHole hole = null;
     public Waypoint waypoint = null;
-    public TileType tileType = TileType.None;
-    public Vector3 location;
+    
+	public Vector3 location;
     public Vector2 gridIndices;
 
     public CatchingMiceTile()
@@ -33,16 +37,9 @@ public class CatchingMiceTile
         location = Vector3.zero;
 		gridIndices = Vector2.zero;
 	}
-    public override string ToString ()
+    
+	public override string ToString ()
 	{
 		return "GameTile: " + gridIndices;
-	}
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

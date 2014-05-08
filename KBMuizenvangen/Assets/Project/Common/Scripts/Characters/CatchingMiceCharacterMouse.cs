@@ -43,13 +43,13 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     }
     public virtual void GetTarget()
     {
-        if (CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
+        if (CatchingMiceLevelManager.use.CheeseTiles.Count <= 0)
         {
             //Debug.LogWarning("No more cheese left!");
             return;
         }
 
-        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.cheeseTiles);
+        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.CheeseTiles);
         targetWaypoint = GetTargetWaypoint(tiles);
 
         if (targetWaypoint != null)
@@ -134,7 +134,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             yield return new WaitForSeconds(attackInterval);
         }
         attacking = false;
-        if (CatchingMiceLevelManager.use.cheeseTiles.Count > 0 && cheeseTile.trapObject.Stacks <= 0)
+        if (CatchingMiceLevelManager.use.CheeseTiles.Count > 0 && cheeseTile.trapObject.Stacks <= 0)
         {
             Debug.Log("getting new target");
 

@@ -9,7 +9,7 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
     
     public override void GetTarget()
     {
-        if (CatchingMiceLevelManager.use.trapTiles.Count <= 0)
+        if (CatchingMiceLevelManager.use.TrapTiles.Count <= 0)
         {
             //no traps left, check for cheese
             Debug.Log("No traps has been found, checking for cheese.");
@@ -18,7 +18,7 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
         }
 
         //search for traps first before checking for cheese
-        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.trapTiles);
+        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.TrapTiles);
         targetWaypoint = GetTargetWaypoint(tiles);
             
         if (targetWaypoint != null)

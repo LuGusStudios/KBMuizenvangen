@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class CatchingMiceGameManager : LugusSingletonExisting<CatchingMiceGameManagerDefault>
 {
@@ -114,7 +115,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 		//spawn waves
 		CatchingMiceLevelManager.use.SpawnInstantiatedWave(_currentWave);
 		//wait until wave is done, or cheese has been eaten
-		while (_amountToKill > 0 && CatchingMiceLevelManager.use.cheeseTiles.Count > 0)
+		while (_amountToKill > 0 && CatchingMiceLevelManager.use.CheeseTiles.Count > 0)
 		{
 			yield return null;
 		}
@@ -130,12 +131,12 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 		_currentWave++;
 
 		//check if start next wave (preWavePhase), cheese has been eaten or waves has been iterated
-		if (_currentWave > CatchingMiceLevelManager.use.wavesList.Count - 1)
+		if (_currentWave > CatchingMiceLevelManager.use.Waves.Count - 1)
 		{
 			//can be changed so when you want infinite levels
 			state = State.Won;
 		}
-		else if (CatchingMiceLevelManager.use.cheeseTiles.Count <= 0)
+		else if (CatchingMiceLevelManager.use.CheeseTiles.Count <= 0)
 		{
 			state = State.Lost;
 		}
@@ -158,18 +159,37 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	}
 
+	// TODO: Something has to be done in here when the level selection menu is live
 	public void StartGame()
 	{
 		CatchingMiceLevelManager.use.ClearLevel();
-		CatchingMiceLevelManager.use.BuildLevel(0);
-		LugusCoroutines.use.StopAllRoutines();
-		gameRunning = true;
 
-		if (CatchingMiceLevelManager.use.wavesList.Count > 0)
+		// TODO: Modify this when the level selection menu goes live
+		CatchingMiceLevelLoader levelLoader = new CatchingMiceLevelLoader();
+		if (CatchingMiceCrossSceneInfo.use.LevelToLoad == -1)
 		{
-			_currentWave = 0;
-			state = State.PreWave;
+			List<int> indexes = levelLoader.FindLevels();
+			if (indexes.Count > 0)
+			{
+				CatchingMiceCrossSceneInfo.use.LevelToLoad = indexes[0];
+				string levelData = levelLoader.GetLevelData(CatchingMiceCrossSceneInfo.use.LevelToLoad);
+				CatchingMiceLevelDefinition levelDefinition = CatchingMiceLevelDefinition.FromXML(levelData);
+				CatchingMiceLevelManager.use.CurrentLevel = levelDefinition;
+			}
 		}
+
+		if (CatchingMiceLevelManager.use.CurrentLevel != null)
+		{
+			CatchingMiceLevelManager.use.BuildLevel();
+			LugusCoroutines.use.StopAllRoutines();
+			gameRunning = true;
+
+			if (CatchingMiceLevelManager.use.Waves.Count > 0)
+			{
+				_currentWave = 0;
+				state = State.PreWave;
+			}
+		}	
 	}
 
 	public void StopGame()

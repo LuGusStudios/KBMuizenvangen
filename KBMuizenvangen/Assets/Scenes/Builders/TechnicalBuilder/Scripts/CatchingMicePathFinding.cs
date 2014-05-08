@@ -160,9 +160,9 @@ public class CatchingMicePathFinding : MonoBehaviour
             //shifts the waypoint gridoffset back because the shift is only for the animationpath
             float gridOffsetCurrent = 0.0f;
             //worldobjects has gridoffsets, so only apply when there is an object
-            if (current.parentTile.worldObject != null)
+            if (current.parentTile.furniture != null)
             {
-                gridOffsetCurrent = current.parentTile.worldObject.gridOffset;
+                gridOffsetCurrent = current.parentTile.furniture.gridOffset;
             }
 
             foreach (Waypoint neighbour in current.neighbours)
@@ -175,9 +175,9 @@ public class CatchingMicePathFinding : MonoBehaviour
                 //shifts the waypoint gridoffset back because the shift is only for the animationpath
                 float gridOffset = 0.0f;
                 //worldobjects has gridoffsets, so only apply when there is an object
-                if(neighbour.parentTile.worldObject != null)
+                if(neighbour.parentTile.furniture != null)
                 {
-                    gridOffset = neighbour.parentTile.worldObject.gridOffset;
+                    gridOffset = neighbour.parentTile.furniture.gridOffset;
                 }
                 // use the distance to the neighbour as a heuristic here 
                 float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.yAdd(-gridOffset).v2(), current.transform.position.yAdd(-gridOffsetCurrent).v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 
@@ -227,7 +227,7 @@ public class CatchingMicePathFinding : MonoBehaviour
     public void SetupLocal()
     {
         //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.Waypoints);
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
     }

@@ -45,7 +45,7 @@ public class CatchingMicePrefabWriter : Editor
 
 		// Tile items (Furniture)
 		writer.WriteLine("Tile items (furniture):");
-		foreach (GameObject item in manager.furniturePrefabs)
+		foreach (CatchingMiceFurniture item in manager.furniturePrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
 		}
@@ -53,7 +53,7 @@ public class CatchingMicePrefabWriter : Editor
 
 		// Cheese items
 		writer.WriteLine("Cheese items:");
-		foreach (GameObject item in manager.cheesePrefabs)
+		foreach (CatchingMiceCheese item in manager.cheesePrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
 		}
@@ -69,7 +69,7 @@ public class CatchingMicePrefabWriter : Editor
 
 		// Traps items
 		writer.WriteLine("Traps items:");
-		foreach (GameObject item in manager.trapPrefabs)
+		foreach (CatchingMiceTrap item in manager.trapPrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
 		}

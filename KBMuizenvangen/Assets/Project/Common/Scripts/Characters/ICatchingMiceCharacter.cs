@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public abstract class ICatchingMiceCharacter : MonoBehaviour
 {
     protected List<Waypoint> navigationGraph = null;
-    public float timeToReachTile = 0.5f;
+    public float speed = 0.5f;
 
     //Offset from 0-->1
     public float zOffset = 0.0f;
@@ -75,8 +75,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
     public virtual void SetupGlobal()
     {
         currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
-        //navigationGraph = new List<Waypoint>((Waypoint[])GameObject.FindObjectsOfType(typeof(Waypoint)));
-        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.waypointList);
+        navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.Waypoints);
 
         if (navigationGraph.Count == 0)
             Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
@@ -182,9 +181,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             //shifts the waypoint gridoffset back because the shift is only for the animationpath
             float gridOffsetCurrent = 0.0f;
             //worldobjects has gridoffsets, so only apply when there is an object
-            if (current.parentTile.worldObject != null)
+            if (current.parentTile.furniture != null)
             {
-                gridOffsetCurrent = current.parentTile.worldObject.gridOffset;
+                gridOffsetCurrent = current.parentTile.furniture.gridOffset;
             }
 
             foreach (Waypoint neighbour in current.neighbours)
@@ -196,9 +195,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
                 //shifts the waypoint gridoffset back because the shift is only for the animationpath
                 float gridOffset = 0.0f;
-                if (neighbour.parentTile.worldObject != null)
+                if (neighbour.parentTile.furniture != null)
                 {
-                    gridOffset = neighbour.parentTile.worldObject.gridOffset;
+                    gridOffset = neighbour.parentTile.furniture.gridOffset;
                     //Debug.Log(neighbour.transform.name + " " + neighbour.transform.position.yAdd(-gridOffset).v2());
                 }
                 // use the distance to the neighbour as a heuristic here 
@@ -270,8 +269,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             
             //TODO: needs to account offset (furniture offsets)
             float yOffset = 0.0f;
-            if (currentTile.worldObject != null)
-                yOffset = currentTile.worldObject.gridOffset;
+            if (currentTile.furniture != null)
+                yOffset = currentTile.furniture.gridOffset;
 
             movementDirection = Vector3.Normalize(path[pathIndex].parentTile.location.z(transform.position.z) - transform.position.yAdd(-yOffset)) ;
 
@@ -285,7 +284,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
                 yield return new WaitForSeconds(0.3f);
             }
 
-            gameObject.MoveTo(movePosition).Time(timeToReachTile).Execute();
+            gameObject.MoveTo(movePosition).Time(speed).Execute();
 
             float maxDistance = 0.1f * CatchingMiceLevelManager.use.scale;
 

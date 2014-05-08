@@ -9,47 +9,137 @@ public class CatchingMiceLevelManager : LugusSingletonExisting<CatchingMiceLevel
 
 public class CatchingMiceLevelManagerDefault : MonoBehaviour
 {
-	[HideInInspector]
-	public Transform _objectParent = null;
-	protected Transform _levelRoot = null;
-	protected Transform _levelParent = null;
-	protected Transform _navigationParent = null;
-	protected Transform _characterParent = null;
-	protected Transform _spawnParent = null;
-	protected Transform _enemyParent = null;
+	// Accessors
+	#region Accessors
+	public Transform ObjectParent
+	{
+		get
+		{
+			return objectParent;
+		}
+	}
+	public CatchingMiceLevelDefinition CurrentLevel
+	{
+		get
+		{
+			return currentLevel;
+		}
+		set
+		{
+			currentLevel = value;
+		}
+	}
+	public int Width
+	{
+		get
+		{
+			return width;
+		}
+	}
+	public int Height
+	{
+		get
+		{
+			return height;
+		}
+	}
+	public CatchingMiceTile[,] Tiles
+	{
+		get
+		{
+			return tiles;
+		}
+	}
+	public List<ICatchingMiceCharacter> Players
+	{
+		get
+		{
+			return playerList;
+		}
+	}
+	public List<Waypoint> Waypoints
+	{
+		get
+		{
+			return waypointList;
+		}
+	}
+	public List<CatchingMiceWaveDefinition> Waves
+	{
+		get
+		{
+			return wavesList;
+		}
+	}
+	public List<CatchingMiceHole> MiceHoles
+	{
+		get
+		{
+			return holeTiles;
+		}
+	}
+	public List<CatchingMiceTile> TrapTiles
+	{
+		get
+		{
+			return trapTiles;
+		}
+	}
+	public List<CatchingMiceTile> CheeseTiles
+	{
+		get
+		{
+			return cheeseTiles;
+		}
+	}
+	#endregion
 
-	public CatchingMiceLevelDefinition[] levels = null;
-	public int width = 13;
-	public int height = 13;
-
-	public CatchingMiceTile[,] levelTiles = null;
-	public float scale = 1;
-
-	// Prefabs
-	public ICatchingMiceCharacter[] characterPrefabs = null;
-	public GameObject[] enemyPrefabs = null;
-	public GameObject[] furniturePrefabs = null;
-	public GameObject[] cheesePrefabs = null;
-	public CatchingMiceHole[] holePrefabs = null;
-	public GameObject[] trapPrefabs = null;
-
-	[HideInInspector]
-	public List<ICatchingMiceCharacter> playerList = new List<ICatchingMiceCharacter>();
-	[HideInInspector]
-	public List<Waypoint> waypointList = new List<Waypoint>();
-	[HideInInspector]
-	public List<CatchingMiceWaveDefinition> wavesList = new List<CatchingMiceWaveDefinition>();
-	protected List<GameObject> _enemyParentList = new List<GameObject>();
-	[HideInInspector]
-	public List<CatchingMiceHole> holeTiles = new List<CatchingMiceHole>();
-
-	public List<CatchingMiceTile> trapTiles = new List<CatchingMiceTile>();
+	// Events
 	public delegate void TrapRemovedEventHandler(CatchingMiceTile trapTile);
 	public event TrapRemovedEventHandler TrapRemoved;
 
-	public List<CatchingMiceTile> cheeseTiles = new List<CatchingMiceTile>();
 	public delegate void CheeseRemovedEventHandler(CatchingMiceTile cheeseTile);
 	public event CheeseRemovedEventHandler CheeseRemoved;
+	
+	// Inspector
+	public float scale = 1;
+
+	// Prefabs
+	#region Prefabs
+	public ICatchingMiceCharacter[] characterPrefabs = null;
+	public GameObject[] enemyPrefabs = null;
+	public CatchingMiceFurniture[] furniturePrefabs = null;
+	public CatchingMiceCheese[] cheesePrefabs = null;
+	public CatchingMiceTrap[] trapPrefabs = null;
+	public CatchingMiceHole[] holePrefabs = null;
+	#endregion
+	
+	// Protected
+	#region Protected
+	protected Transform objectParent = null;
+	protected Transform levelRoot = null;
+	protected Transform levelParent = null;
+	protected Transform navigationParent = null;
+	protected Transform characterParent = null;
+	protected Transform spawnParent = null;
+	protected Transform enemyParent = null;
+
+	protected CatchingMiceLevelDefinition currentLevel = null;
+	protected int width = 13;
+	protected int height = 13;
+
+	protected CatchingMiceTile[,] tiles = null;
+
+	protected List<ICatchingMiceCharacter> playerList = new List<ICatchingMiceCharacter>();
+	protected List<Waypoint> waypointList = new List<Waypoint>();
+	protected List<CatchingMiceWaveDefinition> wavesList = new List<CatchingMiceWaveDefinition>();
+	protected List<GameObject> enemyParentList = new List<GameObject>();
+	protected List<CatchingMiceHole> holeTiles = new List<CatchingMiceHole>();
+	protected List<CatchingMiceTile> trapTiles = new List<CatchingMiceTile>();
+	protected List<CatchingMiceTile> cheeseTiles = new List<CatchingMiceTile>();
+
+	protected ILugusCoroutineHandle spawnRoutine = null;
+	#endregion
 
 	void Awake()
 	{
@@ -58,183 +148,140 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	void FindReferences()
 	{
 		// only do this once
-		if (_levelRoot != null)
+		if (levelRoot != null)
+		{
 			return;
+		}
 
-		if (_levelRoot == null)
-			_levelRoot = GameObject.Find("LevelRoot").transform;
+		if (levelRoot == null)
+		{
+			levelRoot = GameObject.Find("LevelRoot").transform;
 
-		if (_levelRoot == null)
-			Debug.Log("LevelManager: Could not find level root.");
+			if (levelRoot == null)
+			{
+				Debug.Log("LevelManager: Could not find level root.");
+			}
+		}
 
-		_levelParent = _levelRoot.FindChild("LevelParent");
-		_objectParent = _levelRoot.FindChild("ObjectParent");
-		_navigationParent = _levelRoot.FindChild("NavigationParent");
-		_characterParent = _levelRoot.FindChild("CharacterParent");
-		_enemyParent = _levelRoot.FindChild("EnemyParent");
-		_spawnParent = _levelRoot.FindChild("SpawnParent");
+
+		levelParent = levelRoot.FindChild("LevelParent");
+		objectParent = levelRoot.FindChild("ObjectParent");
+		navigationParent = levelRoot.FindChild("NavigationParent");
+		characterParent = levelRoot.FindChild("CharacterParent");
+		enemyParent = levelRoot.FindChild("EnemyParent");
+		spawnParent = levelRoot.FindChild("SpawnParent");
 
 		spawnRoutine = LugusCoroutines.use.GetHandle();
 	}
 
 	public void ClearLevel()
 	{
-#if UNITY_EDITOR
-		if (Application.isPlaying)
-		{
-			ClearLevelIsPlaying();
-		}
-		else
-		{
 
-			Debug.Log("Clearing level (playing in editor).");
-			for (int i = _levelParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_levelParent.GetChild(i).gameObject);
-			}
-			for (int i = _objectParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_objectParent.GetChild(i).gameObject);
-			}
-			for (int i = _navigationParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_navigationParent.GetChild(i).gameObject);
-			}
-			for (int i = _characterParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_characterParent.GetChild(i).gameObject);
-			}
-			for (int i = _enemyParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_enemyParent.GetChild(i).gameObject);
-			}
-			for (int i = _spawnParent.childCount - 1; i >= 0; i--)
-			{
-				DestroyImmediate(_spawnParent.GetChild(i).gameObject);
-			}
-
-
-			_enemyParentList.Clear();
-			trapTiles.Clear();
-			spawnRoutine.StopRoutine();
-			wavesList.Clear();
-		}
-#else
-		ClearLevelIsPlaying();
-		
-        //for (int i = characterParent.childCount - 1; i >= 0; i--) 
-        //{
-        //    // NOTE: Ideally, destroying this gameObject would mean it is immediately gone!
-        //    // But Destroy() is delayed until the end of the Update loop, which means the scan for new player characters will still find them!
-        //    // So: Make sure to also set them disabled, which will make them invisible to GetComponents (provided includeInactive is false)
-        //    if (characterParent.GetChild(i).GetComponent<PacmanCharacter>() != null)
-        //    {
-        //        characterParent.GetChild(i).GetComponent<PacmanCharacter>().enabled = false;
-        //        characterParent.GetChild(i).gameObject.SetActive(false);
-        //    }
-        //    Destroy(characterParent.GetChild(i).gameObject);
-        //}
-#endif
-	}
-
-	public void ClearLevelIsPlaying()
-	{
-		Debug.Log("Clearing level (build).");
-		for (int i = _levelParent.childCount - 1; i >= 0; i--)
+		Debug.Log("Clearing level (playing in editor).");
+		for (int i = levelParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _levelParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(levelParent.GetChild(i).gameObject);
 		}
-		for (int i = _objectParent.childCount - 1; i >= 0; i--)
+		for (int i = objectParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _objectParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(objectParent.GetChild(i).gameObject);
 		}
-		for (int i = _navigationParent.childCount - 1; i >= 0; i--)
+		for (int i = navigationParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _navigationParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(navigationParent.GetChild(i).gameObject);
 		}
-		for (int i = _characterParent.childCount - 1; i >= 0; i--)
+		for (int i = characterParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _characterParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(characterParent.GetChild(i).gameObject);
 		}
-		for (int i = _enemyParent.childCount - 1; i >= 0; i--)
+		for (int i = enemyParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _enemyParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(enemyParent.GetChild(i).gameObject);
 		}
-		for (int i = _spawnParent.childCount - 1; i >= 0; i--)
+		for (int i = spawnParent.childCount - 1; i >= 0; i--)
 		{
-			GameObject obj = _spawnParent.GetChild(i).gameObject;
-			obj.SetActive(false);
-			Destroy(obj);
+			DestroyGameObject(spawnParent.GetChild(i).gameObject);
 		}
 
-		_enemyParentList.Clear();
-		spawnRoutine.StopRoutine();
-		trapTiles.Clear();
+		tiles = null;
+		playerList.Clear();
+		waypointList.Clear();
 		wavesList.Clear();
-	}
+		enemyParentList.Clear();
+		holeTiles.Clear();
+		trapTiles.Clear();
+		cheeseTiles.Clear();
 
-	// only used for testing and for quickly building a level
-	public void BuildLevelDebug(int _width, int _height)
-	{
-		FindReferences();
-
-		ClearLevel();
-
-		width = _width;
-		height = _height;
-
-		string layout = string.Empty;
-		layout.PadRight(width * height, 'o');
-
-		ParseLevelTiles(_width, _height, layout);
-
-		//PlaceLevelTileItemsDebug();
-
-		CreateGrid();
-	}
-
-	public void BuildLevel(int levelIndex)
-	{
-		if (levelIndex < 0 || levelIndex >= levels.Length)
+		if (spawnRoutine != null)
 		{
-			Debug.LogError("Level index was out of bounds!");
+			spawnRoutine.StopRoutine();
+		}
+	}
+
+	// Only used for testing and for quickly building a level
+	// Level is build without characters and enemies
+	// because the generate errors when starting a game and the level
+	// gets cleared
+	public void BuildLevelEditor()
+	{
+		if (currentLevel == null)
+		{
+			Debug.LogError("The level definition was null.");
 			return;
 		}
 
-		CatchingMiceLevelDefinition level = levels[levelIndex];
-
 		FindReferences();
 
 		ClearLevel();
 
-		width = level.width;
-		height = level.height;
+		width = currentLevel.width;
+		height = currentLevel.height;
 
-		ParseLevelTiles(width, height, level.layout);
+		ParseTiles(width, height, currentLevel.layout);
 
-		PlaceLevelTileItems(level.tileItems);
-
-		PlaceLevelCheeses(level.cheeses);
+		PlaceFurniture(currentLevel.tileItems);
 
 		CreateGrid();
 
 		PlaceWaypoints();
 
-		PlaceCharacters(level.characters);
+		PlaceTraps(currentLevel.traps);
 
-		/*PlaceEnemySpawnpoint(level.holeItems);
+		PlaceCheeses(currentLevel.cheeses);
+	}
 
-		wavesList = new List<CatchingMiceWaveDefinition>(level.waves); */
+	public void BuildLevel()
+	{
+		if (currentLevel == null)
+		{
+			Debug.LogError("The level definition was null.");
+			return;
+		}
+
+		FindReferences();
+
+		ClearLevel();
+
+		width = currentLevel.width;
+		height = currentLevel.height;
+
+		ParseTiles(width, height, currentLevel.layout);
+
+		PlaceFurniture(currentLevel.tileItems);
+
+		CreateGrid();
+
+		PlaceWaypoints();
+
+		PlaceTraps(currentLevel.traps);
+
+		PlaceCheeses(currentLevel.cheeses);
+		
+		PlaceCharacters(currentLevel.characters);
+
+		/*PlaceEnemySpawnpoint(currentLevel.holeItems);
+
+		wavesList = new List<CatchingMiceWaveDefinition>(currentLevel.waves); */
 	}
 
 	public void CreateGrid()
@@ -244,16 +291,16 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			for (int x = 0; x < width; x++)
 			{
-				if (levelTiles[x, y] == null)
+				if (tiles[x, y] == null)
 				{
 					continue;
 				}
 
 				GameObject quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-				quad.gameObject.name = levelTiles[x, y].gridIndices.ToString();
+				quad.gameObject.name = tiles[x, y].gridIndices.ToString();
 				quad.transform.localScale = Vector3.one * 0.98f * scale;
-				quad.transform.position = levelTiles[x, y].location;
-				quad.transform.parent = _levelParent;
+				quad.transform.position = tiles[x, y].location;
+				quad.transform.parent = levelParent;
 				quad.GetComponent<MeshCollider>().enabled = false;
 
 
@@ -273,45 +320,43 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public void PlaceWaypoints()
 	{
-		waypointList.Clear();
-
-		// iterate over entire grid
+		// Iterate over entire grid
 		for (int y = height - 1; y >= 0; --y)
 		{
 			for (int x = 0; x < width; ++x)
 			{
-				if (levelTiles[x, y] == null)
+				if (tiles[x, y] == null)
 				{
 					waypointList.Add(null);
 					continue;
 				}
 
-				//make child object with waypoint script
+				// Make child object with waypoint script
 				GameObject wayPoint = new GameObject();
-				wayPoint.gameObject.name = "Waypoint " + levelTiles[x, y].gridIndices;
+				wayPoint.gameObject.name = "Waypoint " + tiles[x, y].gridIndices;
 
 
-				wayPoint.transform.parent = _navigationParent.transform;
-				wayPoint.transform.position = levelTiles[x, y].location;
+				wayPoint.transform.parent = navigationParent.transform;
+				wayPoint.transform.position = tiles[x, y].location;
 
 				Waypoint wp = wayPoint.AddComponent<Waypoint>();
 
-				if ((levelTiles[x, y].tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
+				if ((tiles[x, y].tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
 				{
 					wp.waypointType = CatchingMiceTile.TileType.Furniture;
-					CatchingMiceWorldObject catchingMiceObject = levelTiles[x, y].worldObject;
+					CatchingMiceWorldObject catchingMiceObject = tiles[x, y].furniture;
 					if (catchingMiceObject != null)
 					{
 						wayPoint.transform.position = wayPoint.transform.position.yAdd(catchingMiceObject.gridOffset);
 					}
 					else
 					{
-						Debug.LogError("Tile " + levelTiles[x, y].gridIndices + " is of type furniture, but misses script CatchingMiceWorldObject");
+						Debug.LogError("Tile " + tiles[x, y].gridIndices + " is of type furniture, but misses script CatchingMiceWorldObject");
 					}
 				}
 
-				wp.parentTile = levelTiles[x, y];
-				levelTiles[x, y].waypoint = wp;
+				wp.parentTile = tiles[x, y];
+				tiles[x, y].waypoint = wp;
 				waypointList.Add(wp);
 			}
 		}
@@ -319,12 +364,12 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		AssignNeighbours();
 	}
 
-	public void ParseLevelTiles(int _width, int _height, string layout)
+	public void ParseTiles(int _width, int _height, string layout)
 	{
-		// clear grid
-		levelTiles = new CatchingMiceTile[_width, _height];
+		// Clear grid
+		tiles = new CatchingMiceTile[_width, _height];
 
-		// iterate over entire grid
+		// Iterate over entire grid
 		for (int y = height - 1; y >= 0; --y)
 		{
 			for (int x = 0; x < width; ++x)
@@ -332,17 +377,17 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				switch (layout[y * _width + x])
 				{
 					case 'x':
-						levelTiles[x, y] = null;
+						tiles[x, y] = null;
 						break;
 					case 'o':
 						CatchingMiceTile currentTile = new CatchingMiceTile();
-						levelTiles[x, y] = currentTile;
+						tiles[x, y] = currentTile;
 
-						// register this tile's grid indices and its true location, which is its index * scale
+						// Register this tile's grid indices and its true location, which is its index * scale
 						currentTile.gridIndices = new Vector2(x, y);
 
-						//We want to use the y position for the z axis because the tiles that are the highest are also the ones
-						//that are the furthers away from us
+						// We want to use the y position for the z axis because the tiles that are the highest are also the ones
+						// that are the furthers away from us
 						currentTile.location = currentTile.gridIndices.v3().z(y) * scale;
 						break;
 				}
@@ -350,121 +395,199 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		}
 	}
 
-	protected void PlaceLevelTileItems(CatchingMiceTileItemDefinition[] tileItemDefinitions)
+	protected void PlaceFurniture(CatchingMiceTileItemDefinition[] tileItemDefinitions)
 	{
 		foreach (CatchingMiceTileItemDefinition definition in tileItemDefinitions)
 		{
-			GameObject tileItemPrefab = null;
-			foreach (GameObject go in furniturePrefabs)
+			// Find the furniture prefab
+			GameObject furniturePrefab = null;
+			foreach (CatchingMiceFurniture go in furniturePrefabs)
 			{
 				if (go.name == definition.prefabName)
 				{
-					tileItemPrefab = go;
+					furniturePrefab = go.gameObject;
 					break;
 				}
 			}
 
-			if (tileItemPrefab == null)
+			if (furniturePrefab == null)
 			{
-				Debug.LogError("Did not find tile item ID: " + definition.prefabName);
+				Debug.LogError("Did not find furniture ID: " + definition.prefabName);
 				continue;
 			}
 
+			// Get the tile on which the furniture is to be placed
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
-
 			if (targetTile == null)
 			{
 				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing tile item: " + definition.prefabName);
 				continue;
 			}
 
-			if (!CatchingMiceWorldObject.CheckColliders(tileItemPrefab.GetComponent<CatchingMiceWorldObject>(), targetTile.location))
-			{
-				Debug.LogError("The tile item " + tileItemPrefab.name + " overlaps with an invalid tile.");
-				continue;
-			}
-
-			GameObject tileItem = (GameObject)Instantiate(tileItemPrefab);
-			tileItem.transform.parent = _objectParent;
+			// Create the furniture item
+			GameObject tileItem = (GameObject)Instantiate(furniturePrefab);
+			tileItem.transform.parent = objectParent;
 			tileItem.transform.name += " " + targetTile.gridIndices;
-			tileItem.transform.localPosition = targetTile.location.z(targetTile.location.z);
+			tileItem.transform.localPosition = targetTile.location;
 
-			//When placing the furniture, check if the it has the object script, so it can set the right tiles to furniture type
-			CatchingMiceWorldObject tileObjectScript = tileItem.GetComponent<CatchingMiceWorldObject>();
-			if (tileObjectScript != null)
+			// When placing the furniture, check if the it has the object script, so it can set the right tiles to furniture type
+			CatchingMiceFurniture furniture = tileItem.GetComponent<CatchingMiceFurniture>();
+			if (furniture != null)
 			{
-				tileObjectScript.parentTile = targetTile;
-				tileObjectScript.CalculateColliders();
+				if (furniture.CalculateColliders())
+				{
+					furniture.parentTile = targetTile;
+
+					if ((targetTile.tileType & CatchingMiceTile.TileType.Furniture) != CatchingMiceTile.TileType.Furniture)
+					{
+						Debug.LogWarning("The tile type of the tile has no furniture flag set!");
+					}
+				}
+				else
+				{
+					Debug.LogError("The furniture " + furniture.name + " could not be placed on the grid.");
+					DestroyGameObject(furniture.gameObject);
+				}
 			}
 			else
 			{
-				Debug.LogError("Did not find script " + tileObjectScript.ToString() + ". Item will not affect tiles ");
+				Debug.LogError("The furniture prefab " + furniturePrefab.name + " does not have a WorldObject component attached to it.");
+				DestroyGameObject(tileItem);
+			}
+		}
+	}
+	
+	protected void PlaceCheeses(CatchingMiceCheeseDefinition[] cheeseDefinitions)
+	{
+		foreach (CatchingMiceCheeseDefinition definition in cheeseDefinitions)
+		{
+			// Find the cheese prefab
+			GameObject cheesePrefab = null;
+			foreach (CatchingMiceCheese go in cheesePrefabs)
+			{
+				if (go.name == definition.prefabName)
+				{
+					cheesePrefab = go.gameObject;
+					break;
+				}
+			}
+
+			if (cheesePrefab == null)
+			{
+				Debug.LogError("Did not find tile item ID: " + definition.prefabName);
+				return;
+			}
+
+			// Get the tile where the cheese is supposed to be placed
+			CatchingMiceTile targetTile = GetTile(definition.position, false);
+			if (targetTile == null)
+			{
+				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing cheese: " + definition.prefabName);
+				return;
+			}
+
+			// Create the cheese item
+			GameObject tileItem = (GameObject)Instantiate(cheesePrefab);
+			tileItem.transform.parent = objectParent;
+			tileItem.transform.name += " " + targetTile.gridIndices;
+			tileItem.transform.localPosition = targetTile.location;
+
+			CatchingMiceCheese cheese = tileItem.GetComponent<CatchingMiceCheese>();
+			if (cheese != null)
+			{
+				if (cheese.CalculateColliders())
+				{
+					if ((targetTile.tileType & CatchingMiceTile.TileType.Cheese) != CatchingMiceTile.TileType.Cheese)
+					{
+						Debug.LogWarning("The tile type of the tile has no cheese flag set!");
+					}
+
+					cheeseTiles.Add(targetTile);
+					cheese.Stacks = definition.stacks;
+				}
+				else
+				{
+					Debug.LogError("The cheese " + cheese.name + " could not be placed on the grid.");
+					DestroyGameObject(cheese.gameObject);
+				}
+			}
+			else
+			{
+				Debug.LogError("The cheese prefab " + cheesePrefab.name + " does not have a Cheese component attached.");
+				DestroyGameObject(tileItem);
 			}
 		}
 	}
 
-	protected void PlaceLevelCheeses(CatchingMiceCheeseDefinition[] cheeseDefinitions)
+	protected void PlaceTraps(CatchingMiceTrapDefinition[] trapdefinitions)
 	{
-		cheeseTiles.Clear();
-
-		foreach (CatchingMiceCheeseDefinition definition in cheeseDefinitions)
+		foreach (CatchingMiceTrapDefinition definition in trapdefinitions)
 		{
-			GameObject tileItemPrefab = null;
-			foreach (GameObject go in cheesePrefabs)
+			// Find the trap prefab
+			GameObject trapPrefab = null;
+			foreach (CatchingMiceTrap go in trapPrefabs)
 			{
 				if (go.name == definition.prefabName)
 				{
-					tileItemPrefab = go;
+					trapPrefab = go.gameObject;
 					break;
 				}
 			}
 
-			if (tileItemPrefab == null)
+			if (trapPrefab == null)
 			{
-				Debug.LogError("Did not find tile item ID: " + definition.prefabName);
-				return;
+				Debug.LogError("Did not find trap ID: " + definition.prefabName);
+				continue;
 			}
 
+			// Get the tile where the trap supposed to be placed
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
-
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing tile item: " + definition.prefabName);
-				return;
+				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing trap: " + definition.prefabName);
+				continue;
 			}
 
-			GameObject tileItem = (GameObject)Instantiate(tileItemPrefab);
-			tileItem.transform.parent = _objectParent;
+			// Create the cheese item
+			GameObject tileItem = (GameObject)Instantiate(trapPrefab);
+			tileItem.transform.parent = objectParent;
 			tileItem.transform.name += " " + targetTile.gridIndices;
-			tileItem.transform.localPosition = targetTile.location.z(targetTile.location.z);
-			targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Cheese;
+			tileItem.transform.localPosition = targetTile.location;
 
-			//When placing the furniture, check if the it has the object script, so it can set the right tiles to furniture type
-			CatchingMiceWorldObjectTrapGround tileObjectScript = tileItem.GetComponent<CatchingMiceWorldObjectTrapGround>();
-			if (tileObjectScript != null)
+			CatchingMiceTrap trap = tileItem.GetComponent<CatchingMiceTrap>();
+			if (trap != null)
 			{
-				tileObjectScript.CalculateColliders();
+				if (trap.CalculateColliders())
+				{
+					if ((targetTile.tileType & CatchingMiceTile.TileType.Trap) != CatchingMiceTile.TileType.Trap)
+					{
+						Debug.LogWarning("The tile type of the tile has no trap flag set!");
+					}
 
-				cheeseTiles.Add(targetTile);
-
-				tileObjectScript.Stacks = definition.stacks;
+					trapTiles.Add(targetTile);
+					trap.Stacks = definition.stacks;
+				}
+				else
+				{
+					Debug.LogError("The trap " + trap.name + " could not be placed on the grid.");
+					DestroyGameObject(trap.gameObject);
+				}
 			}
 			else
 			{
-				Debug.LogError("Did not find script " + tileObjectScript.ToString() + ". Item will not affect tiles ");
+				Debug.LogError("The trap prefab " + trapPrefab.name + " does not have a Trap component attached.");
+				DestroyGameObject(tileItem);
 			}
 		}
 	}
 
 	protected void PlaceCharacters(CatchingMiceCharacterDefinition[] characterDefinitions)
 	{
-		if (characterDefinitions == null || characterDefinitions.Length < 1)
+		if (characterDefinitions == null || characterDefinitions.Length == 0)
 		{
 			Debug.LogError("This level has no characters!");
 			return;
 		}
-
-		playerList.Clear();
 
 		foreach (CatchingMiceCharacterDefinition characterDefinition in characterDefinitions)
 		{
@@ -473,6 +596,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				Debug.LogError("Character ID is null or empty!");
 				continue;
 			}
+
 			ICatchingMiceCharacter characterPrefabFound = null;
 			foreach (ICatchingMiceCharacter characterPrefab in characterPrefabs)
 			{
@@ -489,29 +613,29 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				continue;
 			}
 
-			CatchingMiceTile startTile = GetTile(Mathf.FloorToInt(characterDefinition.position.x), Mathf.FloorToInt(characterDefinition.position.y));
-
-			if (startTile == null)
+			// Get the tile where the trap supposed to be placed
+			CatchingMiceTile targetTile = GetTile(characterDefinition.position, false);
+			if (targetTile == null)
 			{
-				Debug.LogWarning("Character " + characterDefinition.prefabName + " was placed on a non-existing tile. Not placing.");
+				Debug.LogError("Did not find tile with coordinates:" + characterDefinition.position + ". Skipping placing character: " + characterDefinition.prefabName);
 				continue;
 			}
 
 			ICatchingMiceCharacter characterSpawned = (ICatchingMiceCharacter)Instantiate(characterPrefabFound);
 
-			characterSpawned.transform.parent = _characterParent;
-			characterSpawned.transform.localPosition = startTile.waypoint.transform.position.zAdd(-characterSpawned.zOffset);
-			characterSpawned.currentTile = startTile;
+			characterSpawned.transform.parent = characterParent;
+			characterSpawned.transform.localPosition = targetTile.waypoint.transform.position.zAdd(-characterSpawned.zOffset);
+			characterSpawned.currentTile = targetTile;
 
 			// set speed
-			if (characterDefinition.timeToReachTile < 0)
+			if (characterDefinition.speed < 0)
 			{
 				Debug.LogError("Speed is negative for character " + characterDefinition.prefabName + ". Setting speed to 1.");
-				characterSpawned.timeToReachTile = 1;
+				characterSpawned.speed = 1;
 			}
 			else
 			{
-				characterSpawned.timeToReachTile = characterDefinition.timeToReachTile;
+				characterSpawned.speed = characterDefinition.speed;
 			}
 
 			playerList.Add(characterSpawned);
@@ -520,8 +644,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public void PlaceEnemySpawnpoint(CatchingMiceHoleDefinition[] holeDefinitions)
 	{
-		holeTiles.Clear();
-
 		if (holeDefinitions == null || holeDefinitions.Length < 1)
 		{
 			Debug.LogError("This level has no characters!");
@@ -561,7 +683,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			holeSpawnpoint.SetHoleSpawnPoint(holeDefinition.startDirection, spawnTile);
 			holeTiles.Add(holeSpawnpoint);
 
-			holeSpawnpoint.transform.parent = _levelParent;
+			holeSpawnpoint.transform.parent = levelParent;
 			holeSpawnpoint.transform.position = holeSpawnpoint.parentTile.location;
 
 			//place the right orientation of the prefab
@@ -592,31 +714,33 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (waveIndex < 0)
 		{
-			Debug.LogError("wave can't be negative");
+			Debug.LogError("Wave index can't be negative");
 			return;
 		}
+
 		if (waveIndex >= wavesList.Count)
 		{
-			Debug.LogError("wave exceeds the waves list. useing last wave count.");
+			Debug.LogError("Wave exceeds the waves list. Using last wave count.");
 			waveIndex = wavesList.Count - 1;
 		}
 
-		//now it's not pooling so delete every child in enemy parent
-		for (int i = _enemyParent.childCount - 1; i >= 0; i--)
+		// Now it's not pooling so delete every child in enemy parent
+		for (int i = enemyParent.childCount - 1; i >= 0; i--)
 		{
-			Destroy(_enemyParent.GetChild(i).gameObject);
+			Destroy(enemyParent.GetChild(i).gameObject);
 		}
 
 		CatchingMiceWaveDefinition wave = wavesList[waveIndex];
 		int amountToKill = 0;
 		for (int i = 0; i < wave.enemies.Length; i++)
 		{
-			//get the prefab from string name
+			// Get the prefab from string name
 			if (string.IsNullOrEmpty(wave.enemies[i].prefabName))
 			{
 				Debug.LogError("Character ID is null or empty!");
 				continue;
 			}
+
 			GameObject enemyPrefab = null;
 			foreach (GameObject go in enemyPrefabs)
 			{
@@ -626,12 +750,12 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 					break;
 				}
 			}
+
 			if (enemyPrefab == null)
 			{
 				Debug.LogError("Did not find hole item ID: " + wave.enemies[i].prefabName);
 				return;
 			}
-
 
 			//everything has been found, start new coroutine with spawnwave
 			//LugusCoroutines.use.StartRoutine(SpawnSubWave(enemyPrefab, spawnTile, enemyDefinition.amount, enemyDefinition.spawnTimeInterval, enemyDefinition.spawnDelay));
@@ -690,7 +814,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		//if the object already exist use it, else make new one
 		GameObject waveParent = null;
 
-		foreach (GameObject enemyParent in _enemyParentList)
+		foreach (GameObject enemyParent in enemyParentList)
 		{
 			if (enemyParent.name == "subwave" + index)
 			{
@@ -706,7 +830,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		}
 
 		waveParent.transform.position = new Vector3(-1000, -100, 0);
-		waveParent.transform.parent = _spawnParent;
+		waveParent.transform.parent = spawnParent;
 
 		for (int i = 0; i < amount; i++)
 		{
@@ -716,10 +840,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			//enemy.SetActive(false);
 		}
 
-		_enemyParentList.Add(waveParent);
+		enemyParentList.Add(waveParent);
 	}
-
-	protected ILugusCoroutineHandle spawnRoutine = null;
 
 	public void SpawnInstantiatedWave(int waveIndex)
 	{
@@ -755,7 +877,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		}
 		GameObject parentGO = null;
 
-		foreach (GameObject parent in _enemyParentList)
+		foreach (GameObject parent in enemyParentList)
 		{
 			if (parent == null)
 			{
@@ -785,7 +907,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			if (mouseScript != null)
 			{
 				//child.gameObject.SetActive(true);
-				child.transform.parent = _enemyParent;
+				child.transform.parent = enemyParent;
 				child.transform.position = spawnTile.spawnPoint.zAdd(-mouseScript.zOffset);
 				mouseScript.currentTile = spawnTile.parentTile;
 				mouseScript.GetTarget();
@@ -810,15 +932,15 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				continue;
 			}
 
-			//last row does not need to (and can't) add their neighbor below
+			// Last row does not need to (and can't) add their neighbor below
 			if ((i < waypointList.Count - width) && (waypointList[i + width] != null))
 			{
 				waypointList[i].neighbours.Add(waypointList[i + width]);
 				waypointList[i + width].neighbours.Add(waypointList[i]);
 			}
 
-			//Last column can't add his neighbor next to him
-			//all waypoints are in one list, so every width length there will be a new row, is that waypoint is in the last column
+			// Last column can't add his neighbor next to him
+			// all waypoints are in one list, so every width length there will be a new row, is that waypoint is in the last column
 			if (((i + 1) % width != 0) && (waypointList[i + 1] != null))
 			{
 				waypointList[i].neighbours.Add(waypointList[i + 1]);
@@ -830,7 +952,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public GameObject GetPrefab(string name)
 	{
-		Transform child = _spawnParent.FindChild(name);
+		Transform child = spawnParent.FindChild(name);
 
 		if (child != null)
 			return child.gameObject;
@@ -849,7 +971,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		return GetTile(coords, false);
 	}
 
-	// get tile by grid indices (contained in vector2)
+	// Get tile by grid indices (contained in vector2)
 	public CatchingMiceTile GetTile(Vector2 coords, bool clamp)
 	{
 		int x = Mathf.RoundToInt(coords.x);
@@ -858,19 +980,19 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		return GetTile(x, y, clamp);
 	}
 
-	// get tile by grid indices
+	// Get tile by grid indices
 	public CatchingMiceTile GetTile(int x, int y)
 	{
 		return GetTile(x, y, false);
 	}
 
-	// get tile by local position under level root
+	// Get tile by local position under level root
 	public CatchingMiceTile GetTileByLocation(float x, float y)
 	{
 		int xIndex = Mathf.RoundToInt(x / scale);
 		int yIndex = Mathf.RoundToInt(y / scale);
 
-		//instead of returning null, return closest tile?
+		// Instead of returning null, return closest tile?
 		if (xIndex >= width)
 		{
 			xIndex = width - 1;
@@ -896,7 +1018,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public CatchingMiceTile GetTile(int x, int y, bool clamp)
 	{
-		if (levelTiles == null)
+		if (tiles == null)
 		{
 			return null;
 		}
@@ -917,17 +1039,17 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				return null;
 		}
 
-		return levelTiles[x, y];
+		return tiles[x, y];
 	}
 
 	public Waypoint GetWaypointFromTile(Vector2 gridIndices)
 	{
-		return levelTiles[Mathf.RoundToInt(gridIndices.x), Mathf.RoundToInt(gridIndices.y)].waypoint;
+		return tiles[Mathf.RoundToInt(gridIndices.x), Mathf.RoundToInt(gridIndices.y)].waypoint;
 	}
 
 	public Waypoint GetWaypointFromTile(int x, int y)
 	{
-		return levelTiles[x, y].waypoint;
+		return tiles[x, y].waypoint;
 	}
 
 	public CatchingMiceTile[] GetTileAround(CatchingMiceTile tile)
@@ -952,7 +1074,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public void RemoveTrapFromTile(int x, int y, CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.Trap)
 	{
-		CatchingMiceTile tile = levelTiles[x, y];
+		CatchingMiceTile tile = tiles[x, y];
 
 		if ((tile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese)
 		{
@@ -979,4 +1101,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		}
 	}
 
+	protected void DestroyGameObject(GameObject obj)
+	{
+#if UNITY_EDITOR
+		if (Application.isPlaying)
+		{
+			obj.SetActive(false);
+			Destroy(obj);
+		}
+		else
+		{
+			DestroyImmediate(obj);
+		}
+#endif
+	}
 }

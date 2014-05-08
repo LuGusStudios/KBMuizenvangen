@@ -8954,7 +8954,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e12e47f441847b4390673ef9b85bcf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToReachTile: .300000012
+  speed: .5
   zOffset: 0
   targetWaypoint: {fileID: 0}
   walkable: 1

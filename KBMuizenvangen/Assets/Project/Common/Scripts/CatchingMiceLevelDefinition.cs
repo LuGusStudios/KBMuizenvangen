@@ -222,8 +222,8 @@ public class CatchingMiceCharacterDefinition
                     case "PrefabName":
                         character.prefabName = parser.content;
                         break;
-                    case "TimeToReachTile":
-                        character.timeToReachTile = float.Parse(parser.content);
+                    case "Speed":
+                        character.speed = float.Parse(parser.content);
                         break;
 					case "Position":
 						Vector2 coordinates = Vector2.zero;
@@ -269,7 +269,7 @@ public class CatchingMiceCharacterDefinition
 
         rawdata += tabs + "<Character>\r\n";
         rawdata += tabs + "\t<PrefabName>" + character.prefabName + "</PrefabName>\r\n";
-        rawdata += tabs + "\t<Speed>" + character.timeToReachTile.ToString() + "</Speed>\r\n";
+        rawdata += tabs + "\t<Speed>" + character.speed.ToString() + "</Speed>\r\n";
 
 		rawdata += tabs + "\t<Position>\r\n";
 		rawdata += tabs + "\t\t<X>" + character.position.x.ToString() + "</X>\r\n";
@@ -283,7 +283,7 @@ public class CatchingMiceCharacterDefinition
     }
 
     public string prefabName = "";
-    public float timeToReachTile = 0.5f;
+    public float speed = 0.5f;
 	public Vector2 position;
 }
 
@@ -752,6 +752,9 @@ public class CatchingMiceTrapDefinition
 						}
 						trap.position = coordinates;
 						break;
+					case "Stacks":
+						trap.stacks = int.Parse(parser.content);
+						break;
 				}
 			}
 		}
@@ -782,7 +785,8 @@ public class CatchingMiceTrapDefinition
 		rawdata += tabs + "\t\t<X>" + trap.position.x.ToString() + "</X>\r\n";
 		rawdata += tabs + "\t\t<Y>" + trap.position.y.ToString() + "</Y>\r\n";
 		rawdata += tabs + "\t</Position>\r\n";
-		
+		rawdata += tabs + "\t<Stacks>" + trap.stacks + "</Stacks>\r\n";
+
 		rawdata += tabs + "</Trap>\r\n";
 
 		return rawdata;
@@ -790,6 +794,7 @@ public class CatchingMiceTrapDefinition
 
 	public string prefabName = "";
 	public Vector2 position = Vector2.zero;
+	public int stacks = 1;
 }
 
 [System.Serializable]
