@@ -6,10 +6,11 @@ public class CatchingMiceTrapAoE : ICatchingMiceTrapType
     public void FixedUpdate()
     {
         if (!CatchingMiceGameManager.use.GameRunning)
+		{
             return;
+		}
 
-
-        if( CatchingMiceGameManager.use.Timer - _startTime > interval )
+        if((CatchingMiceGameManager.use.Timer - _startTime) > interval )
         {
             CheckForHit();
             ResetTimer();
@@ -32,7 +33,8 @@ public class CatchingMiceTrapAoE : ICatchingMiceTrapType
             }
         }
     }
-    void OnDrawGizmos()
+    
+	void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position.yAdd(-_offset), new Vector3((tileRange * 2 + 1) * CatchingMiceLevelManager.use.scale, (tileRange * 2 + 1) * CatchingMiceLevelManager.use.scale, tileRange * CatchingMiceLevelManager.use.scale));

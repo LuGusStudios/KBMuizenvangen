@@ -24,7 +24,7 @@ public class CatchingMiceTrapSingle : ICatchingMiceTrapType
         }
 	}
 
-    public override void CheckForHit()
+   public override void CheckForHit()
     {
         Collider2D[] colliders = Physics2D.OverlapAreaAll(_pointLeft, _pointRight);
 
@@ -42,7 +42,8 @@ public class CatchingMiceTrapSingle : ICatchingMiceTrapType
         }
        
     }
-    void OnDrawGizmos()
+   
+	void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireCube(transform.position.yAdd(-_offset), new Vector3((tileRange * 2 + 1) * CatchingMiceLevelManager.use.scale, (tileRange * 2 + 1) * CatchingMiceLevelManager.use.scale, tileRange * CatchingMiceLevelManager.use.scale));

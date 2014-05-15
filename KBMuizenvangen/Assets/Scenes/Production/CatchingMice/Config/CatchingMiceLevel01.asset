@@ -35,7 +35,7 @@ MonoBehaviour:
   cheeses:
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 5}
-    stacks: 1000
+    stacks: 3
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 6}
     stacks: 1000
@@ -59,15 +59,15 @@ MonoBehaviour:
     startDirection: 1
   - prefabName: Hole_1x1_01
     holeId: Hole02
-    position: {x: 0, y: 0}
+    position: {x: 0, y: 7}
     startDirection: 2
   - prefabName: Hole_1x1_01
     holeId: Hole03
-    position: {x: 0, y: 0}
+    position: {x: 11, y: 3}
     startDirection: 8
   - prefabName: Hole_1x1_01
     holeId: Hole04
-    position: {x: 0, y: 0}
+    position: {x: 5, y: 12}
     startDirection: 4
   waves:
   - enemies:

@@ -36,48 +36,61 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
         
         
     }
-    public override void DoCurrentTileBehaviour(int pathIndex)
+    
+	public override void DoCurrentTileBehaviour(int pathIndex)
     {
-        base.DoCurrentTileBehaviour(pathIndex);
-        if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && pathIndex==0)
+		// For the skinny mouse, when a trap is present, start attacking the trap,
+		// else, do the default behaviour for a mouse: attacking cheese, if present
+        if (((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap) && (pathIndex == 0))
         {
-            //handle.StopRoutine();
             //begin eating the cheese
             StartCoroutine(AttackTrap());
-            //handle = LugusCoroutines.use.StartRoutine(AttackTrap()); 
         }
+		else
+		{
+			base.DoCurrentTileBehaviour(pathIndex);
+		}
     }
-    public IEnumerator AttackTrap()
+    
+	public IEnumerator AttackTrap()
     {
         attacking = true;
         if (onAttack != null)
+		{
             onAttack();
+		}
+
         CatchingMiceTile trapTile = currentTile;
-        while (_health > 0 && trapTile.trapObject != null && trapTile.trapObject.Stacks > 0)
+        while ((_health > 0)
+			&& (trapTile.trapObject != null)
+			&& (trapTile.trapObject.Stacks > 0))
         {
             //Debug.Log(currentTile.trapObject.Stacks);
             trapTile.trapObject.Health -= damage;
 
             yield return new WaitForSeconds(attackInterval);
         }
-        attacking = false;
-      
 
+        attacking = false;
+
+		// Get the next target when the trap has been destroyed
         GetTarget();
-        
     }
-    protected override void OnEnable()
+    
+	protected override void OnEnable()
     {
         base.OnEnable();
         CatchingMiceLevelManager.use.TrapRemoved += TargetRemoved;
 
     }
-    protected override void OnDisable()
+    
+	protected override void OnDisable()
     {
         //base.OnDisable();
         //CatchingMiceLevelManager.use.TrapRemoved -= TargetRemoved;
     }
-    public override void DieRoutine()
+    
+	public override void DieRoutine()
     {
         base.DieRoutine();
         CatchingMiceLevelManager.use.TrapRemoved -= TargetRemoved;

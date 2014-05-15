@@ -270,7 +270,8 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
         else
             _lineRenderer.SetVertexCount(0);
     }
-    protected void OnDrawGizmos()
+    
+	protected void OnDrawGizmos()
     {
         if(pathToWalk.Count>0)
         {

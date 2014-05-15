@@ -45,34 +45,40 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         if(targetWaypoint != null)
         {
-            
-
            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
 
             if (fullPath)
+			{
                 StartCoroutine(MoveToDestination(path));
+			}
 
             //handle.StartRoutine(MoveToDestination(path)); 
         }
     }
-    public abstract void DoCurrentTileBehaviour(int pathIndex);
-    public abstract IEnumerator Attack();
-    protected virtual void Awake()
+    
+	public abstract void DoCurrentTileBehaviour(int pathIndex);
+    
+	public abstract IEnumerator Attack();
+    
+	protected virtual void Awake()
     {
         SetupLocal();
     }
-    protected virtual void Start()
+    
+	protected virtual void Start()
     {
         SetupGlobal();
     }
-    public virtual void SetupLocal()
+    
+	public virtual void SetupLocal()
     {
        
         //handle = LugusCoroutines.use.GetHandle();
 
         movementDirection = Vector3.zero;
     }
-    public virtual void SetupGlobal()
+    
+	public virtual void SetupGlobal()
     {
         currentTile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
         navigationGraph = new List<Waypoint>(CatchingMiceLevelManager.use.Waypoints);
@@ -244,36 +250,34 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
         return path;
     }
-    public virtual IEnumerator MoveToDestination(List<Waypoint> path)
+    
+	public virtual IEnumerator MoveToDestination(List<Waypoint> path)
     {
         int pathIndex = path.Count - 1;
         
         //when interrupting a jump complete the jump to the tile
         interrupt = false;
 
-        while (pathIndex > -1 && !interrupt)
+        while ((pathIndex > -1) && !interrupt)
         {
-            //gameObject.StopTweens();
-
             moving = true;
-
             Vector3 movePosition = path[pathIndex].transform.position;
-            //check which zdepth the object must be
+            
+			//check which zdepth the object must be
             //Left hand axis, bigger z is further away
             //when going up
-            if (transform.position.z < path[pathIndex].transform.position.z)
+            if (transform.position.z < movePosition.z)
             {
                 movePosition.z = transform.position.z;
             }
-           
-            
-            //TODO: needs to account offset (furniture offsets)
+
             float yOffset = 0.0f;
             if (currentTile.furniture != null)
+			{
                 yOffset = currentTile.furniture.gridOffset;
+			}
 
             movementDirection = Vector3.Normalize(path[pathIndex].parentTile.location.z(transform.position.z) - transform.position.yAdd(-yOffset)) ;
-
 
             //check if the cat needs to jump, when your type is not the same as you current tile, it mean the character is jumping
             if ((currentTile.waypoint.waypointType & path[pathIndex].waypointType) != path[pathIndex].waypointType)
@@ -293,10 +297,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
             {
                 yield return null;
 
-                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= maxDistance);// maxDistance);
+                reachedTarget = (Vector2.Distance(transform.position.v2(), path[pathIndex].transform.position.v2()) <= maxDistance);
             }
-
-            //Mover.renderer.sortingOrder = path[pathIndex].layerOrder;
 
             //z needs to be the next tile because else the object will be behind the next tile while on its way to the next tile
             if (pathIndex > 0)
@@ -307,7 +309,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
                     transform.position = transform.position.z(path[pathIndex - 1].transform.position.z).zAdd(-zOffset); 
                 }
                 else
+				{
                     transform.position = transform.position.z(path[pathIndex].transform.position.z).zAdd(-zOffset);
+				}
             }
             else
             {
@@ -331,9 +335,9 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         gameObject.StopTweens();
 
         moving = false;
-
     }
-    public virtual void StopCurrentBehaviour()
+    
+	public virtual void StopCurrentBehaviour()
     {
         StopAllCoroutines(); 
         //if (handle != null)
@@ -341,7 +345,8 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
         //gameObject.StopTweens();
         moving = false;
     }
-    public virtual bool IsWalkable(CatchingMiceTile tile)
+    
+	public virtual bool IsWalkable(CatchingMiceTile tile)
     {
         if (tile.waypoint.waypointType == CatchingMiceTile.TileType.Collide)
         {

@@ -79,7 +79,7 @@
 				<X>5</X>
 				<Y>5</Y>
 			</Position>
-			<Stacks>1000</Stacks>
+			<Stacks>3</Stacks>
 		</Cheese>
 		<Cheese>
 			<PrefabName>Cheese_1x1_01</PrefabName>
@@ -139,7 +139,7 @@
 			<HoleID>Hole02</HoleID>
 			<Position>
 				<X>0</X>
-				<Y>0</Y>
+				<Y>7</Y>
 			</Position>
 			<StartDirection>right</StartDirection>
 		</HoleItem>
@@ -147,8 +147,8 @@
 			<PrefabName>Hole_1x1_01</PrefabName>
 			<HoleID>Hole03</HoleID>
 			<Position>
-				<X>0</X>
-				<Y>0</Y>
+				<X>11</X>
+				<Y>3</Y>
 			</Position>
 			<StartDirection>left</StartDirection>
 		</HoleItem>
@@ -156,8 +156,8 @@
 			<PrefabName>Hole_1x1_01</PrefabName>
 			<HoleID>Hole04</HoleID>
 			<Position>
-				<X>0</X>
-				<Y>0</Y>
+				<X>5</X>
+				<Y>12</Y>
 			</Position>
 			<StartDirection>down</StartDirection>
 		</HoleItem>

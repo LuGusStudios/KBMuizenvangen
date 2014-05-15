@@ -8,6 +8,7 @@ public class CatchingMiceTrap : CatchingMiceWorldObject, ICatchingMiceWorldObjec
 	protected float health = 100.0f;
 	[SerializeField]
 	protected int stacks = 3;
+	[SerializeField]
 	protected float cost = 1.0f;
 	[SerializeField]
 	protected float damage = 1.0f;
@@ -64,7 +65,7 @@ public class CatchingMiceTrap : CatchingMiceWorldObject, ICatchingMiceWorldObjec
 			damage = value;
 		}
 	}
-	public CatchingMiceWorldObject TrapObject
+	public CatchingMiceTrap TrapObject
 	{
 		get
 		{
@@ -80,7 +81,7 @@ public class CatchingMiceTrap : CatchingMiceWorldObject, ICatchingMiceWorldObjec
 	public void DestroySelf()
 	{
 		// Remove the trap from the list and tiletype
-		CatchingMiceLevelManager.use.RemoveTrapFromTile(Mathf.RoundToInt(parentTile.gridIndices.x), Mathf.RoundToInt(parentTile.gridIndices.y), tileType);
+		CatchingMiceLevelManager.use.RemoveTrapFromTile(parentTile);
 		gameObject.SetActive(false);
 	}
 

@@ -22,9 +22,9 @@ public class CatchingMiceTile
     
 	public TileType tileType = TileType.None;
 
-    public CatchingMiceWorldObject furniture = null;
-    public ICatchingMiceWorldObjectTrap trapObject = null;
-	public CatchingMiceWorldObject cheese = null;
+    public CatchingMiceFurniture furniture = null;
+    public CatchingMiceTrap trapObject = null;
+	public CatchingMiceCheese cheese = null;
 	public CatchingMiceHole hole = null;
     public Waypoint waypoint = null;
     

@@ -8,16 +8,22 @@ public class CatchingMiceGameManager : LugusSingletonExisting<CatchingMiceGameMa
 public class CatchingMiceGameManagerDefault : MonoBehaviour
 {
 	public bool gameRunning = false;
-	protected float _timer = 0;
-	protected int _pickupCount = 0;
-	protected int _currentWave = 0;
-	protected int _amountToKill = 0;
 
-	protected float _preWaveTime = 2.0f;
-	protected ILugusCoroutineHandle _gameRoutineHandle = null;
+	#region Protected
+	protected int pickupCount = 0;
+	protected int currentWave = 0;
+	protected int amountToKill = 0;
 
-	protected bool _infiniteLevel = false;
-	protected bool _paused = false;
+	protected float timer = 0;
+	protected float preWaveTime = 2.0f;
+
+	protected bool infiniteLevel = false;
+	protected bool paused = false;
+	
+	protected ILugusCoroutineHandle gameRoutineHandle = null;
+
+	protected CatchingMiceLevelLoader levelLoader = null;
+	#endregion
 
 	public bool GameRunning
 	{
@@ -27,7 +33,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	{
 		get
 		{
-			return _timer;
+			return timer;
 		}
 	}
 	public enum State
@@ -44,42 +50,35 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	public delegate void OnGameStateChange();
 	public OnGameStateChange onGameStateChange;
 
-	protected CatchingMiceGameManagerDefault.State _state = State.NONE;
+	protected CatchingMiceGameManagerDefault.State state = State.NONE;
 
-	public CatchingMiceGameManagerDefault.State state
+	public void SetState(CatchingMiceGameManagerDefault.State st)
 	{
-		get
+		State oldState = state;
+		state = st;
+		if (state != oldState)
 		{
-			return _state;
-		}
-		set
-		{
-			State oldState = _state;
-			_state = value;
-			if (_state != oldState)
-			{
-				DoNewStateBehaviour(_state);
-				if (onGameStateChange != null)
-					onGameStateChange();
-			}
+			DoNewStateBehaviour(state);
+			if (onGameStateChange != null)
+				onGameStateChange();
 		}
 	}
 
 	public void DoNewStateBehaviour(State newState)
 	{
 		//this can be usefull for ending the PreWavePhase early, so it can start with a wave
-		if (_gameRoutineHandle != null)
+		if (gameRoutineHandle != null)
 		{
-			_gameRoutineHandle.StopRoutine();
+			gameRoutineHandle.StopRoutine();
 		}
 
 		switch (newState)
 		{
 			case State.PreWave:
-				_gameRoutineHandle = LugusCoroutines.use.StartRoutine(PreWavePhase());
+				gameRoutineHandle = LugusCoroutines.use.StartRoutine(PreWavePhase());
 				break;
 			case State.Wave:
-				_gameRoutineHandle = LugusCoroutines.use.StartRoutine(WavePhase());
+				gameRoutineHandle = LugusCoroutines.use.StartRoutine(WavePhase());
 				break;
 			case State.PostWave:
 				PostWavePhase();
@@ -104,23 +103,25 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	{
 		Debug.Log("Starting pre-wave phase");
 
-		CatchingMiceLevelManager.use.InstantiateWave(_currentWave);
-		yield return new WaitForSeconds(_preWaveTime);
-		state = State.Wave;
+		CatchingMiceLevelManager.use.InstantiateWave(currentWave);
+		yield return new WaitForSeconds(preWaveTime);
+		SetState(State.Wave);
 	}
 
 	public IEnumerator WavePhase()
 	{
 		Debug.Log("Starting wave phase");
+		
 		//spawn waves
-		CatchingMiceLevelManager.use.SpawnInstantiatedWave(_currentWave);
+		CatchingMiceLevelManager.use.SpawnInstantiatedWave(currentWave);
+
 		//wait until wave is done, or cheese has been eaten
-		while (_amountToKill > 0 && CatchingMiceLevelManager.use.CheeseTiles.Count > 0)
+		while (amountToKill > 0 && CatchingMiceLevelManager.use.CheeseTiles.Count > 0)
 		{
 			yield return null;
 		}
 
-		state = State.PostWave;
+		SetState(State.PostWave);
 		yield break;
 	}
 
@@ -128,22 +129,22 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	{
 		Debug.Log("Starting post-wave phase");
 
-		_currentWave++;
+		currentWave++;
 
 		//check if start next wave (preWavePhase), cheese has been eaten or waves has been iterated
-		if (_currentWave > CatchingMiceLevelManager.use.Waves.Count - 1)
+		if (currentWave > CatchingMiceLevelManager.use.Waves.Count - 1)
 		{
 			//can be changed so when you want infinite levels
-			state = State.Won;
+			SetState(State.Won);
 		}
 		else if (CatchingMiceLevelManager.use.CheeseTiles.Count <= 0)
 		{
-			state = State.Lost;
+			SetState(State.Lost);
 		}
 		else
 		{
 			//still waves left, get next wave
-			state = State.PreWave;
+			SetState(State.PreWave);
 		}
 	}
 
@@ -165,10 +166,15 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 		CatchingMiceLevelManager.use.ClearLevel();
 
 		// TODO: Modify this when the level selection menu goes live
-		CatchingMiceLevelLoader levelLoader = new CatchingMiceLevelLoader();
+		if (levelLoader == null)
+		{
+			levelLoader = new CatchingMiceLevelLoader();
+			levelLoader.FindLevels();
+		}
+
 		if (CatchingMiceCrossSceneInfo.use.LevelToLoad == -1)
 		{
-			List<int> indexes = levelLoader.FindLevels();
+			List<int> indexes = levelLoader.levelIndices;
 			if (indexes.Count > 0)
 			{
 				CatchingMiceCrossSceneInfo.use.LevelToLoad = indexes[0];
@@ -186,8 +192,8 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 			if (CatchingMiceLevelManager.use.Waves.Count > 0)
 			{
-				_currentWave = 0;
-				state = State.PreWave;
+				currentWave = 0;
+				SetState(State.PreWave);
 			}
 		}	
 	}
@@ -204,7 +210,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	public bool Paused
 	{
-		get { return _paused; }
+		get { return paused; }
 		set
 		{
 			SetPaused(value);
@@ -229,7 +235,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 			// otherwhise, moving objects with colliders (all our Buttons) wouldn't update collision correctly!
 			Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-			_paused = true;
+			paused = true;
 
 		}
 		else
@@ -247,7 +253,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 			// otherwhise, moving objects with colliders (all our Buttons) wouldn't update collision correctly!
 			Time.fixedDeltaTime = 0.02f * Time.timeScale;
 
-			_paused = false;
+			paused = false;
 		}
 	}
 
@@ -256,30 +262,63 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	{
 		StartGame();
 	}
-
-	public void ModifyPickUpCount(int modifyValue)
-	{
-		_pickupCount += modifyValue;
-	}
-
-	public void SetAmountToKill(int amount)
-	{
-		_amountToKill = amount;
-		Debug.LogWarning("amount to kill :" + _amountToKill);
-	}
-
-	public void ModifyAmountToKill(int modifyValue)
-	{
-		_amountToKill += modifyValue;
-		//Debug.Log("Modified, amount is now : " + _amountToKill);
-	}
-
+	
 	// Update is called once per frame
 	protected void Update()
 	{
 		if (gameRunning)
 		{
-			_timer += Time.deltaTime;
+			timer += Time.deltaTime;
 		}
+	}
+
+	protected void OnGUI()
+	{
+		if (levelLoader == null)
+		{
+			levelLoader = new CatchingMiceLevelLoader();
+			levelLoader.FindLevels();
+		}
+
+		GUILayout.BeginArea(new Rect(10, 10, 150, 25 * (levelLoader.levelIndices.Count + 2)));
+
+		GUILayout.BeginVertical();
+
+		GUILayout.Label("Catching Mice Levels:");
+
+		if (GUILayout.Button("Refresh List"))
+		{
+			levelLoader.FindLevels();
+		}
+
+		for (int i = 0; i < levelLoader.levelIndices.Count; ++i)
+		{
+			if (GUILayout.Button("Level " + levelLoader.levelIndices[i]))
+			{
+				CatchingMiceCrossSceneInfo.use.LevelToLoad = levelLoader.levelIndices[i];
+				Application.LoadLevel(Application.loadedLevelName);
+			}
+		}
+
+		GUILayout.EndVertical();
+
+		GUILayout.EndArea();
+	}
+
+	public void ModifyPickUpCount(int modifyValue)
+	{
+		pickupCount += modifyValue;
+	}
+
+	public void SetAmountToKill(int amount)
+	{
+		amountToKill = amount;
+		Debug.LogWarning("amount to kill :" + amountToKill);
+	}
+
+	public void ModifyAmountToKill(int modifyValue)
+	{
+		amountToKill += modifyValue;
+		//Debug.Log("Modified, amount is now : " + _amountToKill);
 	}
 }

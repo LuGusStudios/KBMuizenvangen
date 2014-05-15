@@ -8,7 +8,7 @@ public interface ICatchingMiceWorldObjectTrap
     float Cost { get; set; }
     float Damage { get; set; }
 
-    CatchingMiceWorldObject TrapObject { get; }
+    CatchingMiceTrap TrapObject { get; }
     void OnHit(ICatchingMiceCharacter character);
     void DestroySelf();
     void DoBehaviour();

@@ -4,10 +4,11 @@ using System.Collections;
 public abstract class ICatchingMiceTrapType : MonoBehaviour 
 {
     public float interval = 2.0f;
-    protected float _startTime = -1.0f;
-    protected ICatchingMiceWorldObjectTrap _trap = null;
-
     public int tileRange = 0;
+
+    protected float _startTime = -1.0f;
+    protected CatchingMiceTrap _trap = null;
+
     protected Vector2 _pointLeft = Vector2.zero;
     protected Vector2 _pointRight = Vector2.zero;
     protected float _offset = 0.0f; 
@@ -16,9 +17,16 @@ public abstract class ICatchingMiceTrapType : MonoBehaviour
     {
         SetupLocal();
     }
-    public virtual void SetupLocal()
+
+	// Use this for initialization
+	void Start()
+	{
+		SetupGlobal();
+	}
+    
+	public virtual void SetupLocal()
     {
-        _trap = (ICatchingMiceWorldObjectTrap)transform.GetComponent(typeof(ICatchingMiceWorldObjectTrap));
+		_trap = (CatchingMiceTrap)transform.GetComponent(typeof(CatchingMiceTrap));
         if (_trap == null)
         {
             Debug.LogError("No trap has been found on this object, although trap type script is attached");
@@ -27,25 +35,20 @@ public abstract class ICatchingMiceTrapType : MonoBehaviour
 
         ResetTimer();
     }
-    public virtual void SetupGlobal()
+    
+	public virtual void SetupGlobal()
     {
-        //get y offset
-        CatchingMiceWorldObject furniture = null;
-        furniture = _trap.TrapObject.parentTile.furniture; // transform.GetComponent<CatchingMiceWorldObject>().parentTile.worldObject; 
-
+        // Get y offset from furniture, if any
+        CatchingMiceWorldObject furniture = _trap.TrapObject.parentTile.furniture;;
         if (furniture != null)
         {
-            //Debug.LogError(furniture.parentTile.worldObject);
             _offset = furniture.parentTile.furniture.gridOffset;
         }
 
-        //when traps are bigger than 1 tile, check the collider for its center
-        BoxCollider2D trapCollider = null;
-        trapCollider = transform.GetComponentInChildren<BoxCollider2D>();
-
+        // When traps are bigger than 1 tile, check the collider for its center
+        BoxCollider2D trapCollider = transform.GetComponentInChildren<BoxCollider2D>();
         if(trapCollider == null)
         {
-            //Debug.Log("No collider has been found. Using center of object");
             _pointLeft = transform.position.xAdd(-tileRange).yAdd(-tileRange - _offset).v2() * CatchingMiceLevelManager.use.scale;
             _pointRight = transform.position.xAdd(tileRange).yAdd(tileRange - _offset).v2() * CatchingMiceLevelManager.use.scale;
         }
@@ -67,7 +70,8 @@ public abstract class ICatchingMiceTrapType : MonoBehaviour
         }
        
     }
-    public void ResetTimer()
+    
+	public void ResetTimer()
     {
         _startTime = CatchingMiceGameManager.use.Timer;
     }
@@ -81,15 +85,4 @@ public abstract class ICatchingMiceTrapType : MonoBehaviour
     {
         //override for custom behaviours
     }
-	// Use this for initialization
-	void Start () 
-    {
-        SetupGlobal();
-	}
-	
-	// Update is called once per frame
-	void Update () 
-    {
-	
-	}
 }

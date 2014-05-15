@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CatchingMiceHole : MonoBehaviour
+public class CatchingMiceHole : CatchingMiceWorldObject
 {
     public enum CharacterDirections
     {
@@ -16,14 +16,13 @@ public class CatchingMiceHole : MonoBehaviour
     public string id = "";
     public CharacterDirections spawnDirection = CharacterDirections.Undefined;
     public Vector3 spawnPoint = Vector3.zero;
-    public CatchingMiceTile parentTile = null;
     
     public void SetHoleSpawnPoint(CharacterDirections direction, CatchingMiceTile tile)
     {
         spawnDirection = direction;
-        parentTile = tile;
         float tileOffset = CatchingMiceLevelManager.use.scale;
 
+		// Relocate and rotate the mice hole based on its direction
         switch (spawnDirection)
         {
             case CharacterDirections.Down:
@@ -32,25 +31,50 @@ public class CatchingMiceHole : MonoBehaviour
                 break;
             case CharacterDirections.Left:
                 spawnPoint = parentTile.location.xAdd(tileOffset);
+				transform.Rotate(new Vector3(0, 0, -90));
                 break;
             case CharacterDirections.Right:
                 spawnPoint = parentTile.location.xAdd(-tileOffset);
+				transform.Rotate(new Vector3(0, 0, 90));
                 break;
             case CharacterDirections.Up:
                 spawnPoint = parentTile.location.yAdd(-tileOffset);
+				transform.localScale = transform.localScale.y(-1);
                 break;
             case CharacterDirections.Undefined:
-                Debug.LogError("Undefined direcion passed. Spawnpoint could not be made.");
+                Debug.LogError("Undefined direction passed. Mice hole could not be made.");
                 break;
         }
     }
-	// Use this for initialization
-	void Start () {
-	
+
+	public override void SetTileType(System.Collections.Generic.List<CatchingMiceTile> tiles)
+	{
+		foreach (CatchingMiceTile tile in tiles)
+		{
+			tile.tileType = tile.tileType | tileType;
+			tile.hole = this;
+		}
+
+		// Here we don't apply a vertical grid offset, because the sprite placement
+		// already complements that
+		transform.position = transform.position.zAdd(-0.1f);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public override bool ValidateTile(CatchingMiceTile tile)
+	{
+		// A mice hole should only be placed on the ground
+
+		if (!base.ValidateTile(tile))
+		{
+			return false;
+		}
+
+		if ((tile.tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
+		{
+			Debug.LogError("Mice hole " + transform.name + " cannot be placed on furniture.");
+			return false;
+		}
+
+		return true;
 	}
 }

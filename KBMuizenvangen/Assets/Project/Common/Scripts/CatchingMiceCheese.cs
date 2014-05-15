@@ -2,7 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CatchingMiceCheese : CatchingMiceTrap {
+public class CatchingMiceCheese : CatchingMiceWorldObject {
+
+	public int Stacks
+	{
+		get
+		{
+			return stacks;
+		}
+
+		set
+		{
+			stacks = value;
+
+			if (stacks <= 0)
+			{
+				DestroySelf();
+			}
+		}
+	}
+
+	protected int stacks;
 
 	public override void SetTileType(List<CatchingMiceTile> tiles)
 	{
@@ -34,6 +54,9 @@ public class CatchingMiceCheese : CatchingMiceTrap {
 
 	public override bool ValidateTile(CatchingMiceTile tile)
 	{
+		// A cheese object can only be placed on the ground, and should not be placed
+		// on the same tile as a trap
+
 		if (!base.ValidateTile(tile))
 		{
 			return false;
@@ -51,5 +74,11 @@ public class CatchingMiceCheese : CatchingMiceTrap {
 		}
 
 		return true;
+	}
+
+	protected void DestroySelf()
+	{
+		CatchingMiceLevelManager.use.RemoveCheeseFromTile(parentTile);
+		gameObject.SetActive(false);
 	}
 }

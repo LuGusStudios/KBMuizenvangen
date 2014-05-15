@@ -606,6 +606,8 @@ public class CatchingMiceWaveDefinition
             }
         }
 
+		wave.enemies = enemies.ToArray();
+
         return wave;
     }
 
@@ -624,6 +626,7 @@ public class CatchingMiceWaveDefinition
         {
             tabs += "\t";
         }
+
         rawdata += tabs + "<Wave>\r\n";
         foreach (CatchingMiceEnemyDefinition enemy in wave.enemies)
         {
@@ -633,6 +636,7 @@ public class CatchingMiceWaveDefinition
 
         return rawdata;
     }
+
     public CatchingMiceEnemyDefinition[] enemies;
 }
 

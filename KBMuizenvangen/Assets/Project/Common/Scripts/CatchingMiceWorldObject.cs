@@ -7,6 +7,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
 	public float gridOffset = 0.5f;
 	public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
 	public CatchingMiceTile parentTile = null;
+	public List<CatchingMiceTile> overlappingTiles = new List<CatchingMiceTile>();	// List of all tiles this object overlaps
 
 	protected BoxCollider2D[] boxColliders2D;
 

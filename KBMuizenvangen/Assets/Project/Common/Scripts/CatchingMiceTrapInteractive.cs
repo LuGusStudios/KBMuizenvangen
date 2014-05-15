@@ -14,8 +14,10 @@ public class CatchingMiceTrapInteractive : ICatchingMiceTrapType
 
     public override void DoBehaviour()
     {
-        if (CatchingMiceGameManager.use.Timer - _startTime < interval)
+        if ((CatchingMiceGameManager.use.Timer - _startTime) < interval)
+		{
             return;
+		}
 
         _trap.Stacks--;
         //give traps a timeout before you can use it again
@@ -32,7 +34,10 @@ public class CatchingMiceTrapInteractive : ICatchingMiceTrapType
             //    continue;
             //only add on floortiles
             if (tile.furniture != null)
+			{
                 continue;
+			}
+
             //when there is no trap spawn a minitrap
             if(tile.trapObject == null)
             {

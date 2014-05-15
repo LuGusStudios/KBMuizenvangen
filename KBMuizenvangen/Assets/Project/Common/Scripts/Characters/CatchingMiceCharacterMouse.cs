@@ -7,8 +7,9 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public delegate void OnGetHit();
     public event OnGetHit onGetHit;
 
-    public int timesToAttack = 3;
-    public override float Health
+    public int cheeseBites = 3;
+
+	public override float Health
     {
         get
         {
@@ -17,15 +18,20 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         set
         {
             _health = value;
-            if (onGetHit != null)
+            
+			if (onGetHit != null)
+			{
                 onGetHit();
+			}
+
             if (_health <= 0)
             {
                 DieRoutine();
             }
         }
     }
-    public override void SetupLocal()
+
+	public override void SetupLocal()
     {
         base.SetupLocal();
 
@@ -33,15 +39,18 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         
 
     }
-    protected virtual void OnEnable() 
+    
+	protected virtual void OnEnable() 
     {
-
+		CatchingMiceLevelManager.use.CheeseRemoved += TargetRemoved;
     }
-    protected virtual void OnDisable()
+    
+	protected virtual void OnDisable()
     {
         //CatchingMiceLevelManager.use.CheeseRemoved -= TargetRemoved;
     }
-    public virtual void GetTarget()
+    
+	public virtual void GetTarget()
     {
         if (CatchingMiceLevelManager.use.CheeseTiles.Count <= 0)
         {
@@ -89,67 +98,75 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             return null;
         }
     }
-    public void TargetRemoved(CatchingMiceTile tile)
+    
+	public void TargetRemoved(CatchingMiceTile tile)
     {
-        //current waypoint is null when pooling 
+        // Current waypoint is null when pooling 
         if (targetWaypoint == null)
+		{
             return;
+		}
 
         StopCurrentBehaviour();
         //StopAllCoroutines(); 
         //handle.StopRoutine();
         GetTarget();
     }
-    public override void DoCurrentTileBehaviour(int pathIndex)
+    
+	public override void DoCurrentTileBehaviour(int pathIndex)
     {
         //Debug.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
 
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
         if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
         {
-            //handle.StopRoutine();
             //begin eating the cheese
-            //Debug.Log("eating cheeese");
             StartCoroutine(Attack());
-            //handle.StartRoutine(Attack()); 
         }
     }
-    public override IEnumerator MoveToDestination(List<Waypoint> path)
+    
+	public override IEnumerator MoveToDestination(List<Waypoint> path)
     {
         yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(0,0.5f));
         yield return StartCoroutine(base.MoveToDestination(path));
     }
-    public override IEnumerator Attack()
+    
+	public override IEnumerator Attack()
     {
         attacking = true;
         OnHitEvent();
         CatchingMiceTile cheeseTile = currentTile;
         int attacked = 0;
-        while(_health > 0 && cheeseTile.trapObject != null && cheeseTile.trapObject.Stacks > 0 && attacked < timesToAttack)
-        {
-            //Debug.Log(currentTile.trapObject.Stacks);
-            cheeseTile.trapObject.Stacks -= (int)damage;
 
+        while((_health > 0)
+			&& (cheeseTile.cheese != null)
+			&& (cheeseTile.cheese.Stacks > 0)
+			&& (attacked < cheeseBites))
+        {
+            cheeseTile.cheese.Stacks -= (int)damage;
             attacked++;
+
             yield return new WaitForSeconds(attackInterval);
         }
+
         attacking = false;
-        if (CatchingMiceLevelManager.use.CheeseTiles.Count > 0 && cheeseTile.trapObject.Stacks <= 0)
+
+        if ((CatchingMiceLevelManager.use.CheeseTiles.Count > 0) && (cheeseTile.cheese.Stacks <= 0))
         {
             Debug.Log("getting new target");
-
             GetTarget();
         }
         else
         {
-            //mouse ate the cheese x timesToAttack, ate too much, now die
+
             DieRoutine();
         }
     }
-    public virtual void DieRoutine()
+    
+	public virtual void DieRoutine()
     {
         //Drop cookie
-        //Play Death animation (cloud particle)
+        //TODO: Play Death animation (cloud particle)
         CatchingMiceLevelManager.use.CheeseRemoved -= TargetRemoved;
         CatchingMiceGameManager.use.ModifyAmountToKill(-1);
         //handle.StopRoutine();
