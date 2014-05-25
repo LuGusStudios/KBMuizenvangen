@@ -33,11 +33,10 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceTrap
 			transform.position = transform.position.yAdd(gridOffset).zAdd(-0.5f);*/
 
 			tile.tileType = tile.tileType | tileType;
-			tile.trapObject = this;
+			tile.trap = this;
 		}
 		
-		// A z-displacement of -0.5 is needed because the furniture is at -0.25f
-		transform.position = transform.position.yAdd(tiles[0].furniture.gridOffset).zAdd(-0.5f);
+		transform.position = transform.position.yAdd(tiles[0].furniture.yOffset + yOffset).zAdd(- tiles[0].furniture.zOffset - zOffset);
 	}
 
 	public override bool ValidateTile(CatchingMiceTile tile)
@@ -52,9 +51,14 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceTrap
 			Debug.LogError("Furniture trap " + transform.name + " cannot be placed on the ground.");
 			return false;
 		}
-		else if ((tile.trapObject != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
+		else if ((tile.trap != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
 		{
 			Debug.LogError("Furniture trap " + transform.name + " cannot be placed because another trap is already present.");
+			return false;
+		}
+		else if ((tile.obstacle != null) || ((tile.tileType & CatchingMiceTile.TileType.Obstacle) == CatchingMiceTile.TileType.Obstacle))
+		{
+			Debug.LogError("Furniture trap " + transform.name + " cannot be placed because an obstacle is already present.");
 			return false;
 		}
 
