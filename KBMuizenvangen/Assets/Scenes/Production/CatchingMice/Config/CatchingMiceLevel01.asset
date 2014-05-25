@@ -117,3 +117,6 @@ MonoBehaviour:
   - prefabName: ObstacleCooker_2x2_01
     position: {x: 8, y: 3}
     obstacleData: <WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity>
+  - prefabName: ObstacleCage_1x1_01
+    position: {x: 11, y: 12}
+    obstacleData: 

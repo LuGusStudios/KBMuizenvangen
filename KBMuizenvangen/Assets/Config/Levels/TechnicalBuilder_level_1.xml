@@ -26,6 +26,14 @@
 			</Position>
 			<Configuration><WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity></Configuration>
 		</Obstacle>
+		<Obstacle>
+			<PrefabName>ObstacleCage_1x1_01</PrefabName>
+			<Position>
+				<X>11</X>
+				<Y>12</Y>
+			</Position>
+			<Configuration></Configuration>
+		</Obstacle>
 	</Obstacles>
 	<Characters>
 		<Character>

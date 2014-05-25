@@ -33,7 +33,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 
 		VisualizePath();
 
-		CheckPlayerTrapInteraction();
+		CheckPlayerObjectInteraction();
 	}
 	//protected void CheckDraggingPoints()
 	//{
@@ -92,6 +92,13 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 			_character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
 			if (_character != null)
 			{
+				// Check whether the character is a cage or not
+				if ((CatchingMiceLevelManager.use.Cage != null)
+					&& (CatchingMiceLevelManager.use.Cage.PlayerHold.Contains(_character)))
+				{
+					return;
+				}
+
 				//when it is still jumping, let the jump finish before stopping
 				if (_character.jumping)
 				{
@@ -215,11 +222,11 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 		}
 	}
 
-	public void CheckPlayerTrapInteraction()
+	public void CheckPlayerObjectInteraction()
 	{
 		// This will check whether the user wants to interact
-		// with a trap, either to reactivate it, or to do something
-		// else with it
+		// with a trap or other world object, either to
+		// reactivate it, or to do something else with it
 
 		// This is done by casting a ray and checking for traps
 		// When a trap is found, the player characters are searched
@@ -237,17 +244,19 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 			return;
 		}
 
+		CheckPlayerTrapInteraction(hit);
+		CheckPlayerObstacleInteraction(hit);
+	}
+
+	protected void CheckPlayerTrapInteraction(Transform hit)
+	{
 		CatchingMiceTrap trap = hit.parent.GetComponent<CatchingMiceTrap>();
 		if (trap == null)
 		{
 			return;
 		}
-		else
-		{
-			Debug.LogError(trap.name);
-		}
 
-		// Go over the 2 characters and check if the trap is in range
+		// Go over the characters and check if the object is in range
 		List<CatchingMiceCharacterPlayer> characters = new List<CatchingMiceCharacterPlayer>(CatchingMiceLevelManager.use.Players);
 		foreach (CatchingMiceCharacterPlayer character in characters)
 		{
@@ -259,22 +268,49 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 					continue;
 				}
 
-				if (tile.trap == null)
+				if (tile.trap != null)
+				{
+					// When the trap and player character are in range of each other
+					// Interact with it, and return
+					if (tile.trap == trap)
+					{
+						trap.PlayerInteraction();
+					}
+				}
+			}
+		}
+	}
+
+	protected void CheckPlayerObstacleInteraction(Transform hit)
+	{
+		CatchingMiceObstacle obstacle = hit.parent.GetComponent<CatchingMiceObstacle>();
+		if (obstacle == null)
+		{
+			return;
+		}
+
+		// Go over the characters and check if the object is in range
+		List<CatchingMiceCharacterPlayer> characters = new List<CatchingMiceCharacterPlayer>(CatchingMiceLevelManager.use.Players);
+		foreach (CatchingMiceCharacterPlayer character in characters)
+		{
+			CatchingMiceTile[] tilesAround = CatchingMiceLevelManager.use.GetTileAround(character.currentTile);
+			foreach (CatchingMiceTile tile in tilesAround)
+			{
+				if (tile == null)
 				{
 					continue;
 				}
 
-				// When the trap and player character are in range of each other
-				// Interact with it, and return
-				if (tile.trap == trap)
+				if ((tile.obstacle != null) && (tile.obstacle == obstacle))
 				{
-					trap.PlayerInteraction();
-					return;
+					CatchingMiceCage cage = obstacle as CatchingMiceCage;
+					if ((cage != null) && (cage.PlayerHold != null))
+					{
+						cage.PlayerInteraction();
+					}
 				}
 			}
 		}
-
-
 	}
 
 	public void VisualizePath()

@@ -8,7 +8,8 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
     protected bool _canAttack = true;
 
     protected ILugusCoroutineHandle walkHandle = null;
-    public override float Health
+    
+	public override float Health
     {
         get
         {

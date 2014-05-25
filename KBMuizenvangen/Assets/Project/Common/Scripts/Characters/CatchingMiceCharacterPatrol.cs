@@ -126,14 +126,19 @@ public class CatchingMiceCharacterPatrol : ICatchingMiceCharacter {
 
 			gameObject.MoveTo(movePosition).Time(tileTraversalTime).Execute();
 
+			// While the patrol is moving, it checks in front of him
+			// whether a player can be found.
 			while (transform.position.v2() != path[pathIndex].transform.position.v2())
 			{
 				yield return new WaitForFixedUpdate();
 				
 				CatchingMiceCharacterPlayer player = FindPlayer();
-				if (player != null)
+				CatchingMiceCage cage = CatchingMiceLevelManager.use.Cage;
+				if ((player != null)
+					&& (cage != null)
+					&& (!cage.PlayerHold.Contains(player)))
 				{
-					Debug.Log("Tiger, is that you?! I told you to stay in your fucking cage, you piece of shit!");
+					cage.PlayerDetected(player);
 
 					iTween.PunchScale(this.gameObject, Vector3.one, 0.5f);
 

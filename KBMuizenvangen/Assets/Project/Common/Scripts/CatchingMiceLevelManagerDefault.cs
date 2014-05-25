@@ -106,6 +106,17 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			return enemies;
 		}
 	}
+	public CatchingMiceCage Cage
+	{
+		get
+		{
+			return cage;
+		}
+		set
+		{
+			cage = value;
+		}
+	}
 	#endregion
 
 	// Events
@@ -149,6 +160,8 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	protected CatchingMiceLevelDefinition currentLevel = null;
 	protected int width = 13;
 	protected int height = 13;
+
+	protected CatchingMiceCage cage = null;
 
 	protected CatchingMiceTile[,] tiles = null;
 
