@@ -4,7 +4,8 @@ using System.Collections;
 public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMouse 
 {
     public string attackAnimationClip = "_Attack";
-    public override void OnHit()
+    
+	public override void OnHit()
     {
         if (currentAnimationClip != characterNameAnimation + _sideAnimationClip + eatingAnimationClip)
         {
@@ -13,7 +14,8 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
-    protected void OnAttack()
+    
+	protected void OnAttack()
     {
         if (currentAnimationClip != characterNameAnimation + _sideAnimationClip + attackAnimationClip)
         {
@@ -22,7 +24,8 @@ public class CatchingMiceAnimationMouseSkinny : CatchingMiceCharacterAnimationMo
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
     }
-    protected override void SetCharacter()
+    
+	protected override void SetCharacter()
     {
         if (character == null)
         {

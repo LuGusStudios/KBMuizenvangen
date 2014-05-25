@@ -36,6 +36,6 @@ public class CatchingMiceFurniture : CatchingMiceWorldObject {
 
 		// Place the furniture a little bit forward, so that it does not
 		// interfere with the texture of the ground
-		transform.position = transform.position.zAdd(-0.25f);
+		transform.position = transform.position.zAdd(-zOffset);
 	}
 }

@@ -8,14 +8,54 @@ public class CatchingMiceGameManager : LugusSingletonExisting<CatchingMiceGameMa
 public class CatchingMiceGameManagerDefault : MonoBehaviour
 {
 	public bool gameRunning = false;
+	public float preWaveTime = 30.0f;
+
+	#region Accessors
+	public int EnemiesAlive
+	{
+		get
+		{
+			return enemiesAlive;
+		}
+		set
+		{
+			enemiesAlive = value;
+		}
+	}
+	public int PickupCount
+	{
+		get
+		{
+			return pickupCount;
+		}
+		set
+		{
+			pickupCount = value;
+		}
+	}
+	public int CurrentWave
+	{
+		get
+		{
+			return currentWave;
+		}
+	}
+	#endregion
+
+	#region Events
+	public delegate void WaveStartedEventHandler(int waveIndex);
+	public event WaveStartedEventHandler WaveStarted;
+
+	public delegate void WaveEndedEventHandler(int waveIndex);
+	public event WaveEndedEventHandler WaveEnded;
+	#endregion
 
 	#region Protected
 	protected int pickupCount = 0;
 	protected int currentWave = 0;
-	protected int amountToKill = 0;
+	protected int enemiesAlive = 0;
 
 	protected float timer = 0;
-	protected float preWaveTime = 2.0f;
 
 	protected bool infiniteLevel = false;
 	protected bool paused = false;
@@ -102,7 +142,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	public IEnumerator PreWavePhase()
 	{
 		Debug.Log("Starting pre-wave phase");
-
+		
 		CatchingMiceLevelManager.use.InstantiateWave(currentWave);
 		yield return new WaitForSeconds(preWaveTime);
 		SetState(State.Wave);
@@ -111,12 +151,17 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	public IEnumerator WavePhase()
 	{
 		Debug.Log("Starting wave phase");
+
+		if (WaveStarted != null)
+		{
+			WaveStarted(currentWave);
+		}
 		
 		//spawn waves
 		CatchingMiceLevelManager.use.SpawnInstantiatedWave(currentWave);
 
 		//wait until wave is done, or cheese has been eaten
-		while (amountToKill > 0 && CatchingMiceLevelManager.use.CheeseTiles.Count > 0)
+		while (enemiesAlive > 0 && CatchingMiceLevelManager.use.CheeseTiles.Count > 0)
 		{
 			yield return null;
 		}
@@ -128,6 +173,11 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 	public void PostWavePhase()
 	{
 		Debug.Log("Starting post-wave phase");
+
+		if (WaveEnded != null)
+		{
+			WaveEnded(currentWave);
+		}
 
 		currentWave++;
 
@@ -178,11 +228,17 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 			if (indexes.Count > 0)
 			{
 				CatchingMiceCrossSceneInfo.use.LevelToLoad = indexes[0];
-				string levelData = levelLoader.GetLevelData(CatchingMiceCrossSceneInfo.use.LevelToLoad);
-				CatchingMiceLevelDefinition levelDefinition = CatchingMiceLevelDefinition.FromXML(levelData);
-				CatchingMiceLevelManager.use.CurrentLevel = levelDefinition;
+			}
+			else
+			{
+				Debug.LogWarning("No levels could be found!");
+				return;
 			}
 		}
+		
+		string levelData = levelLoader.GetLevelData(CatchingMiceCrossSceneInfo.use.LevelToLoad);
+		CatchingMiceLevelDefinition levelDefinition = CatchingMiceLevelDefinition.FromXML(levelData);
+		CatchingMiceLevelManager.use.CurrentLevel = levelDefinition;
 
 		if (CatchingMiceLevelManager.use.CurrentLevel != null)
 		{
@@ -274,6 +330,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	protected void OnGUI()
 	{
+		// Display available levels
 		if (levelLoader == null)
 		{
 			levelLoader = new CatchingMiceLevelLoader();
@@ -281,7 +338,6 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 		}
 
 		GUILayout.BeginArea(new Rect(10, 10, 150, 25 * (levelLoader.levelIndices.Count + 2)));
-
 		GUILayout.BeginVertical();
 
 		GUILayout.Label("Catching Mice Levels:");
@@ -301,24 +357,18 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 		}
 
 		GUILayout.EndVertical();
-
 		GUILayout.EndArea();
-	}
 
-	public void ModifyPickUpCount(int modifyValue)
-	{
-		pickupCount += modifyValue;
-	}
+		// Display level information
+		GUILayout.BeginArea(new Rect(Screen.width - 210, 10, 150, 100));
+		GUILayout.BeginVertical();
 
-	public void SetAmountToKill(int amount)
-	{
-		amountToKill = amount;
-		Debug.LogWarning("amount to kill :" + amountToKill);
-	}
+		GUILayout.Label("Current phase: " + state);
+		GUILayout.Label("Mice alive: " + enemiesAlive);
+		GUILayout.Label("Cookies found: " + pickupCount);
+		GUILayout.Label("Cheeses left: " + CatchingMiceLevelManager.use.CheeseTiles.Count);
 
-	public void ModifyAmountToKill(int modifyValue)
-	{
-		amountToKill += modifyValue;
-		//Debug.Log("Modified, amount is now : " + _amountToKill);
+		GUILayout.EndVertical();
+		GUILayout.EndArea();
 	}
 }

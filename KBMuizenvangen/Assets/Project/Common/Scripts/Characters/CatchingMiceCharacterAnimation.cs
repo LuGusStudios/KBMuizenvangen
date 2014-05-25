@@ -42,9 +42,9 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     public string eatingAnimationClip = "_Attack";
     public string idleAnimationClip = "_Idle";
 
-    protected string _sideAnimationClip = "Side";
-    protected string _frontAnimationClip = "Front";
-    protected string _backAnimationClip = "Back";
+    public string _sideAnimationClip = "Side";
+    public string _frontAnimationClip = "Front";
+    public string _backAnimationClip = "Back";
 
     protected KikaAndBob.MovementQuadrant _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
     protected bool _jumped = false;
@@ -130,7 +130,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         }
            
     }
-    protected void LoadQuadrantAnimation(KikaAndBob.MovementQuadrant quadrantReal, string animationType)
+    
+	protected void LoadQuadrantAnimation(KikaAndBob.MovementQuadrant quadrantReal, string animationType)
     {
         // 1. Map the quadrant to the correct AnimationClip name
         // 2. Find the AnimationClip object and Play() it
@@ -168,7 +169,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         PlayAnimation(animationClipName, !movingRight);
     }
-    public virtual void PlayAnimation(string animationPath, bool moveRight = true)
+    
+	public virtual void PlayAnimation(string animationPath, bool moveRight = true)
     {
 
         string[] parts = animationPath.Split('/');
@@ -273,7 +275,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         }
         return facing;
     }
-    public virtual void SetupLocal()
+    
+	public virtual void SetupLocal()
     {
         if (animationContainers.Length == 0)
         {
@@ -289,13 +292,15 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         //PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
     }
-    public void OnJump()
+    
+	public void OnJump()
     {
         KikaAndBob.MovementQuadrant quadrant = DirectionToQuadrant(character.movementDirection);
         LoadQuadrantAnimation(quadrant,jumpAnimationClip);
         _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE; 
     }
-    protected virtual void SetCharacter()
+    
+	protected virtual void SetCharacter()
     {
         if (character == null)
         {
@@ -312,7 +317,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
             character.onHit += OnHit;
         }
     }
-    public virtual void OnHit()
+    
+	public virtual void OnHit()
     {
 
         if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + eatingAnimationClip)
@@ -327,7 +333,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     {
         SetupLocal();
     }
-    protected void OnDisable()
+    
+	protected void OnDisable()
     {
         character.onJump -= OnJump;
         character.onHit -= OnHit;

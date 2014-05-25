@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class CatchingMiceCheese : CatchingMiceWorldObject {
 
+	public List<Sprite> cheeseVisuals = new List<Sprite>();
+
 	public int Stacks
 	{
 		get
@@ -15,14 +17,52 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 		{
 			stacks = value;
 
+			// Destroy the cheese if 0 stacks are left,
+			// change sprite otherwise
 			if (stacks <= 0)
 			{
 				DestroySelf();
+			}
+			else
+			{
+				int visualIndex = Mathf.FloorToInt(((float)stacks / (float)initialStacks) * (float)cheeseVisuals.Count);
+				visualIndex = Mathf.Max(Mathf.Min(visualIndex, cheeseVisuals.Count - 1), 0);
+
+				if (cheeseRenderer != null)
+				{
+					cheeseRenderer.sprite = cheeseVisuals[visualIndex];
+				}
 			}
 		}
 	}
 
 	protected int stacks;
+	protected int initialStacks;
+
+	protected SpriteRenderer cheeseRenderer = null;
+
+	public void SetupGlobal()
+	{
+		initialStacks = stacks;
+
+		if (cheeseRenderer == null)
+		{
+			cheeseRenderer = GetComponentInChildren<SpriteRenderer>();
+			if (cheeseRenderer == null)
+			{
+				Debug.LogError("Could not find the sprite renderer for the cheese.");
+			}
+			else
+			{
+				cheeseRenderer.sprite = cheeseVisuals[cheeseVisuals.Count - 1];
+			}
+		}
+	}
+
+	protected void Start()
+	{
+		SetupGlobal();
+	}
 
 	public override void SetTileType(List<CatchingMiceTile> tiles)
 	{
@@ -49,7 +89,7 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 			tile.cheese = this;
 		}
 		
-		transform.position = transform.position.yAdd(gridOffset).zAdd(-0.25f);
+		transform.position = transform.position.yAdd(yOffset).zAdd(-zOffset);
 	}
 
 	public override bool ValidateTile(CatchingMiceTile tile)
@@ -67,7 +107,7 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 			Debug.LogError("Cheese " + transform.name + " cannot be placed on furniture.");
 			return false;
 		}
-		else if ((tile.trapObject != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
+		else if ((tile.trap != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
 		{
 			Debug.LogError("Cheese " + transform.name + " cannot be placed on the same tile as a trap.");
 			return false;

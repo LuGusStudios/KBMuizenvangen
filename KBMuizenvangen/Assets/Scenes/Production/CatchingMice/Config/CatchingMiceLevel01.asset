@@ -35,10 +35,10 @@ MonoBehaviour:
   cheeses:
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 5}
-    stacks: 3
+    stacks: 40
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 6}
-    stacks: 1000
+    stacks: 40
   traps:
   - prefabName: TrapBearTrap_1x1_01
     position: {x: 7, y: 7}
@@ -48,10 +48,19 @@ MonoBehaviour:
     stacks: 1
   - prefabName: TrapWine_1x1_01
     position: {x: 8, y: 4}
-    stacks: 1
+    stacks: 10
   - prefabName: TrapSpray_1x1_01
     position: {x: 1, y: 2}
-    stacks: 1
+    stacks: 100
+  - prefabName: TrapPoison_1x1_01
+    position: {x: 3, y: 2}
+    stacks: 100
+  - prefabName: TrapVacuumCleaner_1x1_01
+    position: {x: 2, y: 11}
+    stacks: 3
+  - prefabName: TrapMushroom_1x1_01
+    position: {x: 10, y: 4}
+    stacks: 10
   holeItems:
   - prefabName: Hole_1x1_01
     holeId: Hole01
@@ -96,5 +105,15 @@ MonoBehaviour:
       amount: 5
       spawnTimeInterval: .800000012
       spawnDelay: 1
-  patrolRoute:
-    positions: []
+  patrols:
+  - prefabName: Haakmans_01
+    speed: 1
+    positions:
+    - {x: 0, y: 0}
+    - {x: 11, y: 0}
+    - {x: 11, y: 12}
+    - {x: 0, y: 12}
+  obstacles:
+  - prefabName: ObstacleCooker_2x2_01
+    position: {x: 8, y: 3}
+    obstacleData: <WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity>

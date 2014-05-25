@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class CatchingMiceWorldObject : MonoBehaviour
 {
-	public float gridOffset = 0.5f;
+	public float yOffset = 0.5f;
+	public float zOffset = 0f;
 	public CatchingMiceTile.TileType tileType = CatchingMiceTile.TileType.None;
 	public CatchingMiceTile parentTile = null;
 	public List<CatchingMiceTile> overlappingTiles = new List<CatchingMiceTile>();	// List of all tiles this object overlaps
@@ -44,7 +45,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
 						// Gets most left position of the collider and add the wanted tile distance
 						float xTile = ((col2D.transform.position.x + col2D.center.x) - col2D.Bounds().extents.x) + xTiles / (xTiles * 2) * x;
 						// Shifts the tile gridOffset down first, then gets the lowest position and add the wanted tile distance
-						float yTile = ((col2D.transform.position.y + col2D.center.y) - col2D.Bounds().extents.y) - gridOffset + yTiles / (yTiles * 2) * y;
+						float yTile = ((col2D.transform.position.y + col2D.center.y) - col2D.Bounds().extents.y) - yOffset + yTiles / (yTiles * 2) * y;
 						
 						CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTile(Mathf.RoundToInt(xTile / CatchingMiceLevelManager.use.scale), Mathf.RoundToInt(yTile / CatchingMiceLevelManager.use.scale));
 
@@ -63,6 +64,8 @@ public class CatchingMiceWorldObject : MonoBehaviour
 
 		Debug.Log(transform.name + tileList.Count);
 		SetTileType(tileList);
+
+		overlappingTiles = tileList;
 
 		return true;
 	}

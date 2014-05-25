@@ -12,11 +12,11 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
     {
         get
         {
-            return _health;
+            return health;
         }
         set
         {
-            _health = value;
+            health = value;
         }
     }
     
@@ -39,28 +39,32 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         for (int i = 1; i < pathFromMouse.Count; i++)
         {
             if (interrupt)
+			{
                 break;
+			}
 
             currentWaypoint = pathFromMouse[i - 1];
 
             targetWaypoint = pathFromMouse[i];
 
-            //Debug.LogError("current waypoint " + currentWaypoint + " targetWaypoint " + targetWaypoint);
-
-            List<Waypoint> path = AStarCalculate(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
+			List<Waypoint> path = CatchingMiceUtil.FindPath(graph, currentWaypoint, targetWaypoint, out fullPath, walkable);
 
             yield return walkHandle.StartRoutine(MoveToDestination(path));
-
         }
-
-        
     }
 
+	// TODO: Add the cookies to the game manager when picked up
     public override void DoCurrentTileBehaviour(int pathIndex)
     {
-
+		// As a player, pick up the cookies on a tile
+		if (currentTile.Cookies > 0)
+		{
+			int takencookies = currentTile.TakeCookies(currentTile.Cookies);
+			CatchingMiceGameManager.use.PickupCount += takencookies;
+		}
     }
-    public override IEnumerator Attack()
+    
+	public override IEnumerator Attack()
     {
         //attack a mouse and wait until you can attack again
         if(_enemy != null)
@@ -94,17 +98,21 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
             }
         }
     }
-    public override void StopCurrentBehaviour()
+    
+	public override void StopCurrentBehaviour()
     {
         base.StopCurrentBehaviour();
         
         if (walkHandle != null)
+		{
             walkHandle.StopRoutine(); 
+		}
 
         gameObject.StopTweens();
         interrupt = false;
     }
-    public void MoveWithPath(List<Waypoint> path)
+    
+	public void MoveWithPath(List<Waypoint> path)
     {
         StopCurrentBehaviour();
 
@@ -141,6 +149,7 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
         StartCoroutine(CalculatePath(path));
         //handle.StartRoutine(CalculatePath(path));
     }
+	
 	// Update is called once per frame
 	protected void Update () 
     {

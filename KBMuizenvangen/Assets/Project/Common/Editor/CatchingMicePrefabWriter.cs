@@ -37,7 +37,7 @@ public class CatchingMicePrefabWriter : Editor
 
 		// Enemies
 		writer.WriteLine("Enemy types:");
-		foreach (GameObject enemy in manager.enemyPrefabs)
+		foreach (CatchingMiceCharacterMouse enemy in manager.enemyPrefabs)
 		{
 			writer.WriteLine("\t- " + enemy.name);
 		}

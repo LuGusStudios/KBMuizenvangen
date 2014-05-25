@@ -162,7 +162,7 @@ public class CatchingMicePathFinding : MonoBehaviour
             //worldobjects has gridoffsets, so only apply when there is an object
             if (current.parentTile.furniture != null)
             {
-                gridOffsetCurrent = current.parentTile.furniture.gridOffset;
+                gridOffsetCurrent = current.parentTile.furniture.yOffset;
             }
 
             foreach (Waypoint neighbour in current.neighbours)
@@ -177,7 +177,7 @@ public class CatchingMicePathFinding : MonoBehaviour
                 //worldobjects has gridoffsets, so only apply when there is an object
                 if(neighbour.parentTile.furniture != null)
                 {
-                    gridOffset = neighbour.parentTile.furniture.gridOffset;
+                    gridOffset = neighbour.parentTile.furniture.yOffset;
                 }
                 // use the distance to the neighbour as a heuristic here 
                 float cost = current.AStarCost + Vector3.Distance(neighbour.transform.position.yAdd(-gridOffset).v2(), current.transform.position.yAdd(-gridOffsetCurrent).v2());//Vector3.Distance( neighbour.transform.position, stop.transform.position ); 

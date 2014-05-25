@@ -8,23 +8,24 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     public event OnGetHit onGetHit;
 
     public int cheeseBites = 3;
+	public int cookieDrops = 1;
 
 	public override float Health
     {
         get
         {
-            return _health;
+            return health;
         }
         set
         {
-            _health = value;
+            health = value;
             
 			if (onGetHit != null)
 			{
                 onGetHit();
 			}
 
-            if (_health <= 0)
+            if (health <= 0)
             {
                 DieRoutine();
             }
@@ -108,9 +109,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 		}
 
         StopCurrentBehaviour();
-        //StopAllCoroutines(); 
-        //handle.StopRoutine();
-        GetTarget();
+		StartCoroutine(FindNewTarget());
     }
     
 	public override void DoCurrentTileBehaviour(int pathIndex)
@@ -138,7 +137,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         CatchingMiceTile cheeseTile = currentTile;
         int attacked = 0;
 
-        while((_health > 0)
+        while((health > 0)
 			&& (cheeseTile.cheese != null)
 			&& (cheeseTile.cheese.Stacks > 0)
 			&& (attacked < cheeseBites))
@@ -162,16 +161,23 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
             DieRoutine();
         }
     }
+
+	protected IEnumerator FindNewTarget()
+	{
+		yield return new WaitForSeconds(LugusRandom.use.Uniform.Next(1f));
+		GetTarget();
+	}
     
+	//TODO: Play Death animation (cloud particle)
 	public virtual void DieRoutine()
     {
-        //Drop cookie
-        //TODO: Play Death animation (cloud particle)
+		currentTile.AddCookies(cookieDrops);
         CatchingMiceLevelManager.use.CheeseRemoved -= TargetRemoved;
-        CatchingMiceGameManager.use.ModifyAmountToKill(-1);
-        //handle.StopRoutine();
-        //Destroy(this.gameObject);
+		CatchingMiceLevelManager.use.EnemyDied(this);
+		CatchingMiceGameManager.use.EnemiesAlive -= 1;
+
         gameObject.SetActive(false);
+		GameObject.Destroy(this.gameObject);
     }
 
     public void GetHit(float damage)

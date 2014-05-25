@@ -40,10 +40,10 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
 	public override void DoCurrentTileBehaviour(int pathIndex)
     {
 		// For the skinny mouse, when a trap is present, start attacking the trap,
-		// else, do the default behaviour for a mouse: attacking cheese, if present
+		// else, do the default behavior for a mouse: attacking cheese, if present
         if (((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap) && (pathIndex == 0))
         {
-            //begin eating the cheese
+            // Begin attacking the trap
             StartCoroutine(AttackTrap());
         }
 		else
@@ -61,12 +61,12 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
 		}
 
         CatchingMiceTile trapTile = currentTile;
-        while ((_health > 0)
-			&& (trapTile.trapObject != null)
-			&& (trapTile.trapObject.Stacks > 0))
+        while ((health > 0)
+			&& (trapTile.trap != null)
+			&& (trapTile.trap.Health > 0))
         {
             //Debug.Log(currentTile.trapObject.Stacks);
-            trapTile.trapObject.Health -= damage;
+            trapTile.trap.Health -= damage;
 
             yield return new WaitForSeconds(attackInterval);
         }

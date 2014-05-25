@@ -40,6 +40,8 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		List<CatchingMiceTrapDefinition> traps = new List<CatchingMiceTrapDefinition>();
         List<CatchingMiceHoleDefinition> holeItems = new List<CatchingMiceHoleDefinition>();
         List<CatchingMiceWaveDefinition> waves = new List<CatchingMiceWaveDefinition>();
+		List<CatchingMicePatrolDefinition> patrols = new List<CatchingMicePatrolDefinition>();
+		List<CatchingMiceObstacleDefinition> obstacles = new List<CatchingMiceObstacleDefinition>();
 
 		while (parser.Read("Level"))
 		{
@@ -85,6 +87,12 @@ public class CatchingMiceLevelDefinition : ScriptableObject
                     case "Wave":
                         waves.Add(CatchingMiceWaveDefinition.FromXML(parser));
                         break;
+					case "Patrol":
+						patrols.Add(CatchingMicePatrolDefinition.FromXML(parser));
+						break;
+					case "Obstacle":
+						obstacles.Add(CatchingMiceObstacleDefinition.FromXML(parser));
+						break;
 				}
 			}
 		}
@@ -95,6 +103,8 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		level.traps = traps.ToArray();
 		level.holeItems = holeItems.ToArray();
 		level.waves = waves.ToArray();
+		level.patrols = patrols.ToArray();
+		level.obstacles = obstacles.ToArray();
 
 		return level;
 	}
@@ -130,6 +140,13 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 			rawdata += "\t\t" + level.layout.Substring(i * level.width, level.width) + "\r\n";
 		}
 		rawdata += "\t</Layout>\r\n";
+
+		rawdata += "\t<Obstacles>\r\n";
+		foreach (CatchingMiceObstacleDefinition obstacle in level.obstacles)
+		{
+			rawdata += CatchingMiceObstacleDefinition.ToXML(obstacle, 2);
+		}
+		rawdata += "\t</Obstacles>\r\n";
 
         rawdata += "\t<Characters>\r\n";
         foreach (CatchingMiceCharacterDefinition character in level.characters)
@@ -173,6 +190,13 @@ public class CatchingMiceLevelDefinition : ScriptableObject
         }
         rawdata += "\t</Waves>\r\n";
 
+		rawdata += "\t<Patrols>\r\n";
+		foreach (CatchingMicePatrolDefinition patrol in level.patrols)
+		{
+			rawdata += CatchingMicePatrolDefinition.ToXML(patrol, 2);
+		}
+		rawdata += "\t</Patrols>\r\n";
+
 		rawdata += "</Level>\r\n";
 
 		return rawdata;
@@ -189,7 +213,8 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 	public CatchingMiceTrapDefinition[] traps;
     public CatchingMiceHoleDefinition[] holeItems;
     public CatchingMiceWaveDefinition[] waves;
-	public CatchingMicePatrolRouteDefinition patrolRoute;
+	public CatchingMicePatrolDefinition[] patrols;
+	public CatchingMiceObstacleDefinition[] obstacles;
     
 	// Arrays of serialized classes are not created with default values
 	// Instead, initialize values once in OnEnable (which runs AFTER deserialization), checking for null / zero value
@@ -198,6 +223,123 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 	{
 	
 	}
+}
+
+[System.Serializable]
+public class CatchingMiceObstacleDefinition
+{
+	// The obstacle definition is somewhat special compared
+	// to the other definitions. An obstacle is dynamic,
+	// and depending on the object, the tags, values and
+	// structure may vary. Every obstacle definition has a
+	// prefab name which refers to its prefab, and a configuration
+	// which the obstacle will parse on its own. This configuration
+	// needs to be reconstructed, because there currently
+	// no simple method of the TinyXMLReader parser object
+	// to simply extract all data between a certain tag pair.
+
+	public static CatchingMiceObstacleDefinition FromXML(TinyXmlReader parser)
+	{
+		CatchingMiceObstacleDefinition obstacle = new CatchingMiceObstacleDefinition();
+
+		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
+			(parser.tagName != "Obstacle"))
+		{
+			Debug.Log("CatchingMiceObstacleDefinition.FromXML(): unexpected tag type or tag name.");
+			return null;
+		}
+
+		while (parser.Read("Obstacle"))
+		{
+			if (parser.tagType == TinyXmlReader.TagType.OPENING)
+			{
+				switch (parser.tagName)
+				{
+					case "PrefabName":
+						obstacle.prefabName = parser.content;
+						break;
+					case "Configuration":
+
+						obstacle.obstacleData += "<" + parser.tagName + ">";
+
+						while (parser.Read("Configuration"))
+						{
+							switch(parser.tagType)
+							{
+								case TinyXmlReader.TagType.OPENING:
+									obstacle.obstacleData += "<" + parser.tagName + ">";
+									obstacle.obstacleData += parser.content;
+									break;
+								case TinyXmlReader.TagType.CLOSING:
+									obstacle.obstacleData += "</" + parser.tagName + ">";
+									break;
+							}
+						}
+
+						obstacle.obstacleData += "</" + parser.tagName + ">";
+
+						break;
+					case "Position":
+						Vector2 coordinates = Vector2.zero;
+						while (parser.Read("Position"))
+						{
+							if (parser.tagType == TinyXmlReader.TagType.OPENING)
+							{
+								switch (parser.tagName)
+								{
+									case "X":
+										coordinates.x = float.Parse(parser.content);
+										break;
+									case "Y":
+										coordinates.y = float.Parse(parser.content);
+										break;
+								}
+							}
+						}
+						obstacle.position = coordinates;
+						break;
+				}
+			}
+		}
+
+		return obstacle;
+	}
+
+	public static string ToXML(CatchingMiceObstacleDefinition obstacle, int depth)
+	{
+		string rawdata = string.Empty;
+
+		if (obstacle == null)
+		{
+			Debug.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
+			return rawdata;
+		}
+
+		string tabs = string.Empty;
+		for (int i = 0; i < depth; ++i)
+		{
+			tabs += "\t";
+		}
+
+		rawdata += tabs + "<Obstacle>\r\n";
+
+		rawdata += tabs + "\t<PrefabName>" + obstacle.prefabName + "</PrefabName>\r\n";
+
+		rawdata += tabs + "\t<Position>\r\n";
+		rawdata += tabs + "\t\t<X>" + obstacle.position.x.ToString() + "</X>\r\n";
+		rawdata += tabs + "\t\t<Y>" + obstacle.position.y.ToString() + "</Y>\r\n";
+		rawdata += tabs + "\t</Position>\r\n";
+
+		rawdata += tabs + "\t<Configuration>" + obstacle.obstacleData + "</Configuration>\r\n";
+
+		rawdata += tabs + "</Obstacle>\r\n";
+
+		return rawdata;
+	}
+
+	public string prefabName = "";
+	public Vector2 position;
+	public string obstacleData = "";
 }
 
 [System.Serializable]
@@ -213,6 +355,7 @@ public class CatchingMiceCharacterDefinition
             Debug.Log("CatchingMiceCharacterDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
+
         while (parser.Read("Character"))
         {
             if (parser.tagType == TinyXmlReader.TagType.OPENING)
@@ -248,6 +391,7 @@ public class CatchingMiceCharacterDefinition
                 }
             }
         }
+
         return character;
     }
 
@@ -802,27 +946,33 @@ public class CatchingMiceTrapDefinition
 }
 
 [System.Serializable]
-public class CatchingMicePatrolRouteDefinition
+public class CatchingMicePatrolDefinition
 {
-	public static CatchingMicePatrolRouteDefinition FromXML(TinyXmlReader parser)
+	public static CatchingMicePatrolDefinition FromXML(TinyXmlReader parser)
 	{
-		CatchingMicePatrolRouteDefinition route = new CatchingMicePatrolRouteDefinition();
+		CatchingMicePatrolDefinition patrol = new CatchingMicePatrolDefinition();
 
 		List<Vector2> positions = new List<Vector2>();
 
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
-			(parser.tagName != "PatrolRoute"))
+			(parser.tagName != "Patrol"))
 		{
-			Debug.Log("CatchingMicePatrolRouteDefinition.FromXML(): unexpected tag type or tag name.");
+			Debug.Log("CatchingMicePatrolDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
-		while (parser.Read("PatrolRoute"))
+		while (parser.Read("Patrol"))
 		{
 			if (parser.tagType == TinyXmlReader.TagType.OPENING)
 			{
 				switch (parser.tagName)
 				{
+					case "PrefabName":
+						patrol.prefabName = parser.content;
+						break;
+					case "Speed":
+						patrol.speed = float.Parse(parser.content);
+						break;
 					case "Position":
 						Vector2 coordinates = Vector2.zero;
 						while (parser.Read("Position"))
@@ -846,18 +996,18 @@ public class CatchingMicePatrolRouteDefinition
 			}
 		}
 
-		route.positions = positions.ToArray();
+		patrol.positions = positions.ToArray();
 
-		return route;
+		return patrol;
 	}
 
-	public static string ToXML(CatchingMicePatrolRouteDefinition route, int depth)
+	public static string ToXML(CatchingMicePatrolDefinition patrol, int depth)
 	{
 		string rawdata = string.Empty;
 
-		if (route == null)
+		if (patrol == null)
 		{
-			Debug.Log("CatchingMicePatrolRouteDefinition.ToXML(): The patrol route to be serialized is null.");
+			Debug.Log("CatchingMicePatrolDefinition.ToXML(): The patrol route to be serialized is null.");
 			return rawdata;
 		}
 
@@ -867,20 +1017,27 @@ public class CatchingMicePatrolRouteDefinition
 			tabs += "\t";
 		}
 
-		rawdata += tabs + "<PatrolRoute>\r\n";
+		rawdata += tabs + "<Patrol>\r\n";
 
-		foreach (Vector2 position in route.positions)
+		rawdata += tabs + "\t<PrefabName>" + patrol.prefabName + "</PrefabName>\r\n";
+		rawdata += tabs + "\t<Speed>" + patrol.speed + "</Speed>\r\n";
+
+		rawdata += tabs + "\t<Positions>\r\n";
+		foreach (Vector2 position in patrol.positions)
 		{
-			rawdata += tabs + "\t<Position>\r\n";
-			rawdata += tabs + "\t\t<X>" + position.x.ToString() + "</X>\r\n";
-			rawdata += tabs + "\t\t<Y>" + position.y.ToString() + "</Y>\r\n";
-			rawdata += tabs + "\t</Position>\r\n";
+			rawdata += tabs + "\t\t<Position>\r\n";
+			rawdata += tabs + "\t\t\t<X>" + position.x.ToString() + "</X>\r\n";
+			rawdata += tabs + "\t\t\t<Y>" + position.y.ToString() + "</Y>\r\n";
+			rawdata += tabs + "\t\t</Position>\r\n";
 		}
+		rawdata += tabs + "\t</Positions>\r\n";
 
-		rawdata += tabs + "</PatrolRoute>\r\n";
+		rawdata += tabs + "</Patrol>\r\n";
 
 		return rawdata;
 	}
 
+	public string prefabName = "";
+	public float speed = 0.5f;
 	public Vector2[] positions;
 }

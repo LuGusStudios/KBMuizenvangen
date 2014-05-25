@@ -17,6 +17,16 @@
 		oooooooooooo
 		oooooooooooo
 	</Layout>
+	<Obstacles>
+		<Obstacle>
+			<PrefabName>ObstacleCooker_2x2_01</PrefabName>
+			<Position>
+				<X>8</X>
+				<Y>3</Y>
+			</Position>
+			<Configuration><WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity></Configuration>
+		</Obstacle>
+	</Obstacles>
 	<Characters>
 		<Character>
 			<PrefabName>Cat_01</PrefabName>
@@ -79,7 +89,7 @@
 				<X>5</X>
 				<Y>5</Y>
 			</Position>
-			<Stacks>3</Stacks>
+			<Stacks>40</Stacks>
 		</Cheese>
 		<Cheese>
 			<PrefabName>Cheese_1x1_01</PrefabName>
@@ -87,7 +97,7 @@
 				<X>5</X>
 				<Y>6</Y>
 			</Position>
-			<Stacks>1000</Stacks>
+			<Stacks>40</Stacks>
 		</Cheese>
 	</Cheeses>
 	<Traps>
@@ -113,7 +123,7 @@
 				<X>8</X>
 				<Y>4</Y>
 			</Position>
-			<Stacks>1</Stacks>
+			<Stacks>10</Stacks>
 		</Trap>
 		<Trap>
 			<PrefabName>TrapSpray_1x1_01</PrefabName>
@@ -121,7 +131,31 @@
 				<X>1</X>
 				<Y>2</Y>
 			</Position>
-			<Stacks>1</Stacks>
+			<Stacks>100</Stacks>
+		</Trap>
+		<Trap>
+			<PrefabName>TrapPoison_1x1_01</PrefabName>
+			<Position>
+				<X>3</X>
+				<Y>2</Y>
+			</Position>
+			<Stacks>100</Stacks>
+		</Trap>
+		<Trap>
+			<PrefabName>TrapVacuumCleaner_1x1_01</PrefabName>
+			<Position>
+				<X>2</X>
+				<Y>11</Y>
+			</Position>
+			<Stacks>3</Stacks>
+		</Trap>
+		<Trap>
+			<PrefabName>TrapMushroom_1x1_01</PrefabName>
+			<Position>
+				<X>10</X>
+				<Y>4</Y>
+			</Position>
+			<Stacks>10</Stacks>
 		</Trap>
 	</Traps>
 	<HoleItems>
@@ -201,4 +235,28 @@
 		</Enemy>
 		</Wave>
 	</Waves>
+	<Patrols>
+		<Patrol>
+			<PrefabName>Haakmans_01</PrefabName>
+			<Speed>1</Speed>
+			<Positions>
+				<Position>
+					<X>0</X>
+					<Y>0</Y>
+				</Position>
+				<Position>
+					<X>11</X>
+					<Y>0</Y>
+				</Position>
+				<Position>
+					<X>11</X>
+					<Y>12</Y>
+				</Position>
+				<Position>
+					<X>0</X>
+					<Y>12</Y>
+				</Position>
+			</Positions>
+		</Patrol>
+	</Patrols>
 </Level>
