@@ -41,7 +41,6 @@ GameObject:
   m_Component:
   - 4: {fileID: 400004}
   - 114: {fileID: 11400000}
-  - 114: {fileID: 11400002}
   m_Layer: 0
   m_Name: TrapWine_1x1_01
   m_TagString: Untagged
@@ -103,27 +102,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36bd6b9b21451454bb86c5be33215659, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c4eb86af5e04ea4f91b76bb7ba540ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOffset: 0
+  yOffset: 0
+  zOffset: .100000001
   tileType: 8
-  _health: 100
-  _stacks: 3
-  _damage: 1
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48874f51d6fd72641b70cbd0be6472af, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interval: 2
-  tileRange: 1
+  activeSprite: {fileID: 21300000, guid: daa0d7f6cf5989b4c85dbe6b8c2e3f2c, type: 3}
+  inactiveSprite: {fileID: 21300000, guid: 29257ad023becdb43b8d3c2b7d759e78, type: 3}
+  spriteRenderer: {fileID: 0}
+  health: 100
+  stacks: 3
+  cost: 1
+  damage: 1
+  interval: 1
+  tileRange: 0
+  corkPrefab: {fileID: 100000, guid: 4e49b2c6617fa9b4ab268095a2997439, type: 2}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

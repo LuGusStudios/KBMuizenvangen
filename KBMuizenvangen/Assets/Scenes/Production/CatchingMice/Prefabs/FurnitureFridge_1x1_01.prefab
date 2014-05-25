@@ -105,7 +105,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fc2f363329417c46bbcdced57dd7e26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOffset: .75
+  yOffset: .75
+  zOffset: .100000001
   tileType: 2
 --- !u!212 &21200000
 SpriteRenderer:

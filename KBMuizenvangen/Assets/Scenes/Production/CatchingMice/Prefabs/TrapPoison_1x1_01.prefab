@@ -131,11 +131,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36bd6b9b21451454bb86c5be33215659, type: 3}
+  m_Script: {fileID: 11500000, guid: 8356dc061273ebe46ab02b98771228f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOffset: 0
+  yOffset: 0
+  zOffset: .100000001
   tileType: 8
+  activeSprite: {fileID: 21300000, guid: dee85dc0711849c499b31877a1150490, type: 3}
+  inactiveSprite: {fileID: 21300000, guid: dee85dc0711849c499b31877a1150490, type: 3}
+  spriteRenderer: {fileID: 0}
+  health: 100
+  stacks: 3
+  cost: 1
+  damage: 1
+  interval: 1
+  tileRange: 2
+  maxAcidTiles: 3
+  acidObjectPrefab: {fileID: 100000, guid: 5f62fb8b3af862247a85f6482a731b22, type: 2}
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1

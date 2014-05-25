@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 400004}
-  - 114: {fileID: 11400002}
   - 114: {fileID: 11400000}
   m_Layer: 0
   m_Name: TrapSpray_1x1_01
@@ -132,27 +131,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91b48e6c6b74a8a43977c0bada22ca76, type: 3}
+  m_Script: {fileID: 11500000, guid: 6b5e294a083a2c24883b2708c2f99233, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interval: .5
-  tileRange: 2
---- !u!114 &11400002
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 100004}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36bd6b9b21451454bb86c5be33215659, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridOffset: 0
+  yOffset: 0
+  zOffset: .100000001
   tileType: 8
-  _health: 2
-  _stacks: 3
-  _damage: 1
+  activeSprite: {fileID: 21300000, guid: 3cf495c7969a59746bc0046110a7eba8, type: 3}
+  inactiveSprite: {fileID: 21300000, guid: db91756ac98e47f4d843b887818d2e0c, type: 3}
+  spriteRenderer: {fileID: 0}
+  health: 100
+  stacks: 3
+  cost: 1
+  damage: 1
+  interval: 1
+  tileRange: 0
+  spraySplashPrefab: {fileID: 0}
 --- !u!198 &19800000
 ParticleSystem:
   m_ObjectHideFlags: 1
