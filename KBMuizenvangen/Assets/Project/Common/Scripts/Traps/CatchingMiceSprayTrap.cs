@@ -12,7 +12,7 @@ public class CatchingMiceSprayTrap : CatchingMiceWorldObjectTrapFurniture {
 
 		if (spraySplashPrefab == null)
 		{
-			Debug.LogWarning("The spray trap does not have a splash object.");
+			CatchingMiceLogVisualizer.use.LogWarning("The spray trap does not have a splash object.");
 		}
 
 		StartCoroutine(TrapRoutine());

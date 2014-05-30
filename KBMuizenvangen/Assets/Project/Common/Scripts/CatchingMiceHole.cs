@@ -43,7 +43,8 @@ public class CatchingMiceHole : CatchingMiceWorldObject
 				transform.localScale = transform.localScale.y(-1);
                 break;
             case CharacterDirections.Undefined:
-                Debug.LogError("Undefined direction passed. Mice hole could not be made.");
+				CatchingMiceLogVisualizer.use.LogError("Undefined direction passed. Mice hole could not be made.");
+				
                 break;
         }
     }
@@ -72,7 +73,7 @@ public class CatchingMiceHole : CatchingMiceWorldObject
 
 		if ((tile.tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
 		{
-			Debug.LogError("Mice hole " + transform.name + " cannot be placed on furniture.");
+			CatchingMiceLogVisualizer.use.LogError("Mice hole " + transform.name + " cannot be placed on furniture.");
 			return false;
 		}
 
@@ -111,7 +112,7 @@ public class CatchingMiceHole : CatchingMiceWorldObject
 	{
 		if (CatchingMiceLevelManager.use.miceStepsPrefab == null)
 		{
-			Debug.LogError("No mice steps prefab could be found to visualize the mice steps.");
+			CatchingMiceLogVisualizer.use.LogError("No mice steps prefab could be found to visualize the mice steps.");
 			yield break;
 		}
 

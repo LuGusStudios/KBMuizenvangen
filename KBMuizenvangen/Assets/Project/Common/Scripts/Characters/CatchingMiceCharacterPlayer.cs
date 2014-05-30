@@ -146,7 +146,7 @@ public class CatchingMiceCharacterPlayer : ICatchingMiceCharacter
 
         }
 
-        //Debug.Log("path count : " + path.Count);
+        //CatchingMiceLogVisualizer.use.Log("path count : " + path.Count);
         StartCoroutine(CalculatePath(path));
         //handle.StartRoutine(CalculatePath(path));
     }

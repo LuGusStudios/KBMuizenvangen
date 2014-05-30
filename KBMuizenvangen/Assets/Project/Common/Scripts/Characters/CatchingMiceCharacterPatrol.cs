@@ -38,7 +38,7 @@ public class CatchingMiceCharacterPatrol : ICatchingMiceCharacter {
 
 		if (patrolRoute.Count == 0)
 		{
-			Debug.LogError("The patrol route for the character " + this.name + " is empty.");
+			CatchingMiceLogVisualizer.use.LogError("The patrol route for the character " + this.name + " is empty.");
 			return;
 		}
 		else
@@ -85,7 +85,7 @@ public class CatchingMiceCharacterPatrol : ICatchingMiceCharacter {
 			}
 			else
 			{
-				Debug.LogError("Could not find a path from " + current.parentTile.ToString() + " to " + next.parentTile.ToString() + ".");
+				CatchingMiceLogVisualizer.use.LogError("Could not find a path from " + current.parentTile.ToString() + " to " + next.parentTile.ToString() + ".");
 				yield break;
 			}
 

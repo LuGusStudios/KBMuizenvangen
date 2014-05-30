@@ -45,7 +45,7 @@ public class CatchingMiceCage : CatchingMiceObstacle
 
 		if ((tile.obstacle != null) || ((tile.tileType & CatchingMiceTile.TileType.Obstacle) == CatchingMiceTile.TileType.Obstacle))
 		{
-			Debug.LogError("Obstacle " + transform.name + " cannot be placed because another obstacle is already present.");
+			CatchingMiceLogVisualizer.use.LogError("Obstacle " + transform.name + " cannot be placed because another obstacle is already present.");
 			return false;
 		}
 

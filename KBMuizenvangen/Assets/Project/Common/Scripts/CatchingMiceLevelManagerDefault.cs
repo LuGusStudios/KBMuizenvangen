@@ -198,7 +198,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (levelRoot == null)
 			{
-				Debug.Log("LevelManager: Could not find level root.");
+				CatchingMiceLogVisualizer.use.LogError("LevelManager: Could not find level root.");
 			}
 		}
 
@@ -217,7 +217,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 	public void ClearLevel()
 	{
-
 		Debug.Log("Clearing level (playing in editor).");
 		
 		for (int i = levelParent.childCount - 1; i >= 0; i--)
@@ -280,7 +279,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (currentLevel == null)
 		{
-			Debug.LogError("The level definition was null.");
+			CatchingMiceLogVisualizer.use.LogError("The level definition was null.");
 			return;
 		}
 
@@ -314,7 +313,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (currentLevel == null)
 		{
-			Debug.LogError("The level definition was null.");
+			CatchingMiceLogVisualizer.use.LogError("The level definition was null.");
 			return;
 		}
 
@@ -415,7 +414,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 					}
 					else
 					{
-						Debug.LogError("Tile " + tiles[x, y].gridIndices + " is of type furniture, but misses script CatchingMiceWorldObject");
+						CatchingMiceLogVisualizer.use.LogError("Tile " + tiles[x, y].gridIndices + " is of type furniture, but misses script CatchingMiceWorldObject");
 					}
 				}
 
@@ -476,7 +475,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (furniturePrefab == null)
 			{
-				Debug.LogError("Did not find furniture ID: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find furniture ID: " + definition.prefabName);
 				continue;
 			}
 
@@ -484,7 +483,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing tile item: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing tile item: " + definition.prefabName);
 				continue;
 			}
 
@@ -504,18 +503,18 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 					if ((targetTile.tileType & CatchingMiceTile.TileType.Furniture) != CatchingMiceTile.TileType.Furniture)
 					{
-						Debug.LogWarning("The tile type of the tile has no furniture flag set!");
+						CatchingMiceLogVisualizer.use.LogWarning("The tile type of the tile has no furniture flag set!");
 					}
 				}
 				else
 				{
-					Debug.LogError("The furniture " + furniture.name + " could not be placed on the grid.");
+					CatchingMiceLogVisualizer.use.LogError("The furniture " + furniture.name + " could not be placed on the grid.");
 					DestroyGameObject(furniture.gameObject);
 				}
 			}
 			else
 			{
-				Debug.LogError("The furniture prefab " + furniturePrefab.name + " does not have a WorldObject component attached to it.");
+				CatchingMiceLogVisualizer.use.LogError("The furniture prefab " + furniturePrefab.name + " does not have a WorldObject component attached to it.");
 				DestroyGameObject(tileItem);
 			}
 		}
@@ -527,7 +526,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(definition.prefabName))
 			{
-				Debug.LogError("The obstacle prefab name is null or empty.");
+				CatchingMiceLogVisualizer.use.LogError("The obstacle prefab name is null or empty.");
 				continue;
 			}
 
@@ -544,7 +543,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (obstaclePrefab == null)
 			{
-				Debug.LogError("Did not find obstacle prefab name: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find obstacle prefab name: " + definition.prefabName);
 				continue;
 			}
 
@@ -552,7 +551,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing obstacle: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing obstacle: " + definition.prefabName);
 				continue;
 			}
 
@@ -571,20 +570,20 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 					if ((targetTile.tileType & CatchingMiceTile.TileType.Obstacle) != CatchingMiceTile.TileType.Obstacle)
 					{
-						Debug.LogWarning("The tile type of the tile has no obstacle flag set!");
+						CatchingMiceLogVisualizer.use.LogWarning("The tile type of the tile has no obstacle flag set!");
 					}
 
 					obstacle.FromXMLObstacleDefinition(definition.obstacleData);
 				}
 				else
 				{
-					Debug.LogError("The obstacle " + obstacle.name + " could not be placed on the grid.");
+					CatchingMiceLogVisualizer.use.LogError("The obstacle " + obstacle.name + " could not be placed on the grid.");
 					DestroyGameObject(obstacle.gameObject);
 				}
 			}
 			else
 			{
-				Debug.LogError("The obstacle prefab " + obstaclePrefab.name + " does not have a Obstacle component attached.");
+				CatchingMiceLogVisualizer.use.LogError("The obstacle prefab " + obstaclePrefab.name + " does not have a Obstacle component attached.");
 				DestroyGameObject(obstacleItem);
 			}
 		}
@@ -607,7 +606,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (cheesePrefab == null)
 			{
-				Debug.LogError("Did not find tile item ID: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile item ID: " + definition.prefabName);
 				return;
 			}
 
@@ -615,7 +614,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing cheese: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing cheese: " + definition.prefabName);
 				return;
 			}
 
@@ -634,7 +633,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 					if ((targetTile.tileType & CatchingMiceTile.TileType.Cheese) != CatchingMiceTile.TileType.Cheese)
 					{
-						Debug.LogWarning("The tile type of the tile has no cheese flag set!");
+						CatchingMiceLogVisualizer.use.LogWarning("The tile type of the tile has no cheese flag set!");
 					}
 
 					cheeseTiles.Add(targetTile);
@@ -642,13 +641,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				}
 				else
 				{
-					Debug.LogError("The cheese " + cheese.name + " could not be placed on the grid.");
+					CatchingMiceLogVisualizer.use.LogError("The cheese " + cheese.name + " could not be placed on the grid.");
 					DestroyGameObject(cheese.gameObject);
 				}
 			}
 			else
 			{
-				Debug.LogError("The cheese prefab " + cheesePrefab.name + " does not have a Cheese component attached.");
+				CatchingMiceLogVisualizer.use.LogError("The cheese prefab " + cheesePrefab.name + " does not have a Cheese component attached.");
 				DestroyGameObject(tileItem);
 			}
 		}
@@ -660,7 +659,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(definition.prefabName))
 			{
-				Debug.LogError("The trap prefab name is null or empty!");
+				CatchingMiceLogVisualizer.use.LogError("The trap prefab name is null or empty!");
 				continue;
 			}
 
@@ -677,7 +676,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (trapPrefab == null)
 			{
-				Debug.LogError("Did not find trap prefab name: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find trap prefab name: " + definition.prefabName);
 				continue;
 			}
 
@@ -685,7 +684,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing trap: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing trap: " + definition.prefabName);
 				continue;
 			}
 
@@ -704,7 +703,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 					if ((targetTile.tileType & CatchingMiceTile.TileType.Trap) != CatchingMiceTile.TileType.Trap)
 					{
-						Debug.LogWarning("The tile type of the tile has no trap flag set!");
+						CatchingMiceLogVisualizer.use.LogWarning("The tile type of the tile has no trap flag set!");
 					}
 
 					trapTiles.Add(targetTile);
@@ -712,13 +711,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				}
 				else
 				{
-					Debug.LogError("The trap " + trap.name + " could not be placed on the grid.");
+					CatchingMiceLogVisualizer.use.LogError("The trap " + trap.name + " could not be placed on the grid.");
 					DestroyGameObject(trap.gameObject);
 				}
 			}
 			else
 			{
-				Debug.LogError("The trap prefab " + trapPrefab.name + " does not have a Trap component attached.");
+				CatchingMiceLogVisualizer.use.LogError("The trap prefab " + trapPrefab.name + " does not have a Trap component attached.");
 				DestroyGameObject(tileItem);
 			}
 		}
@@ -728,7 +727,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (holeDefinitions == null || holeDefinitions.Length < 1)
 		{
-			Debug.LogError("This level has no mice holes!");
+			CatchingMiceLogVisualizer.use.LogError("This level has no mice holes!");
 			return;
 		}
 
@@ -736,7 +735,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(definition.prefabName))
 			{
-				Debug.LogError("The mice hole prefab name is null or empty!");
+				CatchingMiceLogVisualizer.use.LogError("The mice hole prefab name is null or empty!");
 				continue;
 			}
 
@@ -753,7 +752,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (holePrefab == null)
 			{
-				Debug.LogError("Did not find mice hole prefab name: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find mice hole prefab name: " + definition.prefabName);
 				return;
 			}
 
@@ -761,7 +760,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(definition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing mice hole: " + definition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + definition.position + ". Skipping placing mice hole: " + definition.prefabName);
 				continue;
 			}
 
@@ -780,7 +779,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 					if ((targetTile.tileType & CatchingMiceTile.TileType.Hole) != CatchingMiceTile.TileType.Hole)
 					{
-						Debug.LogWarning("The tile type of the tile has no hole flag set!");
+						CatchingMiceLogVisualizer.use.LogWarning("The tile type of the tile has no hole flag set!");
 					}
 
 					miceHoles.Add(hole);
@@ -791,13 +790,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 				}
 				else
 				{
-					Debug.LogError("The mice hole " + hole.name + " could not be placed on the grid.");
+					CatchingMiceLogVisualizer.use.LogError("The mice hole " + hole.name + " could not be placed on the grid.");
 					DestroyGameObject(hole.gameObject);
 				}
 			}
 			else
 			{
-				Debug.LogError("The hole prefab " + holePrefab.name + " does not have a MiceHole component attached.");
+				CatchingMiceLogVisualizer.use.LogError("The hole prefab " + holePrefab.name + " does not have a MiceHole component attached.");
 				DestroyGameObject(tileItem);
 			}
 		}
@@ -807,7 +806,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (characterDefinitions == null || characterDefinitions.Length == 0)
 		{
-			Debug.LogError("This level has no characters!");
+			CatchingMiceLogVisualizer.use.LogError("This level has no characters!");
 			return;
 		}
 
@@ -815,7 +814,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(characterDefinition.prefabName))
 			{
-				Debug.LogError("Character ID is null or empty!");
+				CatchingMiceLogVisualizer.use.LogError("Character ID is null or empty!");
 				continue;
 			}
 
@@ -831,7 +830,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (characterPrefabFound == null)
 			{
-				Debug.LogError("Character prefab could not be found: " + characterDefinition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Character prefab could not be found: " + characterDefinition.prefabName);
 				continue;
 			}
 
@@ -839,7 +838,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(characterDefinition.position, false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + characterDefinition.position + ". Skipping placing character: " + characterDefinition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + characterDefinition.position + ". Skipping placing character: " + characterDefinition.prefabName);
 				continue;
 			}
 
@@ -852,7 +851,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			// set speed
 			if (characterDefinition.speed < 0)
 			{
-				Debug.LogError("Speed is negative for character " + characterDefinition.prefabName + ". Setting speed to 1.");
+				CatchingMiceLogVisualizer.use.LogError("Speed is negative for character " + characterDefinition.prefabName + ". Setting speed to 1.");
 				characterSpawned.tileTraversalTime = 1;
 			}
 			else
@@ -868,7 +867,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (patrolDefinitions == null || patrolDefinitions.Length == 0)
 		{
-			Debug.LogError("This level has no patrols!");
+			CatchingMiceLogVisualizer.use.Log("This level has no patrols!");
 			return;
 		}
 
@@ -876,7 +875,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (string.IsNullOrEmpty(patrolDefinition.prefabName))
 			{
-				Debug.LogError("Patrol ID is null or empty!");
+				CatchingMiceLogVisualizer.use.LogError("Patrol ID is null or empty!");
 				continue;
 			}
 
@@ -892,13 +891,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (patrolPrefabFound == null)
 			{
-				Debug.LogError("Patrol prefab could not be found: " + patrolDefinition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Patrol prefab could not be found: " + patrolDefinition.prefabName);
 				continue;
 			}
 
 			if (patrolDefinition.positions.Length == 0)
 			{
-				Debug.LogError("The patrol has no waypoints.");
+				CatchingMiceLogVisualizer.use.LogError("The patrol has no waypoints.");
 				continue;
 			}
 
@@ -906,7 +905,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			CatchingMiceTile targetTile = GetTile(patrolDefinition.positions[0], false);
 			if (targetTile == null)
 			{
-				Debug.LogError("Did not find tile with coordinates:" + patrolDefinition.positions[0] + ". Skipping placing patrol: " + patrolDefinition.prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find tile with coordinates:" + patrolDefinition.positions[0] + ". Skipping placing patrol: " + patrolDefinition.prefabName);
 				continue;
 			}
 
@@ -919,7 +918,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			// Set speed
 			if (patrolDefinition.speed < 0)
 			{
-				Debug.LogError("Speed is negative for patrol " + patrolDefinition.prefabName + ". Setting speed to 1.");
+				CatchingMiceLogVisualizer.use.LogError("Speed is negative for patrol " + patrolDefinition.prefabName + ". Setting speed to 1.");
 				patrolSpawned.tileTraversalTime = 1;
 			}
 			else
@@ -941,13 +940,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (waveIndex < 0)
 		{
-			Debug.LogError("Wave index can't be negative");
+			CatchingMiceLogVisualizer.use.LogError("Wave index can't be negative");
 			return;
 		}
 
 		if (waveIndex >= wavesList.Count)
 		{
-			Debug.LogError("Wave exceeds the waves list. Using last wave count.");
+			CatchingMiceLogVisualizer.use.LogError("Wave exceeds the waves list. Using last wave count.");
 			waveIndex = wavesList.Count - 1;
 		}
 
@@ -968,7 +967,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			// Get the prefab from string name
 			if (string.IsNullOrEmpty(wave.enemies[i].prefabName))
 			{
-				Debug.LogError("Character ID is null or empty!");
+				CatchingMiceLogVisualizer.use.LogError("Character ID is null or empty!");
 				continue;
 			}
 
@@ -992,7 +991,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 			if (enemyPrefab == null)
 			{
-				Debug.LogError("Did not find enemy prefab with ID: " + wave.enemies[i].prefabName);
+				CatchingMiceLogVisualizer.use.LogError("Did not find enemy prefab with ID: " + wave.enemies[i].prefabName);
 				return;
 			}
 
@@ -1085,7 +1084,6 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		if (waveParent == null)
 		{
 			waveParent = new GameObject("subwave" + index);
-			//Debug.Log("Making new wave Parent " + waveParent);
 		}
 
 		waveParent.transform.position = new Vector3(-1000, -100, 0);
@@ -1138,7 +1136,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 		if (spawnTile == null)
 		{
-			Debug.LogError("Could not find the mice hole with name " + enemy.holeId + " for enemy " + enemy.prefabName);
+			CatchingMiceLogVisualizer.use.LogError("Could not find the mice hole with name " + enemy.holeId + " for enemy " + enemy.prefabName);
 			yield break;
 		}
 
@@ -1148,7 +1146,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		{
 			if (parent == null)
 			{
-				Debug.LogError("parent objects is null");
+				CatchingMiceLogVisualizer.use.LogError("Parent objects is null");
 				break;
 			}
 			if (parent.name == "subwave" + index)
@@ -1160,7 +1158,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 		if (parentGO == null)
 		{
-			Debug.LogError("subwaveName has not been found");
+			CatchingMiceLogVisualizer.use.LogError("SubwaveName has not been found");
 			yield break;
 		}
 
@@ -1171,7 +1169,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 			
 			if (child == null)
 			{
-				Debug.Log("No Child has been found");
+				CatchingMiceLogVisualizer.use.Log("No Child has been found");
 				break;
 			}
 			
@@ -1396,13 +1394,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (tile == null)
 		{
-			Debug.LogError("Cannot remove trap from null tile.");
+			CatchingMiceLogVisualizer.use.LogError("Cannot remove trap from null tile.");
 			return;
 		}
 
 		if ((tile.tileType & CatchingMiceTile.TileType.Trap) != CatchingMiceTile.TileType.Trap)
 		{
-			Debug.LogError("Cannot remove trap from tile " + tile.ToString() + " that does not contain a trap.");
+			CatchingMiceLogVisualizer.use.LogError("Cannot remove trap from tile " + tile.ToString() + " that does not contain a trap.");
 			return;
 		}
 
@@ -1422,13 +1420,13 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 	{
 		if (tile == null)
 		{
-			Debug.LogError("Cannot remove cheese from null tile.");
+			CatchingMiceLogVisualizer.use.LogError("Cannot remove cheese from a null tile.");
 			return;
 		}
 
 		if ((tile.tileType & CatchingMiceTile.TileType.Cheese) != CatchingMiceTile.TileType.Cheese)
 		{
-			Debug.LogError("Cannot remove cheese from tile " + tile.ToString() + " that does not contain cheese.");
+			CatchingMiceLogVisualizer.use.LogError("Cannot remove cheese from tile " + tile.ToString() + " that does not contain cheese.");
 			return;
 		}
 

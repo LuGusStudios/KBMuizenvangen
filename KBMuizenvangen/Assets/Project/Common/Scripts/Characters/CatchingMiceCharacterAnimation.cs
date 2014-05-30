@@ -83,7 +83,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (quadrantReal == KikaAndBob.MovementQuadrant.NONE)
         {
-            //Debug.LogError(name + ": quadrant was NONE " + quadrant + "/" + movementDirection + " : defaulting to RIGHT");
+            //CatchingMiceLogVisualizer.use.LogError(name + ": quadrant was NONE " + quadrant + "/" + movementDirection + " : defaulting to RIGHT");
             quadrantReal = KikaAndBob.MovementQuadrant.RIGHT;
         }
 
@@ -124,7 +124,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     {
         if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + idleAnimationClip)
         {
-            //Debug.LogError("Loading Idle Animation Clip");
+            //CatchingMiceLogVisualizer.use.LogError("Loading Idle Animation Clip");
             PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE; 
         }
@@ -176,7 +176,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         string[] parts = animationPath.Split('/');
         if (parts.Length != 2)
         {
-            Debug.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
+            CatchingMiceLogVisualizer.use.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
             return;
         }
 
@@ -202,7 +202,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (currentAnimationContainer == null)
         {
-            Debug.LogError(name + " : No animation found for name " + animationPath);
+            CatchingMiceLogVisualizer.use.LogError(name + " : No animation found for name " + animationPath);
             currentAnimationContainer = animationContainers[0];
         }
 
@@ -210,12 +210,12 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         currentAnimationClip = clipName;
 
         
-        //Debug.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
+        //CatchingMiceLogVisualizer.use.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
         if (currentAnimationClip.Contains("Jump"))
         {
             currentAnimationContainer.Stop();
             currentAnimationContainer.Play(clipName);
-            //Debug.LogError("PLAYING CLIP " + clipName);
+            //CatchingMiceLogVisualizer.use.LogError("PLAYING CLIP " + clipName);
         }
         else
         {
@@ -270,7 +270,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
                 facing =_sideAnimationClip;
                 break;
             default:
-                Debug.LogError("no correct movement quadrant had been chosen");
+                CatchingMiceLogVisualizer.use.LogError("no correct movement quadrant had been chosen");
                 break;
         }
         return facing;
@@ -285,7 +285,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (animationContainers.Length == 0)
         {
-            Debug.LogError(name + " : no BoneAnimations found for this animator!");
+            CatchingMiceLogVisualizer.use.LogError(name + " : no BoneAnimations found for this animator!");
         }
 
         SetCharacter();
@@ -309,7 +309,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (character == null)
         {
-            Debug.LogError(name + " : no character found!");
+            CatchingMiceLogVisualizer.use.LogError(name + " : no character found!");
         }
         else
         {

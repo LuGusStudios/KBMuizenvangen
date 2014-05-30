@@ -35,7 +35,7 @@ public class CatchingMicePoisonTrap : CatchingMiceWorldObjectTrapFurniture {
 
 		if (tileRange <= 0)
 		{
-			Debug.LogError("The poison trap has a 0 tile range. It cannot place its acid tiles.");
+			CatchingMiceLogVisualizer.use.LogError("The poison trap has a 0 tile range. It cannot place its acid tiles.");
 			return;
 		}
 
@@ -116,13 +116,13 @@ public class CatchingMicePoisonTrap : CatchingMiceWorldObjectTrapFurniture {
 	{
 		if (targetTile == null)
 		{
-			Debug.LogError("The target tile is null...");
+			CatchingMiceLogVisualizer.use.LogError("The target tile is null...");
 			yield break;
 		}
 
 		if (acidObjectPrefab == null)
 		{
-			Debug.LogError("The acid object prefab is null...");
+			CatchingMiceLogVisualizer.use.LogError("The acid object prefab is null...");
 			yield break;
 		}
 
@@ -154,25 +154,25 @@ public class CatchingMicePoisonTrap : CatchingMiceWorldObjectTrapFurniture {
 		// Let the acid object shrink, and destroyed afterwards
 		if (acidObjects.Count == 0)
 		{
-			Debug.LogError("The list of acid objects is 0, yet a removal has been requested.");
+			CatchingMiceLogVisualizer.use.LogError("The list of acid objects is 0, yet a removal has been requested.");
 			yield break;
 		}
 
 		if (index < 0)
 		{
-			Debug.LogError("The index is less than 0...");
+			CatchingMiceLogVisualizer.use.LogError("The index is less than 0...");
 			yield break;
 		}
 		else if (index > (acidObjects.Count - 1))
 		{
-			Debug.LogError("The index is out of bounds...");
+			CatchingMiceLogVisualizer.use.LogError("The index is out of bounds...");
 			yield break;
 		}
 
 		GameObject acidObject = acidObjects[index];
 		if (acidObject == null)
 		{
-			Debug.LogError("The acid object is null...");
+			CatchingMiceLogVisualizer.use.LogError("The acid object is null...");
 			yield break;
 		}
 

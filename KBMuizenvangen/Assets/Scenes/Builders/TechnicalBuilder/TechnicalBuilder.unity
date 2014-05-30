@@ -5130,6 +5130,7 @@ GameObject:
   - 114: {fileID: 298701888}
   - 114: {fileID: 298701889}
   - 114: {fileID: 298701890}
+  - 114: {fileID: 298701891}
   m_Layer: 0
   m_Name: JESUS
   m_TagString: Untagged
@@ -5271,6 +5272,19 @@ MonoBehaviour:
   bottomLeft: 0
   updateInterval: .5
   textCol: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &298701891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 298701884}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33587182982e7324aaeee3455eec032c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isVisible: 1
+  logLevel: 3
 --- !u!1 &298752822
 GameObject:
   m_ObjectHideFlags: 0

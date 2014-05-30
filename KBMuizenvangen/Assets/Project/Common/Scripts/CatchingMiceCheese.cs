@@ -50,7 +50,7 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 			cheeseRenderer = GetComponentInChildren<SpriteRenderer>();
 			if (cheeseRenderer == null)
 			{
-				Debug.LogError("Could not find the sprite renderer for the cheese.");
+				CatchingMiceLogVisualizer.use.LogError("Could not find the sprite renderer for the cheese.");
 			}
 			else
 			{
@@ -76,7 +76,7 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 
 			if (levelTile != tile)
 			{
-				Debug.LogError("OMG: Wut is this sorcery?");
+				CatchingMiceLogVisualizer.use.LogError("OMG: Wut is this sorcery?");
 			}
 
 			//Adds the furniture type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
@@ -104,12 +104,12 @@ public class CatchingMiceCheese : CatchingMiceWorldObject {
 
 		if ((tile.tileType & CatchingMiceTile.TileType.Furniture) == CatchingMiceTile.TileType.Furniture)
 		{
-			Debug.LogError("Cheese " + transform.name + " cannot be placed on furniture.");
+			CatchingMiceLogVisualizer.use.LogError("Cheese " + transform.name + " cannot be placed on furniture.");
 			return false;
 		}
 		else if ((tile.trap != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
 		{
-			Debug.LogError("Cheese " + transform.name + " cannot be placed on the same tile as a trap.");
+			CatchingMiceLogVisualizer.use.LogError("Cheese " + transform.name + " cannot be placed on the same tile as a trap.");
 			return false;
 		}
 

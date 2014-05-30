@@ -126,7 +126,7 @@ public class CatchingMiceTrap : CatchingMiceWorldObject, ICatchingMiceWorldObjec
 		}
 		else
 		{
-			Debug.LogError("Could not find the sprite renderer for the trap.");
+			CatchingMiceLogVisualizer.use.LogError("Could not find the sprite renderer for the trap.");
 		}
 	}
 
@@ -266,7 +266,7 @@ public class CatchingMiceTrap : CatchingMiceWorldObject, ICatchingMiceWorldObjec
 	{
 		if (stacks <= 0)
 		{
-			Debug.LogError("Refilling stacks");
+			CatchingMiceLogVisualizer.use.LogError("Refilling stacks");
 		}
 	}
 

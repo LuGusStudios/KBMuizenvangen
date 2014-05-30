@@ -124,15 +124,15 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 				PostWavePhase();
 				break;
 			case State.Won:
-				Debug.Log("you won.");
+				CatchingMiceLogVisualizer.use.Log("Game won!");
 				WinState();
 				break;
 			case State.Lost:
-				Debug.Log("you lost");
+				CatchingMiceLogVisualizer.use.Log("Game lost...");
 				LoseState();
 				break;
 			case State.NONE:
-				Debug.LogError("New state can't be none.");
+				CatchingMiceLogVisualizer.use.LogError("New state can't be none.");
 				break;
 			default:
 				break;
@@ -141,7 +141,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	public IEnumerator PreWavePhase()
 	{
-		Debug.Log("Starting pre-wave phase");
+		CatchingMiceLogVisualizer.use.Log("Starting pre-wave phase");
 		
 		CatchingMiceLevelManager.use.InstantiateWave(currentWave);
 		yield return new WaitForSeconds(preWaveTime);
@@ -150,7 +150,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	public IEnumerator WavePhase()
 	{
-		Debug.Log("Starting wave phase");
+		CatchingMiceLogVisualizer.use.Log("Starting wave phase");
 
 		if (WaveStarted != null)
 		{
@@ -172,7 +172,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	public void PostWavePhase()
 	{
-		Debug.Log("Starting post-wave phase");
+		CatchingMiceLogVisualizer.use.Log("Starting post-wave phase");
 
 		if (WaveEnded != null)
 		{
@@ -200,14 +200,12 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 
 	public void WinState()
 	{
-		Debug.Log("Starting end phase: won");
-
+		CatchingMiceLogVisualizer.use.Log("Starting end phase: won");
 	}
 
 	public void LoseState()
 	{
-		Debug.Log("Starting end phase: lost");
-
+		CatchingMiceLogVisualizer.use.Log("Starting end phase: lost");
 	}
 
 	// TODO: Something has to be done in here when the level selection menu is live
@@ -231,7 +229,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 			}
 			else
 			{
-				Debug.LogWarning("No levels could be found!");
+				CatchingMiceLogVisualizer.use.LogWarning("No levels could be found!");
 				return;
 			}
 		}
@@ -299,7 +297,7 @@ public class CatchingMiceGameManagerDefault : MonoBehaviour
 			// Try unpause
 			if (!Paused)
 			{
-				Debug.LogWarning("GameManager:SetPaused : game was already UNpaused. Doing nothing");
+				Debug.LogWarning("GameManager:SetPaused : game was already Unpaused. Doing nothing");
 				return;
 			}
 

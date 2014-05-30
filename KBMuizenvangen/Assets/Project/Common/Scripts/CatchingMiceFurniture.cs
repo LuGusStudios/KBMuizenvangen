@@ -15,7 +15,7 @@ public class CatchingMiceFurniture : CatchingMiceWorldObject {
 
 			if (levelTile != tile)
 			{
-				Debug.LogError("OMG: Wut is this sorcery?");
+				CatchingMiceLogVisualizer.use.LogError("OMG: Wut is this sorcery?");
 			}
 			levelTile.tileType = tileType;
 			levelTile.furniture = this;

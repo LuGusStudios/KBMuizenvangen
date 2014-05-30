@@ -55,7 +55,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     {
         if (CatchingMiceLevelManager.use.CheeseTiles.Count <= 0)
         {
-            //Debug.LogWarning("No more cheese left!");
+            //CatchingMiceLogVisualizer.use.LogWarning("No more cheese left!");
             return;
         }
 
@@ -68,7 +68,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         }
         else
         {
-            Debug.LogError("No target found");
+            CatchingMiceLogVisualizer.use.LogError("No target found");
         }
     }
    
@@ -95,7 +95,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
         }
         else
         {
-            Debug.LogError("No target found");
+            CatchingMiceLogVisualizer.use.LogError("No target found");
             return null;
         }
     }
@@ -114,7 +114,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
     
 	public override void DoCurrentTileBehaviour(int pathIndex)
     {
-        //Debug.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
+        //CatchingMiceLogVisualizer.use.Log("Doing current tile " + currentTile +" behaviour " + currentTile.tileType );
 
         //if the current tile is a cheese tile ( bitwise comparison, because tile can be ground and cheese tile) and the last tile that it travelled
         if ((currentTile.tileType & CatchingMiceTile.TileType.Cheese) == CatchingMiceTile.TileType.Cheese && pathIndex==0)
@@ -152,7 +152,7 @@ public class CatchingMiceCharacterMouse : ICatchingMiceCharacter
 
         if ((CatchingMiceLevelManager.use.CheeseTiles.Count > 0) && (cheeseTile.cheese.Stacks <= 0))
         {
-            Debug.Log("getting new target");
+            CatchingMiceLogVisualizer.use.Log("getting new target");
             GetTarget();
         }
         else

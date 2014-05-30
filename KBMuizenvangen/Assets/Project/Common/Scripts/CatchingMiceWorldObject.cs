@@ -18,7 +18,7 @@ public class CatchingMiceWorldObject : MonoBehaviour
 		List<CatchingMiceTile> tileList = new List<CatchingMiceTile>();
 
 		if (boxColliders2D.Length <= 0) {
-			Debug.Log("No collider has been found. Will be using 1 tile");
+			CatchingMiceLogVisualizer.use.Log("No collider has been found. Will be using 1 tile");
 			CatchingMiceTile tile = CatchingMiceLevelManager.use.GetTileByLocation(transform.position.x, transform.position.y);
 
 			if (ValidateTile(tile))
@@ -62,7 +62,6 @@ public class CatchingMiceWorldObject : MonoBehaviour
 			}
 		}
 
-		Debug.Log(transform.name + tileList.Count);
 		SetTileType(tileList);
 
 		overlappingTiles = tileList;
@@ -98,12 +97,12 @@ public class CatchingMiceWorldObject : MonoBehaviour
 	{
 		if (tile == null)
 		{
-			Debug.LogError("The object " + transform.name + " cannot be placed on a null tile.");
+			CatchingMiceLogVisualizer.use.LogError("The object " + transform.name + " cannot be placed on a null tile.");
 			return false;
 		}
 		else if ((tileType & tile.tileType) == tileType)
 		{
-			Debug.LogError("The tile already contains an item of the same type as " + transform.name + ".");
+			CatchingMiceLogVisualizer.use.LogError("The tile already contains an item of the same type as " + transform.name + ".");
 			return false;
 		}
 

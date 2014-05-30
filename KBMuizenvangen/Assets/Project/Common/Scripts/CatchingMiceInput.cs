@@ -21,7 +21,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 			_lineRenderer = lineRenderer.GetComponent<LineRenderer>();
 			if (_lineRenderer == null)
 			{
-				Debug.LogError("Line Renderer not found");
+				CatchingMiceLogVisualizer.use.LogError("Line Renderer not found");
 			}
 		}
 	}
@@ -38,7 +38,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 	//protected void CheckDraggingPoints()
 	//{
 	//    Vector3 dragPoint = LugusInput.use.ScreenTo3DPoint(_character.transform);
-	//    //Debug.Log(dragPoint);
+	//    //CatchingMiceVisualizer.use.Log(dragPoint);
 	//    CatchingMiceTile currentTile = CatchingMiceLevelManager.use.GetTileByLocation(dragPoint.x, dragPoint.y);
 	//    if (currentTile == null)
 	//        return;
@@ -46,7 +46,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 	//    if (currentTile == _previousTile || !_character.IsWalkable(currentTile))
 	//        return;
 
-	//    //Debug.Log("Current Tile : " + currentTile);
+	//    //CatchingMiceVisualizer.use.Log("Current Tile : " + currentTile);
 	//    _previousTile = currentTile;
 
 	//    //when the waypoints is already in the list, ignore it
@@ -87,7 +87,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 				return;
 
 			//pathToWalk.Clear();
-			//Debug.Log(hit.name);
+			//CatchingMiceVisualizer.use.Log(hit.name);
 
 			_character = hit.parent.GetComponent<CatchingMiceCharacterPlayer>();
 			if (_character != null)
@@ -129,7 +129,7 @@ public class CatchingMiceInput : LugusSingletonRuntime<CatchingMiceInput>
 		else if (LugusInput.use.up && pathToWalk.Count > 1 && _character != null)
 		{
 
-			//Debug.Log("UP");
+			//CatchingMiceVisualizer.use.Log("UP");
 			//pathToWalk.Reverse();
 			List<Waypoint> path = new List<Waypoint>(pathToWalk);
 			_character.MoveWithPath(path);

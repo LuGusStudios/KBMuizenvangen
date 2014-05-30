@@ -12,7 +12,7 @@ public class CatchingMiceWineTrap : CatchingMiceWorldObjectTrapFurniture {
 
 		if (corkPrefab == null)
 		{
-			Debug.LogWarning("The wine trap does not have a cork object.");
+			CatchingMiceLogVisualizer.use.LogWarning("The wine trap does not have a cork object.");
 		}
 
 		StartCoroutine(TrapRoutine());

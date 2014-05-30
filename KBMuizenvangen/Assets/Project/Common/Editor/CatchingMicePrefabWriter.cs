@@ -35,16 +35,24 @@ public class CatchingMicePrefabWriter : Editor
 		writer.WriteLine("Available prefabs for scene " + Path.GetFileNameWithoutExtension(EditorApplication.currentScene));
 		writer.WriteLine();
 
-		// Enemies
-		writer.WriteLine("Enemy types:");
+		// Enemies - mice
+		writer.WriteLine("Enemies (mice):");
 		foreach (CatchingMiceCharacterMouse enemy in manager.enemyPrefabs)
 		{
 			writer.WriteLine("\t- " + enemy.name);
 		}
 		writer.WriteLine();
 
-		// Tile items (Furniture)
-		writer.WriteLine("Tile items (furniture):");
+		// Enemies - patrols
+		writer.WriteLine("Enemies (patrols):");
+		foreach(CatchingMiceCharacterPatrol enemy in manager.patrolPrefabs)
+		{
+			writer.WriteLine("\t- " + enemy.name);
+		}
+		writer.WriteLine();
+
+		// Furniture
+		writer.WriteLine("Furniture:");
 		foreach (CatchingMiceFurniture item in manager.furniturePrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
@@ -52,7 +60,7 @@ public class CatchingMicePrefabWriter : Editor
 		writer.WriteLine();
 
 		// Cheese items
-		writer.WriteLine("Cheese items:");
+		writer.WriteLine("Cheese:");
 		foreach (CatchingMiceCheese item in manager.cheesePrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
@@ -60,7 +68,7 @@ public class CatchingMicePrefabWriter : Editor
 		writer.WriteLine();
 
 		// Hole items
-		writer.WriteLine("Hole items:");
+		writer.WriteLine("Mice Hole:");
 		foreach (CatchingMiceHole item in manager.holePrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
@@ -68,10 +76,18 @@ public class CatchingMicePrefabWriter : Editor
 		writer.WriteLine();
 
 		// Traps items
-		writer.WriteLine("Traps items:");
+		writer.WriteLine("Traps:");
 		foreach (CatchingMiceTrap item in manager.trapPrefabs)
 		{
 			writer.WriteLine("\t- " + item.name);
+		}
+		writer.WriteLine();
+
+		// Obstacles
+		writer.WriteLine("Obstacles:");
+		foreach (CatchingMiceObstacle obstacle in manager.obstaclePrefabs)
+		{
+			writer.WriteLine("\t- " + obstacle.name);
 		}
 		writer.WriteLine();
 

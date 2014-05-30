@@ -12,7 +12,7 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
         if (CatchingMiceLevelManager.use.TrapTiles.Count <= 0)
         {
             //no traps left, check for cheese
-            Debug.Log("No traps has been found, checking for cheese.");
+            CatchingMiceLogVisualizer.use.Log("No traps has been found, checking for cheese.");
             base.GetTarget();
             return;
         }
@@ -24,12 +24,12 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
         if (targetWaypoint != null)
         {
                 
-            //Debug.LogError("Getting new trap " + CatchingMiceLevelManager.use.trapTiles.Count);
+            //CatchingMiceLogVisualizer.use.LogError("Getting new trap " + CatchingMiceLevelManager.use.trapTiles.Count);
             CalculateTarget(targetWaypoint); 
         }
         else
         {
-            Debug.LogError("No target found");
+            CatchingMiceLogVisualizer.use.LogError("No target found");
             //try go for cheese instead
             base.GetTarget();
         }
@@ -65,7 +65,7 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
 			&& (trapTile.trap != null)
 			&& (trapTile.trap.Health > 0))
         {
-            //Debug.Log(currentTile.trapObject.Stacks);
+            //CatchingMiceLogVisualizer.use.Log(currentTile.trapObject.Stacks);
             trapTile.trap.Health -= damage;
 
             yield return new WaitForSeconds(attackInterval);

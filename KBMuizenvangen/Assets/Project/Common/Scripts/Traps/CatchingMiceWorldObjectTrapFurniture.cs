@@ -15,7 +15,7 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceTrap
 
 			if (levelTile != tile)
 			{
-				Debug.LogError("OMG: Wut is this sorcery?");
+				CatchingMiceLogVisualizer.use.LogError("OMG: Wut is this sorcery?");
 			}
 
 			// Adds the trap type to the tile with the or operator because a tile multiple types (ex. a tile can have a trap on a furniture)
@@ -48,17 +48,17 @@ public class CatchingMiceWorldObjectTrapFurniture : CatchingMiceTrap
 
 		if ((tile.furniture == null) || ((tile.tileType & CatchingMiceTile.TileType.Ground) == CatchingMiceTile.TileType.Ground))
 		{
-			Debug.LogError("Furniture trap " + transform.name + " cannot be placed on the ground.");
+			CatchingMiceLogVisualizer.use.LogError("Furniture trap " + transform.name + " cannot be placed on the ground.");
 			return false;
 		}
 		else if ((tile.trap != null) || ((tile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap))
 		{
-			Debug.LogError("Furniture trap " + transform.name + " cannot be placed because another trap is already present.");
+			CatchingMiceLogVisualizer.use.LogError("Furniture trap " + transform.name + " cannot be placed because another trap is already present.");
 			return false;
 		}
 		else if ((tile.obstacle != null) || ((tile.tileType & CatchingMiceTile.TileType.Obstacle) == CatchingMiceTile.TileType.Obstacle))
 		{
-			Debug.LogError("Furniture trap " + transform.name + " cannot be placed because an obstacle is already present.");
+			CatchingMiceLogVisualizer.use.LogError("Furniture trap " + transform.name + " cannot be placed because an obstacle is already present.");
 			return false;
 		}
 

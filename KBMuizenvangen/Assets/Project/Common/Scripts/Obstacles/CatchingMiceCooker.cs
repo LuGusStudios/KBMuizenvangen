@@ -45,12 +45,12 @@ public class CatchingMiceCooker : CatchingMiceObstacle
 
 		if ((tile.furniture == null) || ((tile.tileType & CatchingMiceTile.TileType.Ground) == CatchingMiceTile.TileType.Ground))
 		{
-			Debug.LogError("Obstacle " + transform.name + " cannot be placed on the ground.");
+			CatchingMiceLogVisualizer.use.LogError("Obstacle " + transform.name + " cannot be placed on the ground.");
 			return false;
 		}
 		else if ((tile.obstacle != null) || ((tile.tileType & CatchingMiceTile.TileType.Obstacle) == CatchingMiceTile.TileType.Obstacle))
 		{
-			Debug.LogError("Obstacle " + transform.name + " cannot be placed because another obstacle is already present.");
+			CatchingMiceLogVisualizer.use.LogError("Obstacle " + transform.name + " cannot be placed because another obstacle is already present.");
 			return false;
 		}
 
@@ -99,7 +99,7 @@ public class CatchingMiceCooker : CatchingMiceObstacle
 
 		if (box2D == null)
 		{
-			Debug.LogError("The cooker obstacle could not find its collider.");
+			CatchingMiceLogVisualizer.use.LogError("The cooker obstacle could not find its collider.");
 			yield break;
 		}
 
@@ -164,7 +164,7 @@ public class CatchingMiceCooker : CatchingMiceObstacle
 
 		if (box2D == null)
 		{
-			Debug.LogError("The cooker obstacle could not find its collider.");
+			CatchingMiceLogVisualizer.use.LogError("The cooker obstacle could not find its collider.");
 			return;
 		}
 

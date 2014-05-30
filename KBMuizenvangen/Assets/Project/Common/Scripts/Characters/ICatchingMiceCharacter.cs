@@ -84,7 +84,7 @@ public abstract class ICatchingMiceCharacter : MonoBehaviour
 
 		if (navigationGraph.Count == 0)
 		{
-			Debug.LogError(transform.Path() + " : no navigationGraph found for this level!!");
+			CatchingMiceLogVisualizer.use.LogError(transform.Path() + " : no navigationGraph found for this level!!");
 		}
 	}
 

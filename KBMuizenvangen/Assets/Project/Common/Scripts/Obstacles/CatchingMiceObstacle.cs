@@ -27,7 +27,7 @@ public abstract class CatchingMiceObstacle : CatchingMiceWorldObject
 		}
 		else
 		{
-			Debug.LogError("Could not find the sprite renderer for the obstacle.");
+			CatchingMiceLogVisualizer.use.LogError("Could not find the sprite renderer for the obstacle.");
 		}
 	}
 
