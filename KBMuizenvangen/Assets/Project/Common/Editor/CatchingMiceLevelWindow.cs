@@ -4,14 +4,9 @@ using System.Collections;
 
 public class CatchingMiceLevelWindow : EditorWindow
 {
-    protected int levelIndex = 0;
+	protected CatchingMiceLevelDefinition levelDefinition = null;
 
-    int width = 13;
-    int height = 13;
-    string level = "o";
-    string previousLevel = "o";
     bool useBothTypes = false;
-    Transform cursor = null; 
     Transform levelParent = null;
 
     Vector2 TrapTile = Vector2.zero;
@@ -27,7 +22,11 @@ public class CatchingMiceLevelWindow : EditorWindow
     {
         if (levelParent == null)
         {
-            levelParent = GameObject.Find("LevelParent").transform;
+			GameObject obj = GameObject.Find("LevelParent");
+			if (obj != null)
+			{
+				levelParent = obj.transform;
+			}
         }
     }
     void OnGUI()
@@ -41,50 +40,42 @@ public class CatchingMiceLevelWindow : EditorWindow
             Selection.activeObject = levelDef;
         }
 
-        width = EditorGUILayout.IntField(width);
-        height = EditorGUILayout.IntField(height);
-        levelIndex = EditorGUILayout.IntField("Level index", levelIndex);
-        
-        if (GUILayout.Button("Build Level " + levelIndex))
-        {
-            
-            CatchingMiceLevelManager.use.BuildLevel(levelIndex);
-        }
-        if (GUILayout.Button("Build Catching Mice level"))
-        {
-            LugusCoroutines.use.StopAllRoutines();
-            CatchingMiceLevelManager.use.BuildLevelDebug(width,height);
+		levelDefinition = (CatchingMiceLevelDefinition) EditorGUILayout.ObjectField(levelDefinition, typeof(CatchingMiceLevelDefinition), false);
 
+        if (GUILayout.Button("Build Level"))
+        {
+            if (levelDefinition != null)
+			{
+				CatchingMiceLevelManager.use.CurrentLevel = levelDefinition;
+				CatchingMiceLevelManager.use.BuildLevelEditor();
+			}
         }
+
         if (GUILayout.Button("Snap selection to grid"))
         {
             SnapToGrid(); 
         }
+
         useBothTypes = EditorGUILayout.Toggle("Use both WaypointTypes", useBothTypes);
+
         if(GUILayout.Button("Test pathfinding"))
         {
             FindClosestCheese();
         }
+
         if (GUILayout.Button("Reset Game"))
         {
             CatchingMiceGameManager.use.StartGame();
             
             //SpawnMouseDebug();
         }
+
         if (GUILayout.Button("Spawn Player"))
         {
             CharacterDebug();
         }
 
         TrapTile = EditorGUILayout.Vector2Field("Trap Spawn tile", TrapTile);
-        if (GUILayout.Button("Spawn Trap"))
-        {
-            SpawnTrap(TrapTile);
-        }
-        if (GUILayout.Button("Spawn AoE Trap"))
-        {
-            SpawnAoETrap(TrapTile);
-        }
     }
 
     //Source: http://wiki.unity3d.com/index.php?title=SnapToGrid
@@ -132,7 +123,7 @@ public class CatchingMiceLevelWindow : EditorWindow
 
             float smallestDistance = float.MaxValue;
             //Check which cheese tile is the closest
-            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.cheeseTiles)
+            foreach (CatchingMiceTile tile in CatchingMiceLevelManager.use.CheeseTiles)
             {
                 float distance = Vector2.Distance(pathfindScript.transform.position.v2(), tile.location.v2());
                 if (distance < smallestDistance)
@@ -155,10 +146,10 @@ public class CatchingMiceLevelWindow : EditorWindow
     public void SpawnMouseDebug()
     {
         
-        GameObject mousePrefab = null;
+        CatchingMiceCharacterMouse mousePrefab = null;
         CatchingMiceCharacterMouse mouseController = null;
 
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.tileItems)
+		foreach (CatchingMiceCharacterMouse prefab in CatchingMiceLevelManager.use.enemyPrefabs)
         {
             mouseController = prefab.GetComponent<CatchingMiceCharacterMouse>();
             if (mouseController != null)
@@ -213,100 +204,5 @@ public class CatchingMiceLevelWindow : EditorWindow
         {
             Instantiate(characterPrefab, pathfindingGO.transform.position, Quaternion.identity);
         }
-    }
-
-    public void SpawnTrap(Vector2 location)
-    {
-        GameObject trapPrefab = null;
-
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
-        {
-            if (prefab.GetComponent<CatchingMiceWorldObjectTrapGround>() != null)
-            {
-                trapPrefab = prefab.gameObject;
-                break;
-            }
-        }
-
-        if(trapPrefab == null)
-        {
-            Debug.Log("no trap prefab found");
-            return;
-        }
-
-        CatchingMiceTile targetTile = CatchingMiceLevelManager.use.GetTile(location);
-
-        if(targetTile.worldObject != null)
-        {
-            Debug.LogError("Ground traps cannot be placed on furniture");
-            return;
-        }
-
-        if(targetTile.trapObject != null)
-        {
-            Debug.LogError("A trap has been placed on this tile already.");
-            return;
-        }
-
-        targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Trap;
-        
-
-        GameObject trap = (GameObject)Instantiate(trapPrefab);
-
-        trap.transform.parent = CatchingMiceLevelManager.use._objectParent;
-        trap.transform.localPosition = targetTile.location;
-        trap.GetComponent<CatchingMiceWorldObjectTrapGround>().parentTile = targetTile;
-
-        targetTile.trapObject = trap.GetComponent<CatchingMiceWorldObjectTrapGround>();
-
-
-        CatchingMiceLevelManager.use.trapTiles.Add(targetTile);
-    }
-    public void SpawnAoETrap(Vector2 location)
-    {
-        GameObject trapPrefab = null;
-
-        foreach (GameObject prefab in CatchingMiceLevelManager.use.trapItems)
-        {
-            if (prefab.GetComponent<CatchingMiceTrapAoE>() != null)
-            {
-                trapPrefab = prefab.gameObject;
-                break;
-            }
-        }
-
-        if (trapPrefab == null)
-        {
-            Debug.Log("no trap prefab found");
-            return;
-        }
-
-        CatchingMiceTile targetTile = CatchingMiceLevelManager.use.GetTile(location);
-
-        if (targetTile.worldObject == null)
-        {
-            Debug.LogError("Furniture traps cannot be placed on ground");
-            return;
-        }
-
-        if (targetTile.trapObject != null)
-        {
-            Debug.LogError("A trap has been placed on this tile already.");
-            return;
-        }
-
-        targetTile.tileType = targetTile.tileType | CatchingMiceTile.TileType.Trap;
-
-
-        GameObject trap = (GameObject)Instantiate(trapPrefab);
-
-        trap.transform.parent = CatchingMiceLevelManager.use._objectParent;
-        trap.transform.localPosition = targetTile.location.yAdd(targetTile.worldObject.gridOffset).zAdd(-0.1f) ;
-        trap.GetComponent<CatchingMiceWorldObjectTrapFurniture>().parentTile = targetTile;
-
-        targetTile.trapObject = trap.GetComponent<CatchingMiceWorldObjectTrapFurniture>();
-
-
-        CatchingMiceLevelManager.use.trapTiles.Add(targetTile);
     }
 }

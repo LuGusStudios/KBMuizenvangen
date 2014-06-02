@@ -102,11 +102,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 100004}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a29a47ac5827cd740b75604cfeeebd8d, type: 3}
+  m_Script: {fileID: 11500000, guid: 0c7ae899255b68543ba4f74b355fcfc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOffset: 0
-  tileType: 8
+  yOffset: .5
+  zOffset: 0
+  tileType: -1
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  health: 100
+  stacks: 3
+  cost: 1
+  damage: 1
+  interval: 1
+  tileRange: 0
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

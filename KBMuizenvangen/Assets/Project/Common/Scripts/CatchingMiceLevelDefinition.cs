@@ -29,16 +29,19 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
 			(parser.tagName != "Level"))
 		{
-            Debug.Log("CatchingMiceLevelDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceLevelDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
         //List<string> updaters = new List<string>();
         List<CatchingMiceCharacterDefinition> characters = new List<CatchingMiceCharacterDefinition>();
-		List<CatchingMiceTileItemDefinition> tileitems = new List<CatchingMiceTileItemDefinition>();
+		List<CatchingMiceFurnitureDefinition> tileitems = new List<CatchingMiceFurnitureDefinition>();
         List<CatchingMiceCheeseDefinition> cheeses = new List<CatchingMiceCheeseDefinition>();
+		List<CatchingMiceTrapDefinition> traps = new List<CatchingMiceTrapDefinition>();
         List<CatchingMiceHoleDefinition> holeItems = new List<CatchingMiceHoleDefinition>();
         List<CatchingMiceWaveDefinition> waves = new List<CatchingMiceWaveDefinition>();
+		List<CatchingMicePatrolDefinition> patrols = new List<CatchingMicePatrolDefinition>();
+		List<CatchingMiceObstacleDefinition> obstacles = new List<CatchingMiceObstacleDefinition>();
 
 		while (parser.Read("Level"))
 		{
@@ -63,29 +66,45 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 						string[] rows = parser.content.Split(separators);
 						foreach (string row in rows)
 						{
-							level.level += row;
+							level.layout += row;
 						}
 						break;
                     case "Character":
                         characters.Add(CatchingMiceCharacterDefinition.FromXML(parser));
                         break;
-					case "TileItem":
-						tileitems.Add(CatchingMiceTileItemDefinition.FromXML(parser));
+					case "Furniture":
+						tileitems.Add(CatchingMiceFurnitureDefinition.FromXML(parser));
 						break;
                     case "Cheese":
                         cheeses.Add(CatchingMiceCheeseDefinition.FromXML(parser));
                         break;
+					case "Trap":
+						traps.Add(CatchingMiceTrapDefinition.FromXML(parser));
+						break;
                     case "HoleItem":
                         holeItems.Add(CatchingMiceHoleDefinition.FromXML(parser));
                         break;
                     case "Wave":
                         waves.Add(CatchingMiceWaveDefinition.FromXML(parser));
                         break;
+					case "Patrol":
+						patrols.Add(CatchingMicePatrolDefinition.FromXML(parser));
+						break;
+					case "Obstacle":
+						obstacles.Add(CatchingMiceObstacleDefinition.FromXML(parser));
+						break;
 				}
 			}
 		}
 
-		level.tileItems = tileitems.ToArray();
+		level.characters = characters.ToArray();
+		level.furniture = tileitems.ToArray();
+		level.cheeses = cheeses.ToArray();
+		level.traps = traps.ToArray();
+		level.holeItems = holeItems.ToArray();
+		level.waves = waves.ToArray();
+		level.patrols = patrols.ToArray();
+		level.obstacles = obstacles.ToArray();
 
 		return level;
 	}
@@ -96,51 +115,88 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 
 		if (level == null)
 		{
-            Debug.Log("CatchingMiceLevelDefinition.ToXML(): The level to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceLevelDefinition.ToXML(): The level to be serialized is null.");
 			return rawdata;
 		}
 
 		rawdata += "<Level>\r\n";
+
 		//rawdata += "\t<BackgroundMusicName>" + level.backgroundMusicName + "</BackgroundMusicName>\r\n";
 		rawdata += "\t<Width>" + level.width.ToString() + "</Width>\r\n";
 		rawdata += "\t<Height>" + level.height.ToString() + "</Height>\r\n";
 		//rawdata += "\t<CameraTracksPlayer>" + level.cameraTracksPlayer.ToString() + "</CameraTracksPlayer>\r\n";
+
 		rawdata += "\t<Layout>\r\n";
+
+		// Pad the end of the level layout if it does not meet the length requirements
+		if (level.layout.Length < (level.width * level.height))
+		{
+			CatchingMiceLogVisualizer.use.LogWarning("CatchingMiceLevelDefinition.ToXML(): The layout length does not match the level's dimensions.\nThe layout will be padded with o's.");
+			level.layout = level.layout.PadRight(level.width * level.height, 'o');
+		}
+
 		for (int i = 0; i < level.height; ++i)
 		{
-			rawdata += "\t\t" + level.level.Substring(i * level.width, level.width) + "\r\n";
+			rawdata += "\t\t" + level.layout.Substring(i * level.width, level.width) + "\r\n";
 		}
 		rawdata += "\t</Layout>\r\n";
-        rawdata += "\t<Characters>\r\n";
-        foreach (CatchingMiceCharacterDefinition character in level.characters)
-        {
-            rawdata += CatchingMiceCharacterDefinition.ToXML(character, 2);
-        }
-        rawdata += "\t</Characters>\r\n";
-		rawdata += "\t<TileItems>\r\n";
-		foreach(CatchingMiceTileItemDefinition tileitem in level.tileItems)
+
+		rawdata += "\t<Furnitures>\r\n";
+		foreach (CatchingMiceFurnitureDefinition furniture in level.furniture)
 		{
-			rawdata += CatchingMiceTileItemDefinition.ToXML(tileitem, 2);
+			rawdata += CatchingMiceFurnitureDefinition.ToXML(furniture, 2);
 		}
-		rawdata += "\t</TileItems>\r\n";
+		rawdata += "\t</Furnitures>\r\n";
+
+		rawdata += "\t<Obstacles>\r\n";
+		foreach (CatchingMiceObstacleDefinition obstacle in level.obstacles)
+		{
+			rawdata += CatchingMiceObstacleDefinition.ToXML(obstacle, 2);
+		}
+		rawdata += "\t</Obstacles>\r\n";
+
         rawdata += "\t<Cheeses>\r\n";
         foreach (CatchingMiceCheeseDefinition cheese in level.cheeses)
         {
             rawdata += CatchingMiceCheeseDefinition.ToXML(cheese, 2);
         }
         rawdata += "\t</Cheeses>\r\n";
+
         rawdata += "\t<HoleItems>\r\n";
         foreach (CatchingMiceHoleDefinition holeItem in level.holeItems)
         {
             rawdata += CatchingMiceHoleDefinition.ToXML(holeItem, 2);
         }
         rawdata += "\t</HoleItems>\r\n";
+
+		rawdata += "\t<Traps>\r\n";
+		foreach (CatchingMiceTrapDefinition trap in level.traps)
+		{
+			rawdata += CatchingMiceTrapDefinition.ToXML(trap, 2);
+		}
+		rawdata += "\t</Traps>\r\n";
+
+        rawdata += "\t<Characters>\r\n";
+        foreach (CatchingMiceCharacterDefinition character in level.characters)
+        {
+            rawdata += CatchingMiceCharacterDefinition.ToXML(character, 2);
+        }
+		rawdata += "\t</Characters>\r\n";
+
+		rawdata += "\t<Patrols>\r\n";
+		foreach (CatchingMicePatrolDefinition patrol in level.patrols)
+		{
+			rawdata += CatchingMicePatrolDefinition.ToXML(patrol, 2);
+		}
+		rawdata += "\t</Patrols>\r\n";
+
         rawdata += "\t<Waves>\r\n";
         foreach (CatchingMiceWaveDefinition wave in level.waves)
         {
             rawdata += CatchingMiceWaveDefinition.ToXML(wave, 2);
         }
         rawdata += "\t</Waves>\r\n";
+
 		rawdata += "</Level>\r\n";
 
 		return rawdata;
@@ -150,14 +206,16 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 	public int width = 13;
 	public int height = 13;
 	//public bool cameraTracksPlayer = false;
-	public string level;
-    public CatchingMiceCharacterDefinition[] characters;
-	public CatchingMiceTileItemDefinition[] tileItems;
+	public string layout = string.Empty;
+	public CatchingMiceFurnitureDefinition[] furniture;
+	public CatchingMiceObstacleDefinition[] obstacles;
     public CatchingMiceCheeseDefinition[] cheeses;
     public CatchingMiceHoleDefinition[] holeItems;
+	public CatchingMiceTrapDefinition[] traps;
+    public CatchingMiceCharacterDefinition[] characters;
+	public CatchingMicePatrolDefinition[] patrols;
     public CatchingMiceWaveDefinition[] waves;
     
-
 	// Arrays of serialized classes are not created with default values
 	// Instead, initialize values once in OnEnable (which runs AFTER deserialization), checking for null / zero value
 	// http://forum.unity3d.com/threads/155352-Serialization-Best-Practices-Megapost
@@ -166,10 +224,127 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 	
 	}
 }
+
+[System.Serializable]
+public class CatchingMiceObstacleDefinition
+{
+	// The obstacle definition is somewhat special compared
+	// to the other definitions. An obstacle is dynamic,
+	// and depending on the object, the tags, values and
+	// structure may vary. Every obstacle definition has a
+	// prefab name which refers to its prefab, and a configuration
+	// which the obstacle will parse on its own. This configuration
+	// needs to be reconstructed, because there currently
+	// no simple method of the TinyXMLReader parser object
+	// to simply extract all data between a certain tag pair.
+
+	public static CatchingMiceObstacleDefinition FromXML(TinyXmlReader parser)
+	{
+		CatchingMiceObstacleDefinition obstacle = new CatchingMiceObstacleDefinition();
+
+		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
+			(parser.tagName != "Obstacle"))
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceObstacleDefinition.FromXML(): unexpected tag type or tag name.");
+			return null;
+		}
+
+		while (parser.Read("Obstacle"))
+		{
+			if (parser.tagType == TinyXmlReader.TagType.OPENING)
+			{
+				switch (parser.tagName)
+				{
+					case "PrefabName":
+						obstacle.prefabName = parser.content;
+						break;
+					case "Configuration":
+
+						obstacle.obstacleData += "<" + parser.tagName + ">";
+
+						while (parser.Read("Configuration"))
+						{
+							switch(parser.tagType)
+							{
+								case TinyXmlReader.TagType.OPENING:
+									obstacle.obstacleData += "<" + parser.tagName + ">";
+									obstacle.obstacleData += parser.content;
+									break;
+								case TinyXmlReader.TagType.CLOSING:
+									obstacle.obstacleData += "</" + parser.tagName + ">";
+									break;
+							}
+						}
+
+						obstacle.obstacleData += "</" + parser.tagName + ">";
+
+						break;
+					case "Position":
+						Vector2 coordinates = Vector2.zero;
+						while (parser.Read("Position"))
+						{
+							if (parser.tagType == TinyXmlReader.TagType.OPENING)
+							{
+								switch (parser.tagName)
+								{
+									case "X":
+										coordinates.x = float.Parse(parser.content);
+										break;
+									case "Y":
+										coordinates.y = float.Parse(parser.content);
+										break;
+								}
+							}
+						}
+						obstacle.position = coordinates;
+						break;
+				}
+			}
+		}
+
+		return obstacle;
+	}
+
+	public static string ToXML(CatchingMiceObstacleDefinition obstacle, int depth)
+	{
+		string rawdata = string.Empty;
+
+		if (obstacle == null)
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
+			return rawdata;
+		}
+
+		string tabs = string.Empty;
+		for (int i = 0; i < depth; ++i)
+		{
+			tabs += "\t";
+		}
+
+		rawdata += tabs + "<Obstacle>\r\n";
+
+		rawdata += tabs + "\t<PrefabName>" + obstacle.prefabName + "</PrefabName>\r\n";
+
+		rawdata += tabs + "\t<Position>\r\n";
+		rawdata += tabs + "\t\t<X>" + obstacle.position.x.ToString() + "</X>\r\n";
+		rawdata += tabs + "\t\t<Y>" + obstacle.position.y.ToString() + "</Y>\r\n";
+		rawdata += tabs + "\t</Position>\r\n";
+
+		rawdata += tabs + "\t<Configuration>" + obstacle.obstacleData + "</Configuration>\r\n";
+
+		rawdata += tabs + "</Obstacle>\r\n";
+
+		return rawdata;
+	}
+
+	public string prefabName = "";
+	public Vector2 position;
+	public string obstacleData = "";
+}
+
 [System.Serializable]
 public class CatchingMiceCharacterDefinition
 {
-
     public static CatchingMiceCharacterDefinition FromXML(TinyXmlReader parser)
     {
         CatchingMiceCharacterDefinition character = new CatchingMiceCharacterDefinition();
@@ -177,9 +352,10 @@ public class CatchingMiceCharacterDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Character"))
         {
-            Debug.Log("CatchingMiceCharacterDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
+
         while (parser.Read("Character"))
         {
             if (parser.tagType == TinyXmlReader.TagType.OPENING)
@@ -189,19 +365,33 @@ public class CatchingMiceCharacterDefinition
                     case "PrefabName":
                         character.prefabName = parser.content;
                         break;
-                    case "TimeToReachTile":
-                        character.timeToReachTile = float.Parse(parser.content);
+                    case "Speed":
+                        character.speed = float.Parse(parser.content);
                         break;
-                    case "XLocation":
-                        character.xLocation = int.Parse(parser.content);
-                        break;
-                    case "YLocation":
-                        character.yLocation = int.Parse(parser.content);
-                        break;
+					case "Position":
+						Vector2 coordinates = Vector2.zero;
+						while (parser.Read("Position"))
+						{
+							if (parser.tagType == TinyXmlReader.TagType.OPENING)
+							{
+								switch (parser.tagName)
+								{
+									case "X":
+										coordinates.x = float.Parse(parser.content);
+										break;
+									case "Y":
+										coordinates.y = float.Parse(parser.content);
+										break;
+								}
+							}
+						}
+						character.position = coordinates;
+						break;
                     
                 }
             }
         }
+
         return character;
     }
 
@@ -211,7 +401,7 @@ public class CatchingMiceCharacterDefinition
 
         if (character == null)
         {
-            Debug.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
             return rawdata;
         }
 
@@ -223,9 +413,13 @@ public class CatchingMiceCharacterDefinition
 
         rawdata += tabs + "<Character>\r\n";
         rawdata += tabs + "\t<PrefabName>" + character.prefabName + "</PrefabName>\r\n";
-        rawdata += tabs + "\t<Speed>" + character.timeToReachTile.ToString() + "</Speed>\r\n";
-        rawdata += tabs + "\t<XLocation>" + character.xLocation.ToString() + "</XLocation>\r\n";
-        rawdata += tabs + "\t<YLocation>" + character.yLocation.ToString() + "</YLocation>\r\n";
+        rawdata += tabs + "\t<Speed>" + character.speed.ToString() + "</Speed>\r\n";
+
+		rawdata += tabs + "\t<Position>\r\n";
+		rawdata += tabs + "\t\t<X>" + character.position.x.ToString() + "</X>\r\n";
+		rawdata += tabs + "\t\t<Y>" + character.position.y.ToString() + "</Y>\r\n";
+		rawdata += tabs + "\t</Position>\r\n";
+
         //rawdata += tabs + "\t<SpawnDelay>" + character.spawnDelay.ToString() + "</SpawnDelay>\r\n";
         rawdata += tabs + "</Character>\r\n";
 
@@ -233,36 +427,36 @@ public class CatchingMiceCharacterDefinition
     }
 
     public string prefabName = "";
-    public float timeToReachTile = 0.5f;
-    public int xLocation = 0;
-    public int yLocation = 0;
+    public float speed = 0.5f;
+	public Vector2 position;
 }
+
 [System.Serializable]
-public class CatchingMiceTileItemDefinition
+public class CatchingMiceFurnitureDefinition
 {
-    public static CatchingMiceTileItemDefinition FromXML(TinyXmlReader parser)
+    public static CatchingMiceFurnitureDefinition FromXML(TinyXmlReader parser)
     {
-        CatchingMiceTileItemDefinition tileitem = new CatchingMiceTileItemDefinition();
+        CatchingMiceFurnitureDefinition furniture = new CatchingMiceFurnitureDefinition();
 
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
-            (parser.tagName != "TileItem"))
+            (parser.tagName != "Furniture"))
         {
-            Debug.Log("CatchingMiceTileItemDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceFurnitureDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
-        while (parser.Read("TileItem"))
+		while (parser.Read("Furniture"))
         {
             if (parser.tagType == TinyXmlReader.TagType.OPENING)
             {
                 switch (parser.tagName)
                 {
                     case "PrefabName":
-                        tileitem.prefabName = parser.content;
+                        furniture.prefabName = parser.content;
                         break;
-                    case "TileCoordinates":
+                    case "Position":
                         Vector2 coordinates = Vector2.zero;
-                        while (parser.Read("TileCoordinates"))
+                        while (parser.Read("Position"))
                         {
                             if (parser.tagType == TinyXmlReader.TagType.OPENING)
                             {
@@ -277,22 +471,22 @@ public class CatchingMiceTileItemDefinition
                                 }
                             }
                         }
-                        tileitem.tileCoordinates = coordinates;
+                        furniture.position = coordinates;
                         break;
                 }
             }
         }
 
-        return tileitem;
+        return furniture;
     }
 
-    public static string ToXML(CatchingMiceTileItemDefinition tileitem, int depth)
+    public static string ToXML(CatchingMiceFurnitureDefinition furniture, int depth)
     {
         string rawdata = string.Empty;
 
-        if (tileitem == null)
+        if (furniture == null)
         {
-            Debug.Log("CatchingMiceTileItemDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceFurnitureDefinition.ToXML(): The furniture to be serialized is null.");
             return rawdata;
         }
 
@@ -302,21 +496,21 @@ public class CatchingMiceTileItemDefinition
             tabs += "\t";
         }
 
-        rawdata += tabs + "<TileItem>\r\n";
-        rawdata += tabs + "\t<PrefabName>" + tileitem.prefabName + "</PrefabName>\r\n";
-        rawdata += tabs + "\t<TileCoordinates>\r\n";
-        rawdata += tabs + "\t\t<X>" + tileitem.tileCoordinates.x.ToString() + "</X>\r\n";
-        rawdata += tabs + "\t\t<Y>" + tileitem.tileCoordinates.y.ToString() + "</Y>\r\n";
-        rawdata += tabs + "\t</TileCoordinates>\r\n";
-        rawdata += tabs + "</TileItem>\r\n";
+		rawdata += tabs + "<Furniture>\r\n";
+        rawdata += tabs + "\t<PrefabName>" + furniture.prefabName + "</PrefabName>\r\n";
+        rawdata += tabs + "\t<Position>\r\n";
+        rawdata += tabs + "\t\t<X>" + furniture.position.x.ToString() + "</X>\r\n";
+        rawdata += tabs + "\t\t<Y>" + furniture.position.y.ToString() + "</Y>\r\n";
+        rawdata += tabs + "\t</Position>\r\n";
+		rawdata += tabs + "</Furniture>\r\n";
 
         return rawdata;
     }
 
-
     public string prefabName;
-    public Vector2 tileCoordinates;
+    public Vector2 position;
 }
+
 [System.Serializable]
 public class CatchingMiceCheeseDefinition
 {
@@ -327,7 +521,7 @@ public class CatchingMiceCheeseDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Cheese"))
         {
-            Debug.Log("CatchingMiceTileCheeseDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCheeseDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
@@ -340,9 +534,9 @@ public class CatchingMiceCheeseDefinition
                     case "PrefabName":
                         cheese.prefabName = parser.content;
                         break;
-                    case "TileCoordinates":
+                    case "Position":
                         Vector2 coordinates = Vector2.zero;
-                        while (parser.Read("TileCoordinates"))
+                        while (parser.Read("Position"))
                         {
                             if (parser.tagType == TinyXmlReader.TagType.OPENING)
                             {
@@ -357,7 +551,7 @@ public class CatchingMiceCheeseDefinition
                                 }
                             }
                         }
-                        cheese.tileCoordinates = coordinates;
+                        cheese.position = coordinates;
                         break;
                     case "Stacks":
                         cheese.stacks = int.Parse(parser.content);
@@ -375,7 +569,7 @@ public class CatchingMiceCheeseDefinition
 
         if (tileitem == null)
         {
-            Debug.Log("CatchingMiceTileCheeseDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCheeseDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -387,21 +581,21 @@ public class CatchingMiceCheeseDefinition
 
         rawdata += tabs + "<Cheese>\r\n";
         rawdata += tabs + "\t<PrefabName>" + tileitem.prefabName + "</PrefabName>\r\n";
-        rawdata += tabs + "\t<TileCoordinates>\r\n";
-        rawdata += tabs + "\t\t<X>" + tileitem.tileCoordinates.x.ToString() + "</X>\r\n";
-        rawdata += tabs + "\t\t<Y>" + tileitem.tileCoordinates.y.ToString() + "</Y>\r\n";
-        rawdata += tabs + "\t</TileCoordinates>\r\n";
+        rawdata += tabs + "\t<Position>\r\n";
+        rawdata += tabs + "\t\t<X>" + tileitem.position.x.ToString() + "</X>\r\n";
+        rawdata += tabs + "\t\t<Y>" + tileitem.position.y.ToString() + "</Y>\r\n";
+        rawdata += tabs + "\t</Position>\r\n";
         rawdata += tabs + "\t<Stacks>" + tileitem.stacks + "</Stacks>\r\n";
         rawdata += tabs + "</Cheese>\r\n";
 
         return rawdata;
     }
 
-
     public string prefabName;
-    public Vector2 tileCoordinates;
+    public Vector2 position;
     public int stacks = 3;
 }
+
 [System.Serializable]
 public class CatchingMiceHoleDefinition
 {
@@ -412,7 +606,7 @@ public class CatchingMiceHoleDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "HoleItem"))
         {
-            Debug.Log("CatchingMiceHoleDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceHoleDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
@@ -428,9 +622,9 @@ public class CatchingMiceHoleDefinition
                     case "HoleID":
                         holeTile.holeId = parser.content;
                         break;
-                    case "TileCoordinates":
+                    case "Position":
                         Vector2 coordinates = Vector2.zero;
-                        while (parser.Read("TileCoordinates"))
+                        while (parser.Read("Position"))
                         {
                             if (parser.tagType == TinyXmlReader.TagType.OPENING)
                             {
@@ -445,7 +639,7 @@ public class CatchingMiceHoleDefinition
                                 }
                             }
                         }
-                        holeTile.tileCoordinates = coordinates;
+                        holeTile.position = coordinates;
                         break;
                     case "StartDirection":
                         switch (parser.content)
@@ -480,7 +674,7 @@ public class CatchingMiceHoleDefinition
 
         if (holeTile == null)
         {
-            Debug.Log("CatchingMiceHoleDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceHoleDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -492,10 +686,10 @@ public class CatchingMiceHoleDefinition
         rawdata += tabs + "<HoleItem>\r\n";
         rawdata += tabs + "\t<PrefabName>" + holeTile.prefabName + "</PrefabName>\r\n";
         rawdata += tabs + "\t<HoleID>" + holeTile.holeId + "</HoleID>\r\n";
-        rawdata += tabs + "\t<TileCoordinates>\r\n";
-        rawdata += tabs + "\t\t<X>" + holeTile.tileCoordinates.x.ToString() + "</X>\r\n";
-        rawdata += tabs + "\t\t<Y>" + holeTile.tileCoordinates.y.ToString() + "</Y>\r\n";
-        rawdata += tabs + "\t</TileCoordinates>\r\n";
+        rawdata += tabs + "\t<Position>\r\n";
+        rawdata += tabs + "\t\t<X>" + holeTile.position.x.ToString() + "</X>\r\n";
+        rawdata += tabs + "\t\t<Y>" + holeTile.position.y.ToString() + "</Y>\r\n";
+        rawdata += tabs + "\t</Position>\r\n";
         rawdata += tabs + "\t<StartDirection>";
         switch (holeTile.startDirection)
         {
@@ -522,12 +716,12 @@ public class CatchingMiceHoleDefinition
         return rawdata;
     }
 
-
     public string prefabName = "";
     public string holeId = "";
-    public Vector2 tileCoordinates = Vector2.zero;
+    public Vector2 position = Vector2.zero;
     public CatchingMiceHole.CharacterDirections startDirection = CatchingMiceHole.CharacterDirections.Undefined;
 }
+
 [System.Serializable]
 public class CatchingMiceWaveDefinition
 {
@@ -538,7 +732,7 @@ public class CatchingMiceWaveDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Wave"))
         {
-            Debug.Log("CatchingMiceWaveDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceWaveDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
         List<CatchingMiceEnemyDefinition> enemies = new List<CatchingMiceEnemyDefinition>();
@@ -556,6 +750,8 @@ public class CatchingMiceWaveDefinition
             }
         }
 
+		wave.enemies = enemies.ToArray();
+
         return wave;
     }
 
@@ -565,7 +761,7 @@ public class CatchingMiceWaveDefinition
 
         if (wave == null)
         {
-            Debug.Log("CatchingMiceWaveDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceWaveDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -574,6 +770,7 @@ public class CatchingMiceWaveDefinition
         {
             tabs += "\t";
         }
+
         rawdata += tabs + "<Wave>\r\n";
         foreach (CatchingMiceEnemyDefinition enemy in wave.enemies)
         {
@@ -583,12 +780,13 @@ public class CatchingMiceWaveDefinition
 
         return rawdata;
     }
+
     public CatchingMiceEnemyDefinition[] enemies;
 }
+
 [System.Serializable]
 public class CatchingMiceEnemyDefinition
 {
-
     public static CatchingMiceEnemyDefinition FromXML(TinyXmlReader parser)
     {
         CatchingMiceEnemyDefinition enemy = new CatchingMiceEnemyDefinition();
@@ -596,7 +794,7 @@ public class CatchingMiceEnemyDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Enemy"))
         {
-            Debug.Log("CatchingMiceEnemyDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceEnemyDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
         while (parser.Read("Enemy"))
@@ -632,7 +830,7 @@ public class CatchingMiceEnemyDefinition
 
         if (character == null)
         {
-            Debug.Log("PacmanCharacterDefinition.ToXML(): The character to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceEnemyDefinition.ToXML(): The character to be serialized is null.");
             return rawdata;
         }
 
@@ -660,3 +858,186 @@ public class CatchingMiceEnemyDefinition
     public float spawnDelay = 0.0f;
 }
 
+[System.Serializable]
+public class CatchingMiceTrapDefinition
+{
+	public static CatchingMiceTrapDefinition FromXML(TinyXmlReader parser)
+	{
+		CatchingMiceTrapDefinition trap = new CatchingMiceTrapDefinition();
+
+		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
+			(parser.tagName != "Trap"))
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceTrapDefinition.FromXML(): unexpected tag type or tag name.");
+			return null;
+		}
+
+		while (parser.Read("Trap"))
+		{
+			if (parser.tagType == TinyXmlReader.TagType.OPENING)
+			{
+				switch (parser.tagName)
+				{
+					case "PrefabName":
+						trap.prefabName = parser.content;
+						break;
+					case "Position":
+						Vector2 coordinates = Vector2.zero;
+						while (parser.Read("Position"))
+						{
+							if (parser.tagType == TinyXmlReader.TagType.OPENING)
+							{
+								switch (parser.tagName)
+								{
+									case "X":
+										coordinates.x = float.Parse(parser.content);
+										break;
+									case "Y":
+										coordinates.y = float.Parse(parser.content);
+										break;
+								}
+							}
+						}
+						trap.position = coordinates;
+						break;
+					case "Stacks":
+						trap.stacks = int.Parse(parser.content);
+						break;
+				}
+			}
+		}
+
+		return trap;
+	}
+
+	public static string ToXML(CatchingMiceTrapDefinition trap, int depth)
+	{
+		string rawdata = string.Empty;
+
+		if (trap == null)
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceTrapDefinition.ToXML(): The trap item to be serialized is null.");
+			return rawdata;
+		}
+
+		string tabs = string.Empty;
+		for (int i = 0; i < depth; ++i)
+		{
+			tabs += "\t";
+		}
+
+		rawdata += tabs + "<Trap>\r\n";
+
+		rawdata += tabs + "\t<PrefabName>" + trap.prefabName + "</PrefabName>\r\n";
+		rawdata += tabs + "\t<Position>\r\n";
+		rawdata += tabs + "\t\t<X>" + trap.position.x.ToString() + "</X>\r\n";
+		rawdata += tabs + "\t\t<Y>" + trap.position.y.ToString() + "</Y>\r\n";
+		rawdata += tabs + "\t</Position>\r\n";
+		rawdata += tabs + "\t<Stacks>" + trap.stacks + "</Stacks>\r\n";
+
+		rawdata += tabs + "</Trap>\r\n";
+
+		return rawdata;
+	}
+
+	public string prefabName = "";
+	public Vector2 position = Vector2.zero;
+	public int stacks = 1;
+}
+
+[System.Serializable]
+public class CatchingMicePatrolDefinition
+{
+	public static CatchingMicePatrolDefinition FromXML(TinyXmlReader parser)
+	{
+		CatchingMicePatrolDefinition patrol = new CatchingMicePatrolDefinition();
+
+		List<Vector2> positions = new List<Vector2>();
+
+		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
+			(parser.tagName != "Patrol"))
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMicePatrolDefinition.FromXML(): unexpected tag type or tag name.");
+			return null;
+		}
+
+		while (parser.Read("Patrol"))
+		{
+			if (parser.tagType == TinyXmlReader.TagType.OPENING)
+			{
+				switch (parser.tagName)
+				{
+					case "PrefabName":
+						patrol.prefabName = parser.content;
+						break;
+					case "Speed":
+						patrol.speed = float.Parse(parser.content);
+						break;
+					case "Position":
+						Vector2 coordinates = Vector2.zero;
+						while (parser.Read("Position"))
+						{
+							if (parser.tagType == TinyXmlReader.TagType.OPENING)
+							{
+								switch (parser.tagName)
+								{
+									case "X":
+										coordinates.x = float.Parse(parser.content);
+										break;
+									case "Y":
+										coordinates.y = float.Parse(parser.content);
+										break;
+								}
+							}
+						}
+						positions.Add(coordinates);
+						break;
+				}
+			}
+		}
+
+		patrol.positions = positions.ToArray();
+
+		return patrol;
+	}
+
+	public static string ToXML(CatchingMicePatrolDefinition patrol, int depth)
+	{
+		string rawdata = string.Empty;
+
+		if (patrol == null)
+		{
+			CatchingMiceLogVisualizer.use.Log("CatchingMicePatrolDefinition.ToXML(): The patrol route to be serialized is null.");
+			return rawdata;
+		}
+
+		string tabs = string.Empty;
+		for (int i = 0; i < depth; ++i)
+		{
+			tabs += "\t";
+		}
+
+		rawdata += tabs + "<Patrol>\r\n";
+
+		rawdata += tabs + "\t<PrefabName>" + patrol.prefabName + "</PrefabName>\r\n";
+		rawdata += tabs + "\t<Speed>" + patrol.speed + "</Speed>\r\n";
+
+		rawdata += tabs + "\t<Positions>\r\n";
+		foreach (Vector2 position in patrol.positions)
+		{
+			rawdata += tabs + "\t\t<Position>\r\n";
+			rawdata += tabs + "\t\t\t<X>" + position.x.ToString() + "</X>\r\n";
+			rawdata += tabs + "\t\t\t<Y>" + position.y.ToString() + "</Y>\r\n";
+			rawdata += tabs + "\t\t</Position>\r\n";
+		}
+		rawdata += tabs + "\t</Positions>\r\n";
+
+		rawdata += tabs + "</Patrol>\r\n";
+
+		return rawdata;
+	}
+
+	public string prefabName = "";
+	public float speed = 0.5f;
+	public Vector2[] positions;
+}

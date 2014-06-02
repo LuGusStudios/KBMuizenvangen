@@ -9,75 +9,88 @@ public class CatchingMiceMouseSkinny : CatchingMiceCharacterMouse
     
     public override void GetTarget()
     {
-        if (CatchingMiceLevelManager.use.trapTiles.Count <= 0)
+        if (CatchingMiceLevelManager.use.TrapTiles.Count <= 0)
         {
             //no traps left, check for cheese
-            Debug.Log("No traps has been found, checking for cheese.");
+            CatchingMiceLogVisualizer.use.Log("No traps has been found, checking for cheese.");
             base.GetTarget();
             return;
         }
 
         //search for traps first before checking for cheese
-        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.trapTiles);
+        List<CatchingMiceTile> tiles = new List<CatchingMiceTile>(CatchingMiceLevelManager.use.TrapTiles);
         targetWaypoint = GetTargetWaypoint(tiles);
             
         if (targetWaypoint != null)
         {
                 
-            //Debug.LogError("Getting new trap " + CatchingMiceLevelManager.use.trapTiles.Count);
+            //CatchingMiceLogVisualizer.use.LogError("Getting new trap " + CatchingMiceLevelManager.use.trapTiles.Count);
             CalculateTarget(targetWaypoint); 
         }
         else
         {
-            Debug.LogError("No target found");
+            CatchingMiceLogVisualizer.use.LogError("No target found");
             //try go for cheese instead
             base.GetTarget();
         }
         
         
     }
-    public override void DoCurrentTileBehaviour(int pathIndex)
+    
+	public override void DoCurrentTileBehaviour(int pathIndex)
     {
-        base.DoCurrentTileBehaviour(pathIndex);
-        if ((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap && pathIndex==0)
+		// For the skinny mouse, when a trap is present, start attacking the trap,
+		// else, do the default behavior for a mouse: attacking cheese, if present
+        if (((currentTile.tileType & CatchingMiceTile.TileType.Trap) == CatchingMiceTile.TileType.Trap) && (pathIndex == 0))
         {
-            //handle.StopRoutine();
-            //begin eating the cheese
+            // Begin attacking the trap
             StartCoroutine(AttackTrap());
-            //handle = LugusCoroutines.use.StartRoutine(AttackTrap()); 
         }
+		else
+		{
+			base.DoCurrentTileBehaviour(pathIndex);
+		}
     }
-    public IEnumerator AttackTrap()
+    
+	public IEnumerator AttackTrap()
     {
         attacking = true;
         if (onAttack != null)
+		{
             onAttack();
+		}
+
         CatchingMiceTile trapTile = currentTile;
-        while (_health > 0 && trapTile.trapObject != null && trapTile.trapObject.Stacks > 0)
+        while ((health > 0)
+			&& (trapTile.trap != null)
+			&& (trapTile.trap.Health > 0))
         {
-            //Debug.Log(currentTile.trapObject.Stacks);
-            trapTile.trapObject.Health -= damage;
+            //CatchingMiceLogVisualizer.use.Log(currentTile.trapObject.Stacks);
+            trapTile.trap.Health -= damage;
 
             yield return new WaitForSeconds(attackInterval);
         }
-        attacking = false;
-      
 
+        attacking = false;
+
+		// Get the next target when the trap has been destroyed
         GetTarget();
-        
     }
-    protected override void OnEnable()
+    
+	protected override void OnEnable()
     {
         base.OnEnable();
         CatchingMiceLevelManager.use.TrapRemoved += TargetRemoved;
 
     }
-    protected override void OnDisable()
+    
+	protected override void OnDisable()
     {
         //base.OnDisable();
         //CatchingMiceLevelManager.use.TrapRemoved -= TargetRemoved;
     }
-    public override void DieRoutine()
+    
+	public override void DieRoutine()
     {
         base.DieRoutine();
         CatchingMiceLevelManager.use.TrapRemoved -= TargetRemoved;

@@ -1721,7 +1721,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: .899999976, y: .899999976}
   m_Center: {x: 0, y: 0}
 --- !u!111 &11100000
 Animation:
@@ -9540,19 +9540,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3e12e47f441847b4390673ef9b85bcf2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToReachTile: .800000012
+  speed: .5
   zOffset: 0
+  damage: 1
+  attackInterval: .5
   targetWaypoint: {fileID: 0}
   walkable: 1
   movementDirection: {x: 0, y: 0, z: 0}
-  _health: 5
-  damage: 1
-  attackInterval: .5
   moving: 0
   jumping: 0
   attacking: 0
   interrupt: 0
-  timesToAttack: 3
+  cheeseBites: 3
+  cookieDrops: 1
 --- !u!114 &11400008
 MonoBehaviour:
   m_ObjectHideFlags: 1

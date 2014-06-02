@@ -42,9 +42,9 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     public string eatingAnimationClip = "_Attack";
     public string idleAnimationClip = "_Idle";
 
-    protected string _sideAnimationClip = "Side";
-    protected string _frontAnimationClip = "Front";
-    protected string _backAnimationClip = "Back";
+    public string _sideAnimationClip = "Side";
+    public string _frontAnimationClip = "Front";
+    public string _backAnimationClip = "Back";
 
     protected KikaAndBob.MovementQuadrant _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
     protected bool _jumped = false;
@@ -83,7 +83,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (quadrantReal == KikaAndBob.MovementQuadrant.NONE)
         {
-            //Debug.LogError(name + ": quadrant was NONE " + quadrant + "/" + movementDirection + " : defaulting to RIGHT");
+            //CatchingMiceLogVisualizer.use.LogError(name + ": quadrant was NONE " + quadrant + "/" + movementDirection + " : defaulting to RIGHT");
             quadrantReal = KikaAndBob.MovementQuadrant.RIGHT;
         }
 
@@ -124,13 +124,14 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     {
         if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + idleAnimationClip)
         {
-            //Debug.LogError("Loading Idle Animation Clip");
+            //CatchingMiceLogVisualizer.use.LogError("Loading Idle Animation Clip");
             PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE; 
         }
            
     }
-    protected void LoadQuadrantAnimation(KikaAndBob.MovementQuadrant quadrantReal, string animationType)
+    
+	protected void LoadQuadrantAnimation(KikaAndBob.MovementQuadrant quadrantReal, string animationType)
     {
         // 1. Map the quadrant to the correct AnimationClip name
         // 2. Find the AnimationClip object and Play() it
@@ -168,13 +169,14 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         PlayAnimation(animationClipName, !movingRight);
     }
-    public virtual void PlayAnimation(string animationPath, bool moveRight = true)
+    
+	public virtual void PlayAnimation(string animationPath, bool moveRight = true)
     {
 
         string[] parts = animationPath.Split('/');
         if (parts.Length != 2)
         {
-            Debug.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
+            CatchingMiceLogVisualizer.use.LogError(name + " : AnimationPath should be a string with a single / as separator! " + animationPath);
             return;
         }
 
@@ -200,7 +202,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (currentAnimationContainer == null)
         {
-            Debug.LogError(name + " : No animation found for name " + animationPath);
+            CatchingMiceLogVisualizer.use.LogError(name + " : No animation found for name " + animationPath);
             currentAnimationContainer = animationContainers[0];
         }
 
@@ -208,12 +210,12 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
         currentAnimationClip = clipName;
 
         
-        //Debug.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
+        //CatchingMiceLogVisualizer.use.Log("PLAYING ANIMATION " + clipName + " ON " + currentAnimationContainer.name);
         if (currentAnimationClip.Contains("Jump"))
         {
             currentAnimationContainer.Stop();
             currentAnimationContainer.Play(clipName);
-            //Debug.LogError("PLAYING CLIP " + clipName);
+            //CatchingMiceLogVisualizer.use.LogError("PLAYING CLIP " + clipName);
         }
         else
         {
@@ -268,12 +270,13 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
                 facing =_sideAnimationClip;
                 break;
             default:
-                Debug.LogError("no correct movement quadrant had been chosen");
+                CatchingMiceLogVisualizer.use.LogError("no correct movement quadrant had been chosen");
                 break;
         }
         return facing;
     }
-    public virtual void SetupLocal()
+    
+	public virtual void SetupLocal()
     {
         if (animationContainers.Length == 0)
         {
@@ -282,20 +285,22 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (animationContainers.Length == 0)
         {
-            Debug.LogError(name + " : no BoneAnimations found for this animator!");
+            CatchingMiceLogVisualizer.use.LogError(name + " : no BoneAnimations found for this animator!");
         }
 
         SetCharacter();
 
         //PlayAnimation("DOWN/" + characterNameAnimation + _frontAnimationClip + idleAnimationClip);
     }
-    public void OnJump()
+    
+	public void OnJump()
     {
         KikaAndBob.MovementQuadrant quadrant = DirectionToQuadrant(character.movementDirection);
         LoadQuadrantAnimation(quadrant,jumpAnimationClip);
         _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE; 
     }
-    protected virtual void SetCharacter()
+    
+	protected virtual void SetCharacter()
     {
         if (character == null)
         {
@@ -304,7 +309,7 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
 
         if (character == null)
         {
-            Debug.LogError(name + " : no character found!");
+            CatchingMiceLogVisualizer.use.LogError(name + " : no character found!");
         }
         else
         {
@@ -312,7 +317,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
             character.onHit += OnHit;
         }
     }
-    public virtual void OnHit()
+    
+	public virtual void OnHit()
     {
 
         if (currentAnimationClip != characterNameAnimation + _frontAnimationClip + eatingAnimationClip)
@@ -327,7 +333,8 @@ public class CatchingMiceCharacterAnimation : MonoBehaviour
     {
         SetupLocal();
     }
-    protected void OnDisable()
+    
+	protected void OnDisable()
     {
         character.onJump -= OnJump;
         character.onHit -= OnHit;

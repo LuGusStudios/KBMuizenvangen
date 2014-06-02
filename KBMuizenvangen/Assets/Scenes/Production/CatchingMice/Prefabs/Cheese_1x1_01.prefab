@@ -63,11 +63,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 100002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a29a47ac5827cd740b75604cfeeebd8d, type: 3}
+  m_Script: {fileID: 11500000, guid: a7cce22d62254254f99b8397239e60ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridOffset: 0
+  yOffset: 0
+  zOffset: .100000001
   tileType: 32
+  cheeseVisuals:
+  - {fileID: 21300000, guid: 1c7b4dca56b39b9419fe9f0883907c28, type: 3}
+  - {fileID: 21300000, guid: cf78426dd421ed540b584e87c7de3f5d, type: 3}
+  - {fileID: 21300000, guid: 42588b7ea19a68446829e00172a7212b, type: 3}
+  - {fileID: 21300000, guid: 3ce6f717847c7374d9a912d1db0e29a8, type: 3}
 --- !u!212 &21200000
 SpriteRenderer:
   m_ObjectHideFlags: 1

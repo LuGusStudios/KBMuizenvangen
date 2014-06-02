@@ -7,7 +7,7 @@ public class CatchingMiceCharacterAnimationMouse : CatchingMiceCharacterAnimatio
     {
         if (currentAnimationClip != characterNameAnimation + _backAnimationClip + eatingAnimationClip)
         {
-            //Debug.LogError("Loading Eating Animation Clip");
+            //CatchingMiceLogVisualizer.use.LogError("Loading Eating Animation Clip");
             PlayAnimation("UP/" + characterNameAnimation + _backAnimationClip + eatingAnimationClip);
             _currentMovementQuadrant = KikaAndBob.MovementQuadrant.NONE;
         }
@@ -30,7 +30,7 @@ public class CatchingMiceCharacterAnimationMouse : CatchingMiceCharacterAnimatio
 
         if (character == null)
         {
-            Debug.LogError(name + " : no character found!");
+            CatchingMiceLogVisualizer.use.LogError(name + " : no character found!");
         }
         else
         {
