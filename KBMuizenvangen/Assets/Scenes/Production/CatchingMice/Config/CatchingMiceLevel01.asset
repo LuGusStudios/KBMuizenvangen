@@ -14,24 +14,24 @@ MonoBehaviour:
   width: 12
   height: 13
   layout: oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo
-  characters:
-  - prefabName: Cat_01
-    speed: .5
-    position: {x: 11, y: 10}
-  - prefabName: Cat_01
-    speed: .5
-    position: {x: 5, y: 6}
-  tileItems:
+  furniture:
   - prefabName: FurnitureCloset_4x2_01
     position: {x: 7, y: 3}
   - prefabName: FurnitureCoffeetable_1x1_01
     position: {x: 3, y: 2}
-  - prefabName: FurnitureFridge_1x1_01
-    position: {x: 1, y: 2}
-  - prefabName: FurnitureSofa_3x1_01
-    position: {x: 2, y: 5}
   - prefabName: FurnitureSofa_1x2_01
     position: {x: 7, y: 9}
+  - prefabName: FurnitureSofa_3x1_01
+    position: {x: 2, y: 5}
+  - prefabName: FurnitureFridge_1x1_01
+    position: {x: 1, y: 2}
+  obstacles:
+  - prefabName: ObstacleCooker_2x2_01
+    position: {x: 8, y: 3}
+    obstacleData: <WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity>
+  - prefabName: ObstacleCage_1x1_01
+    position: {x: 11, y: 12}
+    obstacleData: 
   cheeses:
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 5}
@@ -39,6 +39,23 @@ MonoBehaviour:
   - prefabName: Cheese_1x1_01
     position: {x: 5, y: 6}
     stacks: 40
+  holeItems:
+  - prefabName: Hole_1x1_01
+    holeId: Hole01
+    position: {x: 0, y: 0}
+    startDirection: 1
+  - prefabName: Hole_1x1_01
+    holeId: Hole02
+    position: {x: 0, y: 7}
+    startDirection: 2
+  - prefabName: Hole_1x1_01
+    holeId: Hole03
+    position: {x: 11, y: 3}
+    startDirection: 8
+  - prefabName: Hole_1x1_01
+    holeId: Hole04
+    position: {x: 5, y: 12}
+    startDirection: 4
   traps:
   - prefabName: TrapBearTrap_1x1_01
     position: {x: 7, y: 7}
@@ -61,23 +78,21 @@ MonoBehaviour:
   - prefabName: TrapMushroom_1x1_01
     position: {x: 10, y: 4}
     stacks: 10
-  holeItems:
-  - prefabName: Hole_1x1_01
-    holeId: Hole01
-    position: {x: 0, y: 0}
-    startDirection: 1
-  - prefabName: Hole_1x1_01
-    holeId: Hole02
-    position: {x: 0, y: 7}
-    startDirection: 2
-  - prefabName: Hole_1x1_01
-    holeId: Hole03
-    position: {x: 11, y: 3}
-    startDirection: 8
-  - prefabName: Hole_1x1_01
-    holeId: Hole04
-    position: {x: 5, y: 12}
-    startDirection: 4
+  characters:
+  - prefabName: Cat_01
+    speed: .5
+    position: {x: 11, y: 10}
+  - prefabName: Cat_01
+    speed: .5
+    position: {x: 5, y: 6}
+  patrols:
+  - prefabName: Haakmans_01
+    speed: 1
+    positions:
+    - {x: 0, y: 0}
+    - {x: 11, y: 0}
+    - {x: 11, y: 12}
+    - {x: 0, y: 12}
   waves:
   - enemies:
     - prefabName: Mouse_Skinny_01
@@ -105,18 +120,3 @@ MonoBehaviour:
       amount: 5
       spawnTimeInterval: .800000012
       spawnDelay: 1
-  patrols:
-  - prefabName: Haakmans_01
-    speed: 1
-    positions:
-    - {x: 0, y: 0}
-    - {x: 11, y: 0}
-    - {x: 11, y: 12}
-    - {x: 0, y: 12}
-  obstacles:
-  - prefabName: ObstacleCooker_2x2_01
-    position: {x: 8, y: 3}
-    obstacleData: <WaveActivity><Wave>0</Wave><Wave>2</Wave></WaveActivity>
-  - prefabName: ObstacleCage_1x1_01
-    position: {x: 11, y: 12}
-    obstacleData: 

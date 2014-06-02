@@ -29,13 +29,13 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
 			(parser.tagName != "Level"))
 		{
-            Debug.Log("CatchingMiceLevelDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceLevelDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
         //List<string> updaters = new List<string>();
         List<CatchingMiceCharacterDefinition> characters = new List<CatchingMiceCharacterDefinition>();
-		List<CatchingMiceTileItemDefinition> tileitems = new List<CatchingMiceTileItemDefinition>();
+		List<CatchingMiceFurnitureDefinition> tileitems = new List<CatchingMiceFurnitureDefinition>();
         List<CatchingMiceCheeseDefinition> cheeses = new List<CatchingMiceCheeseDefinition>();
 		List<CatchingMiceTrapDefinition> traps = new List<CatchingMiceTrapDefinition>();
         List<CatchingMiceHoleDefinition> holeItems = new List<CatchingMiceHoleDefinition>();
@@ -72,8 +72,8 @@ public class CatchingMiceLevelDefinition : ScriptableObject
                     case "Character":
                         characters.Add(CatchingMiceCharacterDefinition.FromXML(parser));
                         break;
-					case "TileItem":
-						tileitems.Add(CatchingMiceTileItemDefinition.FromXML(parser));
+					case "Furniture":
+						tileitems.Add(CatchingMiceFurnitureDefinition.FromXML(parser));
 						break;
                     case "Cheese":
                         cheeses.Add(CatchingMiceCheeseDefinition.FromXML(parser));
@@ -98,7 +98,7 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		}
 
 		level.characters = characters.ToArray();
-		level.tileItems = tileitems.ToArray();
+		level.furniture = tileitems.ToArray();
 		level.cheeses = cheeses.ToArray();
 		level.traps = traps.ToArray();
 		level.holeItems = holeItems.ToArray();
@@ -115,7 +115,7 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 
 		if (level == null)
 		{
-            Debug.Log("CatchingMiceLevelDefinition.ToXML(): The level to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceLevelDefinition.ToXML(): The level to be serialized is null.");
 			return rawdata;
 		}
 
@@ -131,7 +131,7 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		// Pad the end of the level layout if it does not meet the length requirements
 		if (level.layout.Length < (level.width * level.height))
 		{
-			Debug.LogWarning("CatchingMiceLevelDefinition.ToXML(): The layout length does not match the level's dimensions.\nThe layout will be padded with o's.");
+			CatchingMiceLogVisualizer.use.LogWarning("CatchingMiceLevelDefinition.ToXML(): The layout length does not match the level's dimensions.\nThe layout will be padded with o's.");
 			level.layout = level.layout.PadRight(level.width * level.height, 'o');
 		}
 
@@ -141,26 +141,19 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 		}
 		rawdata += "\t</Layout>\r\n";
 
+		rawdata += "\t<Furnitures>\r\n";
+		foreach (CatchingMiceFurnitureDefinition furniture in level.furniture)
+		{
+			rawdata += CatchingMiceFurnitureDefinition.ToXML(furniture, 2);
+		}
+		rawdata += "\t</Furnitures>\r\n";
+
 		rawdata += "\t<Obstacles>\r\n";
 		foreach (CatchingMiceObstacleDefinition obstacle in level.obstacles)
 		{
 			rawdata += CatchingMiceObstacleDefinition.ToXML(obstacle, 2);
 		}
 		rawdata += "\t</Obstacles>\r\n";
-
-        rawdata += "\t<Characters>\r\n";
-        foreach (CatchingMiceCharacterDefinition character in level.characters)
-        {
-            rawdata += CatchingMiceCharacterDefinition.ToXML(character, 2);
-        }
-        rawdata += "\t</Characters>\r\n";
-
-		rawdata += "\t<TileItems>\r\n";
-		foreach(CatchingMiceTileItemDefinition tileitem in level.tileItems)
-		{
-			rawdata += CatchingMiceTileItemDefinition.ToXML(tileitem, 2);
-		}
-		rawdata += "\t</TileItems>\r\n";
 
         rawdata += "\t<Cheeses>\r\n";
         foreach (CatchingMiceCheeseDefinition cheese in level.cheeses)
@@ -169,13 +162,6 @@ public class CatchingMiceLevelDefinition : ScriptableObject
         }
         rawdata += "\t</Cheeses>\r\n";
 
-		rawdata += "\t<Traps>\r\n";
-		foreach (CatchingMiceTrapDefinition trap in level.traps)
-		{
-			rawdata += CatchingMiceTrapDefinition.ToXML(trap, 2);
-		}
-		rawdata += "\t</Traps>\r\n";
-
         rawdata += "\t<HoleItems>\r\n";
         foreach (CatchingMiceHoleDefinition holeItem in level.holeItems)
         {
@@ -183,12 +169,19 @@ public class CatchingMiceLevelDefinition : ScriptableObject
         }
         rawdata += "\t</HoleItems>\r\n";
 
-        rawdata += "\t<Waves>\r\n";
-        foreach (CatchingMiceWaveDefinition wave in level.waves)
+		rawdata += "\t<Traps>\r\n";
+		foreach (CatchingMiceTrapDefinition trap in level.traps)
+		{
+			rawdata += CatchingMiceTrapDefinition.ToXML(trap, 2);
+		}
+		rawdata += "\t</Traps>\r\n";
+
+        rawdata += "\t<Characters>\r\n";
+        foreach (CatchingMiceCharacterDefinition character in level.characters)
         {
-            rawdata += CatchingMiceWaveDefinition.ToXML(wave, 2);
+            rawdata += CatchingMiceCharacterDefinition.ToXML(character, 2);
         }
-        rawdata += "\t</Waves>\r\n";
+		rawdata += "\t</Characters>\r\n";
 
 		rawdata += "\t<Patrols>\r\n";
 		foreach (CatchingMicePatrolDefinition patrol in level.patrols)
@@ -196,6 +189,13 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 			rawdata += CatchingMicePatrolDefinition.ToXML(patrol, 2);
 		}
 		rawdata += "\t</Patrols>\r\n";
+
+        rawdata += "\t<Waves>\r\n";
+        foreach (CatchingMiceWaveDefinition wave in level.waves)
+        {
+            rawdata += CatchingMiceWaveDefinition.ToXML(wave, 2);
+        }
+        rawdata += "\t</Waves>\r\n";
 
 		rawdata += "</Level>\r\n";
 
@@ -207,14 +207,14 @@ public class CatchingMiceLevelDefinition : ScriptableObject
 	public int height = 13;
 	//public bool cameraTracksPlayer = false;
 	public string layout = string.Empty;
-    public CatchingMiceCharacterDefinition[] characters;
-	public CatchingMiceTileItemDefinition[] tileItems;
-    public CatchingMiceCheeseDefinition[] cheeses;
-	public CatchingMiceTrapDefinition[] traps;
-    public CatchingMiceHoleDefinition[] holeItems;
-    public CatchingMiceWaveDefinition[] waves;
-	public CatchingMicePatrolDefinition[] patrols;
+	public CatchingMiceFurnitureDefinition[] furniture;
 	public CatchingMiceObstacleDefinition[] obstacles;
+    public CatchingMiceCheeseDefinition[] cheeses;
+    public CatchingMiceHoleDefinition[] holeItems;
+	public CatchingMiceTrapDefinition[] traps;
+    public CatchingMiceCharacterDefinition[] characters;
+	public CatchingMicePatrolDefinition[] patrols;
+    public CatchingMiceWaveDefinition[] waves;
     
 	// Arrays of serialized classes are not created with default values
 	// Instead, initialize values once in OnEnable (which runs AFTER deserialization), checking for null / zero value
@@ -245,7 +245,7 @@ public class CatchingMiceObstacleDefinition
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
 			(parser.tagName != "Obstacle"))
 		{
-			Debug.Log("CatchingMiceObstacleDefinition.FromXML(): unexpected tag type or tag name.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceObstacleDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
@@ -311,7 +311,7 @@ public class CatchingMiceObstacleDefinition
 
 		if (obstacle == null)
 		{
-			Debug.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
 			return rawdata;
 		}
 
@@ -352,7 +352,7 @@ public class CatchingMiceCharacterDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Character"))
         {
-            Debug.Log("CatchingMiceCharacterDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
@@ -401,7 +401,7 @@ public class CatchingMiceCharacterDefinition
 
         if (character == null)
         {
-            Debug.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCharacterDefinition.ToXML(): The character to be serialized is null.");
             return rawdata;
         }
 
@@ -432,27 +432,27 @@ public class CatchingMiceCharacterDefinition
 }
 
 [System.Serializable]
-public class CatchingMiceTileItemDefinition
+public class CatchingMiceFurnitureDefinition
 {
-    public static CatchingMiceTileItemDefinition FromXML(TinyXmlReader parser)
+    public static CatchingMiceFurnitureDefinition FromXML(TinyXmlReader parser)
     {
-        CatchingMiceTileItemDefinition tileitem = new CatchingMiceTileItemDefinition();
+        CatchingMiceFurnitureDefinition furniture = new CatchingMiceFurnitureDefinition();
 
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
-            (parser.tagName != "TileItem"))
+            (parser.tagName != "Furniture"))
         {
-            Debug.Log("CatchingMiceTileItemDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceFurnitureDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
-        while (parser.Read("TileItem"))
+		while (parser.Read("Furniture"))
         {
             if (parser.tagType == TinyXmlReader.TagType.OPENING)
             {
                 switch (parser.tagName)
                 {
                     case "PrefabName":
-                        tileitem.prefabName = parser.content;
+                        furniture.prefabName = parser.content;
                         break;
                     case "Position":
                         Vector2 coordinates = Vector2.zero;
@@ -471,22 +471,22 @@ public class CatchingMiceTileItemDefinition
                                 }
                             }
                         }
-                        tileitem.position = coordinates;
+                        furniture.position = coordinates;
                         break;
                 }
             }
         }
 
-        return tileitem;
+        return furniture;
     }
 
-    public static string ToXML(CatchingMiceTileItemDefinition tileitem, int depth)
+    public static string ToXML(CatchingMiceFurnitureDefinition furniture, int depth)
     {
         string rawdata = string.Empty;
 
-        if (tileitem == null)
+        if (furniture == null)
         {
-            Debug.Log("CatchingMiceTileItemDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceFurnitureDefinition.ToXML(): The furniture to be serialized is null.");
             return rawdata;
         }
 
@@ -496,13 +496,13 @@ public class CatchingMiceTileItemDefinition
             tabs += "\t";
         }
 
-        rawdata += tabs + "<TileItem>\r\n";
-        rawdata += tabs + "\t<PrefabName>" + tileitem.prefabName + "</PrefabName>\r\n";
+		rawdata += tabs + "<Furniture>\r\n";
+        rawdata += tabs + "\t<PrefabName>" + furniture.prefabName + "</PrefabName>\r\n";
         rawdata += tabs + "\t<Position>\r\n";
-        rawdata += tabs + "\t\t<X>" + tileitem.position.x.ToString() + "</X>\r\n";
-        rawdata += tabs + "\t\t<Y>" + tileitem.position.y.ToString() + "</Y>\r\n";
+        rawdata += tabs + "\t\t<X>" + furniture.position.x.ToString() + "</X>\r\n";
+        rawdata += tabs + "\t\t<Y>" + furniture.position.y.ToString() + "</Y>\r\n";
         rawdata += tabs + "\t</Position>\r\n";
-        rawdata += tabs + "</TileItem>\r\n";
+		rawdata += tabs + "</Furniture>\r\n";
 
         return rawdata;
     }
@@ -521,7 +521,7 @@ public class CatchingMiceCheeseDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Cheese"))
         {
-            Debug.Log("CatchingMiceCheeseDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCheeseDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
@@ -569,7 +569,7 @@ public class CatchingMiceCheeseDefinition
 
         if (tileitem == null)
         {
-            Debug.Log("CatchingMiceCheeseDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceCheeseDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -606,7 +606,7 @@ public class CatchingMiceHoleDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "HoleItem"))
         {
-            Debug.Log("CatchingMiceHoleDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceHoleDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
 
@@ -674,7 +674,7 @@ public class CatchingMiceHoleDefinition
 
         if (holeTile == null)
         {
-            Debug.Log("CatchingMiceHoleDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceHoleDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -732,7 +732,7 @@ public class CatchingMiceWaveDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Wave"))
         {
-            Debug.Log("CatchingMiceWaveDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceWaveDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
         List<CatchingMiceEnemyDefinition> enemies = new List<CatchingMiceEnemyDefinition>();
@@ -761,7 +761,7 @@ public class CatchingMiceWaveDefinition
 
         if (wave == null)
         {
-            Debug.Log("CatchingMiceWaveDefinition.ToXML(): The tile item to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceWaveDefinition.ToXML(): The tile item to be serialized is null.");
             return rawdata;
         }
 
@@ -794,7 +794,7 @@ public class CatchingMiceEnemyDefinition
         if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
             (parser.tagName != "Enemy"))
         {
-            Debug.Log("CatchingMiceEnemyDefinition.FromXML(): unexpected tag type or tag name.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceEnemyDefinition.FromXML(): unexpected tag type or tag name.");
             return null;
         }
         while (parser.Read("Enemy"))
@@ -830,7 +830,7 @@ public class CatchingMiceEnemyDefinition
 
         if (character == null)
         {
-            Debug.Log("CatchingMiceEnemyDefinition.ToXML(): The character to be serialized is null.");
+            CatchingMiceLogVisualizer.use.Log("CatchingMiceEnemyDefinition.ToXML(): The character to be serialized is null.");
             return rawdata;
         }
 
@@ -868,7 +868,7 @@ public class CatchingMiceTrapDefinition
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
 			(parser.tagName != "Trap"))
 		{
-			Debug.Log("CatchingMiceTrapDefinition.FromXML(): unexpected tag type or tag name.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceTrapDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
@@ -916,7 +916,7 @@ public class CatchingMiceTrapDefinition
 
 		if (trap == null)
 		{
-			Debug.Log("CatchingMiceTrapDefinition.ToXML(): The trap item to be serialized is null.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMiceTrapDefinition.ToXML(): The trap item to be serialized is null.");
 			return rawdata;
 		}
 
@@ -957,7 +957,7 @@ public class CatchingMicePatrolDefinition
 		if ((parser.tagType != TinyXmlReader.TagType.OPENING) ||
 			(parser.tagName != "Patrol"))
 		{
-			Debug.Log("CatchingMicePatrolDefinition.FromXML(): unexpected tag type or tag name.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMicePatrolDefinition.FromXML(): unexpected tag type or tag name.");
 			return null;
 		}
 
@@ -1007,7 +1007,7 @@ public class CatchingMicePatrolDefinition
 
 		if (patrol == null)
 		{
-			Debug.Log("CatchingMicePatrolDefinition.ToXML(): The patrol route to be serialized is null.");
+			CatchingMiceLogVisualizer.use.Log("CatchingMicePatrolDefinition.ToXML(): The patrol route to be serialized is null.");
 			return rawdata;
 		}
 

@@ -292,7 +292,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 		ParseTiles(width, height, currentLevel.layout);
 
-		PlaceFurniture(currentLevel.tileItems);
+		PlaceFurniture(currentLevel.furniture);
 
 		CreateGrid();
 
@@ -326,7 +326,7 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 
 		ParseTiles(width, height, currentLevel.layout);
 
-		PlaceFurniture(currentLevel.tileItems);
+		PlaceFurniture(currentLevel.furniture);
 
 		CreateGrid();
 
@@ -458,9 +458,9 @@ public class CatchingMiceLevelManagerDefault : MonoBehaviour
 		}
 	}
 
-	protected void PlaceFurniture(CatchingMiceTileItemDefinition[] tileItemDefinitions)
+	protected void PlaceFurniture(CatchingMiceFurnitureDefinition[] furnitureDefinitions)
 	{
-		foreach (CatchingMiceTileItemDefinition definition in tileItemDefinitions)
+		foreach (CatchingMiceFurnitureDefinition definition in furnitureDefinitions)
 		{
 			// Find the furniture prefab
 			GameObject furniturePrefab = null;

@@ -17,6 +17,43 @@
 		oooooooooooo
 		oooooooooooo
 	</Layout>
+	<Furnitures>
+		<Furniture>
+			<PrefabName>FurnitureCloset_4x2_01</PrefabName>
+			<Position>
+				<X>7</X>
+				<Y>3</Y>
+			</Position>
+		</Furniture>
+		<Furniture>
+			<PrefabName>FurnitureCoffeetable_1x1_01</PrefabName>
+			<Position>
+				<X>3</X>
+				<Y>2</Y>
+			</Position>
+		</Furniture>
+		<Furniture>
+			<PrefabName>FurnitureSofa_1x2_01</PrefabName>
+			<Position>
+				<X>7</X>
+				<Y>9</Y>
+			</Position>
+		</Furniture>
+		<Furniture>
+			<PrefabName>FurnitureSofa_3x1_01</PrefabName>
+			<Position>
+				<X>2</X>
+				<Y>5</Y>
+			</Position>
+		</Furniture>
+		<Furniture>
+			<PrefabName>FurnitureFridge_1x1_01</PrefabName>
+			<Position>
+				<X>1</X>
+				<Y>2</Y>
+			</Position>
+		</Furniture>
+	</Furnitures>
 	<Obstacles>
 		<Obstacle>
 			<PrefabName>ObstacleCooker_2x2_01</PrefabName>
@@ -35,61 +72,6 @@
 			<Configuration></Configuration>
 		</Obstacle>
 	</Obstacles>
-	<Characters>
-		<Character>
-			<PrefabName>Cat_01</PrefabName>
-			<Speed>0.5</Speed>
-			<Position>
-				<X>11</X>
-				<Y>10</Y>
-			</Position>
-		</Character>
-		<Character>
-			<PrefabName>Cat_01</PrefabName>
-			<Speed>0.5</Speed>
-			<Position>
-				<X>5</X>
-				<Y>6</Y>
-			</Position>
-		</Character>
-	</Characters>
-	<TileItems>
-		<TileItem>
-			<PrefabName>FurnitureCloset_4x2_01</PrefabName>
-			<Position>
-				<X>7</X>
-				<Y>3</Y>
-			</Position>
-		</TileItem>
-		<TileItem>
-			<PrefabName>FurnitureCoffeetable_1x1_01</PrefabName>
-			<Position>
-				<X>3</X>
-				<Y>2</Y>
-			</Position>
-		</TileItem>
-		<TileItem>
-			<PrefabName>FurnitureFridge_1x1_01</PrefabName>
-			<Position>
-				<X>1</X>
-				<Y>2</Y>
-			</Position>
-		</TileItem>
-		<TileItem>
-			<PrefabName>FurnitureSofa_3x1_01</PrefabName>
-			<Position>
-				<X>2</X>
-				<Y>5</Y>
-			</Position>
-		</TileItem>
-		<TileItem>
-			<PrefabName>FurnitureSofa_1x2_01</PrefabName>
-			<Position>
-				<X>7</X>
-				<Y>9</Y>
-			</Position>
-		</TileItem>
-	</TileItems>
 	<Cheeses>
 		<Cheese>
 			<PrefabName>Cheese_1x1_01</PrefabName>
@@ -108,6 +90,44 @@
 			<Stacks>40</Stacks>
 		</Cheese>
 	</Cheeses>
+	<HoleItems>
+		<HoleItem>
+			<PrefabName>Hole_1x1_01</PrefabName>
+			<HoleID>Hole01</HoleID>
+			<Position>
+				<X>0</X>
+				<Y>0</Y>
+			</Position>
+			<StartDirection>up</StartDirection>
+		</HoleItem>
+		<HoleItem>
+			<PrefabName>Hole_1x1_01</PrefabName>
+			<HoleID>Hole02</HoleID>
+			<Position>
+				<X>0</X>
+				<Y>7</Y>
+			</Position>
+			<StartDirection>right</StartDirection>
+		</HoleItem>
+		<HoleItem>
+			<PrefabName>Hole_1x1_01</PrefabName>
+			<HoleID>Hole03</HoleID>
+			<Position>
+				<X>11</X>
+				<Y>3</Y>
+			</Position>
+			<StartDirection>left</StartDirection>
+		</HoleItem>
+		<HoleItem>
+			<PrefabName>Hole_1x1_01</PrefabName>
+			<HoleID>Hole04</HoleID>
+			<Position>
+				<X>5</X>
+				<Y>12</Y>
+			</Position>
+			<StartDirection>down</StartDirection>
+		</HoleItem>
+	</HoleItems>
 	<Traps>
 		<Trap>
 			<PrefabName>TrapBearTrap_1x1_01</PrefabName>
@@ -166,44 +186,48 @@
 			<Stacks>10</Stacks>
 		</Trap>
 	</Traps>
-	<HoleItems>
-		<HoleItem>
-			<PrefabName>Hole_1x1_01</PrefabName>
-			<HoleID>Hole01</HoleID>
-			<Position>
-				<X>0</X>
-				<Y>0</Y>
-			</Position>
-			<StartDirection>up</StartDirection>
-		</HoleItem>
-		<HoleItem>
-			<PrefabName>Hole_1x1_01</PrefabName>
-			<HoleID>Hole02</HoleID>
-			<Position>
-				<X>0</X>
-				<Y>7</Y>
-			</Position>
-			<StartDirection>right</StartDirection>
-		</HoleItem>
-		<HoleItem>
-			<PrefabName>Hole_1x1_01</PrefabName>
-			<HoleID>Hole03</HoleID>
+	<Characters>
+		<Character>
+			<PrefabName>Cat_01</PrefabName>
+			<Speed>0.5</Speed>
 			<Position>
 				<X>11</X>
-				<Y>3</Y>
+				<Y>10</Y>
 			</Position>
-			<StartDirection>left</StartDirection>
-		</HoleItem>
-		<HoleItem>
-			<PrefabName>Hole_1x1_01</PrefabName>
-			<HoleID>Hole04</HoleID>
+		</Character>
+		<Character>
+			<PrefabName>Cat_01</PrefabName>
+			<Speed>0.5</Speed>
 			<Position>
 				<X>5</X>
-				<Y>12</Y>
+				<Y>6</Y>
 			</Position>
-			<StartDirection>down</StartDirection>
-		</HoleItem>
-	</HoleItems>
+		</Character>
+	</Characters>
+	<Patrols>
+		<Patrol>
+			<PrefabName>Haakmans_01</PrefabName>
+			<Speed>1</Speed>
+			<Positions>
+				<Position>
+					<X>0</X>
+					<Y>0</Y>
+				</Position>
+				<Position>
+					<X>11</X>
+					<Y>0</Y>
+				</Position>
+				<Position>
+					<X>11</X>
+					<Y>12</Y>
+				</Position>
+				<Position>
+					<X>0</X>
+					<Y>12</Y>
+				</Position>
+			</Positions>
+		</Patrol>
+	</Patrols>
 	<Waves>
 		<Wave>
 		<Enemy>
@@ -243,28 +267,4 @@
 		</Enemy>
 		</Wave>
 	</Waves>
-	<Patrols>
-		<Patrol>
-			<PrefabName>Haakmans_01</PrefabName>
-			<Speed>1</Speed>
-			<Positions>
-				<Position>
-					<X>0</X>
-					<Y>0</Y>
-				</Position>
-				<Position>
-					<X>11</X>
-					<Y>0</Y>
-				</Position>
-				<Position>
-					<X>11</X>
-					<Y>12</Y>
-				</Position>
-				<Position>
-					<X>0</X>
-					<Y>12</Y>
-				</Position>
-			</Positions>
-		</Patrol>
-	</Patrols>
 </Level>
